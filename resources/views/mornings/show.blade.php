@@ -28,10 +28,10 @@
             </div>
             <br>
         @else
-        @can('createReport', App\Morning::class)
+        @can('create', App\Report::class)
             <div class="text-left">
                 {{ $overDay }}
-                <a class="btn btn-success btn-xs" href="{{url('mornings/'.$morning->id.'/createReport')}}" role="button"><span class="glyphicon glyphicon-plus"></span> 新增處室報告</a> <a href="{{ url('mornings/index') }}"><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-chevron-left"></span> 返回</button></a>
+                <a class="btn btn-success btn-xs" href="{{url('reports/'.$morning->id.'/create')}}" role="button"><span class="glyphicon glyphicon-plus"></span> 新增處室報告</a> <a href="{{ url('mornings/index') }}"><button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-chevron-left"></span> 返回</button></a>
             </div>
             <br>
         @endcan
@@ -53,8 +53,8 @@
                     <p>{!! $v['content'] !!}</p>
                     @if($v['user_id']==auth()->user()->id & @!$overDay)
                     <div class="text-right">
-                        <a class="btn btn-info btn-xs" href="{{ url('/mornings').'/'.$morning->id.'/editReport/'.$v['id'] }}" role="button"><span class="glyphicon glyphicon-pencil"></span> 修改報告</a>
-                        {{ Form::open(['route' => ['mornings.destroyReport', $v['id']], 'method' => 'DELETE', 'style' => 'display: inline-block']) }}
+                        <a class="btn btn-info btn-xs" href="{{ url('/reports').'/'.$morning->id.'/edit/'.$v['id'] }}" role="button"><span class="glyphicon glyphicon-pencil"></span> 修改報告</a>
+                        {{ Form::open(['route' => ['reports.destroy', $v['id']], 'method' => 'DELETE', 'style' => 'display: inline-block']) }}
                         <button type="submit" class="btn btn-danger btn-xs" role="button" onclick="return confirm('是否確定刪除此報告？看清楚喔！');"><span class="glyphicon glyphicon-trash"></span> 刪除</button>
                         {{ Form::close() }}
                     </div>
@@ -73,7 +73,7 @@
                     <!--
                     @if($v['user_id']==auth()->user()->id)
                     <br><br>
-                    {{ Form::open(['route' => 'mornings.addFile', 'method' => 'POST', 'files' => true]) }}
+                    {{ Form::open(['route' => 'reports.addFile', 'method' => 'POST', 'files' => true]) }}
                     <input name="upload[]" type="file" multiple>
                     {{ Form::hidden('morning_id', $morning->id) }}
                     {{ Form::hidden('report_id', $v['id']) }}

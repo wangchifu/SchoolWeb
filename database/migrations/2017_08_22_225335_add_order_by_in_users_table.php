@@ -14,7 +14,7 @@ class AddGroupIdInUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedInteger('group_id')->nullable()->after('password');
+            $table->unsignedInteger('order_by')->nullable()->after('password');
         });
     }
 

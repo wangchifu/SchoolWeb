@@ -20,7 +20,7 @@ class MorningPolicy
      */
     public function view(User $user)
     {
-        return $user->group_id >= "0";
+        return $user->group_id > "0";
     }
 
     /**
@@ -31,7 +31,7 @@ class MorningPolicy
      */
     public function create(User $user)
     {
-        return $user->group_id >= "1" & $user->group_id < "400";
+        return $user->group_id === "1";
     }
 
     /**
@@ -43,8 +43,7 @@ class MorningPolicy
      */
     public function update(User $user)
     {
-        //return $user->group_id >= "1" & $user->group_id < "400";
-        return $user->admin == "1";
+        return $user->admin === "1";
     }
 
     /**
@@ -56,15 +55,7 @@ class MorningPolicy
      */
     public function delete(User $user)
     {
-        //return $user->group_id >= "1" & $user->group_id < "400";
-        return $user->admin == "1";
+        return $user->admin === "1";
     }
-    public function createReport(User $user)
-    {
-        return $user->group_id >= "1" & $user->group_id < "400";
-    }
-    public function editReport(User $user,Report $report)
-    {
-        return $user->user_id === $report->user_id;
-    }
+
 }

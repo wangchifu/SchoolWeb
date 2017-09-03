@@ -37,16 +37,16 @@ Route::get('mornings/{morning}/edit' , 'MorningsController@edit')->name('morning
 Route::patch('mornings/{morning}' , 'MorningsController@update')->name('mornings.update');
 Route::delete('mornings/{morning}', 'MorningsController@destroy')->name('mornings.destroy');
 Route::get('mornings/{morning}/download' , 'MorningsController@txtDown')->name('mornings.txtDown');
+Route::get('downloadMfile/{mfile}' , 'MorningsController@downloadMfile')->name('mornings.downloadMfile');
 
 //處室報告
-Route::get('mornings/{morning}/createReport' , 'MorningsController@createReport')->name('mornings.createReport');
-Route::post('mornings/storeReport' , 'MorningsController@storeReport')->name('mornings.storeReport');
-Route::get('mornings/{morning}/editReport/{report_id}' , 'MorningsController@editReport')->name('mornings.editReport');
-Route::patch('reports/{report}' , 'MorningsController@updateReport')->name('mornings.updateReport');
-Route::delete('reports/{report}', 'MorningsController@destroyReport')->name('mornings.destroyReport');
-Route::post('reports/addFile' , 'MorningsController@addFile')->name('mornings.addFile');
-Route::get('downloadMfile/{mfile}' , 'MorningsController@downloadMfile')->name('mornings.downloadMfile');
-Route::get('delMfile/{mfile}' , 'MorningsController@delMfile')->name('mornings.delMfile');
+Route::get('reports/{morning}/create' , 'ReportsController@create')->name('reports.create');
+Route::post('reports/store' , 'ReportsController@store')->name('reports.store');
+Route::get('reports/{morning}/edit/{report_id}' , 'ReportsController@edit')->name('reports.edit');
+Route::patch('reports/{report}' , 'ReportsController@update')->name('reports.update');
+Route::delete('reports/{report}', 'ReportsController@destroy')->name('reports.destroy');
+Route::post('reports/addFile' , 'ReportsController@addFile')->name('reports.addFile');
+Route::get('delMfile/{mfile}' , 'ReportsController@delMfile')->name('reports.delMfile');
 
 //管理介面
 Route::group(['middleware' => 'admin'],function(){
@@ -101,7 +101,11 @@ Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('resetPassword', 'ResetPasswordController@index')->name('resetPassword');
 Route::post('updatePassword', 'ResetPasswordController@update')->name('updatePassword');
 
-
+//公開文件
+Route::get('openfiles', 'OpenfilesController@index')->name('openfiles.index');
+Route::post('openfiles', 'OpenfilesController@store')->name('openfiles.store');
+Route::get('openfiles/{id}', 'OpenfilesController@show')->name('openfiles.show');
+Route::get('openfiles/{downloadfile}/downloadfile' , 'OpenfilesController@downloadfile')->name('openfiles.downloadfile');
 
 
 //Auth::routes();

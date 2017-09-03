@@ -31,7 +31,7 @@
             </div>
 
             <div class="panel-body forum-content">
-                {{ Form::model($report,['route' => ['mornings.updateReport',$report->id], 'method' => 'PATCH', 'files' => true]) }}
+                {{ Form::model($report,['route' => ['reports.update',$report->id], 'method' => 'PATCH', 'files' => true]) }}
                 <div class="form-group">
                     <label for="content">內文*：</label>
                     {{ Form::textarea('content', $report->content, ['id' => 'content', 'class' => 'form-control', 'rows' => 10, 'placeholder' => '請輸入內容']) }}
@@ -40,7 +40,7 @@
                 @foreach($mfiles as $mfile)
                     @if ($mfile->name)
                         <?php $filename = explode('&',$mfile->name);?>
-                        <a href ="{{ route('mornings.delMfile',$mfile->id) }}" class="btn btn-danger btn-xs" onclick="return confirm('是否確定刪除附檔 {{$filename[1]}} ？');"><span class="glyphicon glyphicon-remove"></span>{{ $filename[1] }}</a>
+                        <a href ="{{ route('reports.delMfile',$mfile->id) }}" class="btn btn-danger btn-xs" onclick="return confirm('是否確定刪除附檔 {{$filename[1]}} ？');"><span class="glyphicon glyphicon-remove"></span>{{ $filename[1] }}</a>
                     @endif
                 @endforeach
                 <br>

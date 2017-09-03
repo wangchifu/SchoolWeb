@@ -11,7 +11,7 @@ class Report extends Model
         'morning_id',
         'content',
         'who_do',
-        'group_id',
+        'order_by',
     ];
     public function user()
     {

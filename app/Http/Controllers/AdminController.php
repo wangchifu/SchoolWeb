@@ -17,8 +17,8 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $users1 = User::orderBy('group_id', 'ASC')->where('unactive',null)->get();
-        $users2 = User::orderBy('group_id', 'ASC')->where('unactive',1)->get();
+        $users1 = User::orderBy('order_by', 'ASC')->where('unactive',null)->get();
+        $users2 = User::orderBy('order_by', 'ASC')->where('unactive',1)->get();
         $data = [
             "users1"=>$users1,
             "users2"=>$users2,

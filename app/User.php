@@ -26,6 +26,7 @@ class User extends Authenticatable
         'password',
         'job_title',
         'group_id',
+        'order_by',
         'admin',
     ];
 

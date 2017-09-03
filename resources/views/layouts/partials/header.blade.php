@@ -12,7 +12,7 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="{{ route('posts.index') }}">公告系統</a></li>
-                <li><a href="">公開文件(x)</a></li>
+                <li><a href="{{ route('openfiles.index') }}">公開文件</a></li>
                 <li><a href="{{ route('mornings.index') }}">會議文稿</a></li>
                 <li><a href="">校務計畫(x)</a></li>
             </ul>

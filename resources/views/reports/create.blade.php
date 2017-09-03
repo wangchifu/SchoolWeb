@@ -30,7 +30,7 @@
                     <h4>{{ auth()->user()->job_title }}</h4>
                 </div>
                 <div class="panel-body forum-content">
-                    {{ Form::open(['route' => 'mornings.storeReport', 'method' => 'POST', 'files' => true]) }}
+                    {{ Form::open(['route' => 'reports.store', 'method' => 'POST', 'files' => true]) }}
                     <div class="form-group">
                      <label for="content">內文*：</label>
                         {{ Form::textarea('content', null, ['id' => 'content', 'class' => 'form-control', 'rows' => 10, 'placeholder' => '請輸入內容']) }}

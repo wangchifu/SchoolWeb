@@ -30,7 +30,8 @@
                     <th>姓名</th>
                     <th>Email</th>
                     <th>職稱</th>
-                    <th>群組排序</th>
+                    <th>排序</th>
+                    <th>群組</th>
                     <th>管理權</th>
                     <th>動作</th>
                 </tr>
@@ -59,7 +60,12 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            {{ Form::text('group_id', null, ['id' => 'group_id', 'class' => 'form-control', 'placeholder' => '群組排序']) }}
+                            {{ Form::text('order_by', null, ['id' => 'order_by', 'class' => 'form-control', 'placeholder' => '排序代號']) }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            {{ Form::text('group_id', null, ['id' => 'group_id', 'class' => 'form-control', 'placeholder' => '群組代號']) }}
                         </div>
                     </td>
                     <td>
@@ -101,7 +107,12 @@
                         </td>
                         <td>
                             <div class="form-group">
-                                {{ Form::text('group_id', null, ['id' => 'group_id', 'class' => 'form-control', 'placeholder' => '群組排序']) }}
+                                {{ Form::text('order_by', null, ['id' => 'order_by', 'class' => 'form-control', 'placeholder' => '排序代號']) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                {{ Form::text('group_id', null, ['id' => 'group_id', 'class' => 'form-control', 'placeholder' => '群組代號']) }}
                             </div>
                         </td>
                         <td>
@@ -125,7 +136,7 @@
     </div>
         <div class="col-md-2">
             <div class="well">
-                <h4>群組排序</h4>
+                <h4>排序代號</h4>
                 <p>第一碼：</p>
                 <p>校　　長：110</p>
                 <p>主　　任：2xx</p>
@@ -142,6 +153,14 @@
                 <p>會計室　：x60</p>
                 <p>人事室　：x70</p>
                 <p>第三碼：流水號</p>
+            </div>
+            <div class="well">
+                <h4>群組代號</h4>
+                <p>行政人員：1</p>
+                <p>級任教師：2</p>
+                <p>科任教師：3</p>
+                <p>註冊成員：4</p>
+
             </div>
         </div>
     </div>

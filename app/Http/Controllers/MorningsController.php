@@ -160,13 +160,13 @@ class MorningsController extends Controller
         foreach ($morning->reports as $report) {
             $content = str_replace('->', '<font color=red><strong>',$report->content);
             $content = str_replace('<-','</strong></font>',$content);
-            $order_reports[$report->group_id]['content'] = str_replace(chr(13) . chr(10), '<br>', $content);
+            $order_reports[$report->order_by]['content'] = str_replace(chr(13) . chr(10), '<br>', $content);
 
-            $order_reports[$report->group_id]['id'] = $report->id;
-            $order_reports[$report->group_id]['user_id'] = $report->user_id;
+            $order_reports[$report->order_by]['id'] = $report->id;
+            $order_reports[$report->order_by]['user_id'] = $report->user_id;
 
-            $order_reports[$report->group_id]['who_do'] = $report->who_do;
-            $order_reports[$report->group_id]['mfiles'] = $report->mfiles;
+            $order_reports[$report->order_by]['who_do'] = $report->who_do;
+            $order_reports[$report->order_by]['mfiles'] = $report->mfiles;
 
         }
         ksort($order_reports);
@@ -346,6 +346,7 @@ class MorningsController extends Controller
 
         return redirect()->route('mornings.index');
     }
+    /**
     public function createReport(Morning $morning)
     {
         //如果已經發表過報告的，應該是變成再修改已經發表過的
@@ -362,6 +363,7 @@ class MorningsController extends Controller
         $data = compact('morning');
         return view('mornings.createReport',$data);
     }
+
     public function storeReport(ReportRequest $request)
     {
         $attributes = $request->all();
@@ -369,7 +371,7 @@ class MorningsController extends Controller
         $morning_id = $request->input('morning_id');
         $attributes['morning_id'] = $morning_id;
         $attributes['who_do'] = auth()->user()->job_title." ".auth()->user()->name;
-        $attributes['group_id'] = auth()->user()->group_id;
+        $attributes['order_by'] = auth()->user()->order_by;
         $report = Report::create($attributes);
 
         //處理檔案上傳
@@ -405,6 +407,7 @@ class MorningsController extends Controller
 
         return redirect()->route('mornings.show',$morning_id);
     }
+
     public function editReport(Morning $morning,$report_id)
     {
 
@@ -482,6 +485,7 @@ class MorningsController extends Controller
 
         return redirect()->route('mornings.show',$morning_id);
     }
+     * **/
     /**
     public function addFile(Request $request)
     {
@@ -540,7 +544,7 @@ class MorningsController extends Controller
         $txtDown = $morning->name."\r\n";
         foreach($morning->reports as $report){
             $txt = "●".$report->who_do."\r\n".$report->content."\r\n \r\n";
-            $ori[$report->group_id] = $txt;
+            $ori[$report->order_by] = $txt;
         }
         ksort($ori);
         foreach($ori as $k=>$v){
@@ -552,7 +556,7 @@ class MorningsController extends Controller
         header("Expires: 0");
         echo $txtDown;
     }
-
+/**
     public function delMfile(Mfile $mfile)
     {
         $report_id = $mfile->report_id;
@@ -573,4 +577,5 @@ class MorningsController extends Controller
         ];
         return redirect()->route('mornings.editReport',$data);
     }
+ **/
 }

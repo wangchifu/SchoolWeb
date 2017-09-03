@@ -19,7 +19,7 @@ class ReportPolicy
      */
     public function view(User $user, Report $report)
     {
-        //
+        return $user->group_id > "0";
     }
 
     /**
@@ -30,7 +30,7 @@ class ReportPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->group_id == "1";
     }
 
     /**
@@ -40,9 +40,9 @@ class ReportPolicy
      * @param  \App\Report  $report
      * @return mixed
      */
-    public function update(User $user, Report $report)
+    public function update(User $user,Report $report)
     {
-        //
+        return $user->user_id === $report->user_id;
     }
 
     /**
@@ -54,6 +54,6 @@ class ReportPolicy
      */
     public function delete(User $user, Report $report)
     {
-        //
+        return $user->user_id === $report->user_id;
     }
 }
