@@ -24,9 +24,6 @@
                             <a href="{{ route('openfiles.downloadfile',$upload->name) }}"><span class="glyphicon glyphicon-file"></span> {{ $filename[1] }}</a>
                         @endif
                         </td>
-                        <td>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small>by {{ $upload->who_do }}</small>
-                        </td>
                     </tr>
                 @endforeach
                 </table>

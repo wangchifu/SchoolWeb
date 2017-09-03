@@ -31,7 +31,7 @@ class ReportsController extends Controller
      */
     public function create(Morning $morning)
     {
-        $this->authorize('create', $morning);
+        //$this->authorize('create', $morning);
         //如果已經發表過報告的，應該是變成再修改已經發表過的
         $report = Report::where('user_id',auth()->user()->id)->where('morning_id',$morning->id)->first();
 
