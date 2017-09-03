@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddGroupIdInUsersTable extends Migration
+class AddGroupIdInUsersTableAgain extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddGroupIdInUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedInteger('order_by')->nullable()->after('password');
+            $table->unsignedInteger('group_id')->nullable()->after('password');
         });
     }
 
