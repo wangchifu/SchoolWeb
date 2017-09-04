@@ -34,7 +34,8 @@ class PostRequest extends FormRequest
     {
         return [
             'title' => '標題',
-            'content' => '內容'
+            'content' => '內容',
+            'category_id' => '分類'
         ];
     }
 
@@ -43,6 +44,7 @@ class PostRequest extends FormRequest
         return [
             'title.required' => ':attribute 不可空白',
             'content.required' => ':attribute 不可空白',
+            'category_id.required' => ':attribute 要選擇',
         ];
     }
 }
