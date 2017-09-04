@@ -1,7 +1,7 @@
 <div class="form-group">
     <label for="category_id">分類*：</label>
     <?php
-        $c = substr(auth()->user()->group_id,1,1);
+        $c = substr(auth()->user()->order_by,1,1);
     ?>
     {{ Form::select('category_id', $categories, $c, ['id' => 'category_id', 'class' => 'form-control', 'placeholder' => '請選擇分類']) }}
 </div>

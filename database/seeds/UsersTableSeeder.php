@@ -20,7 +20,8 @@ class UsersTableSeeder extends Seeder
             'username' => 'hd96',
             'password' => bcrypt('demo1234'),
             'job_title' => '資訊組長',
-            'group_id' => '323',
+            'group_id' =>'1',
+            'order_by' => '323',
             'admin' => 1,
         ]);
     }
