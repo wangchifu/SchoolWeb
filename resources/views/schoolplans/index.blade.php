@@ -13,12 +13,12 @@
             {!! $folder_path !!}
             </div>
             <div class="panel-body forum-content">
-                <table>
+                <table class="table table-bordered">
                 @foreach($uploads as $upload)
                     <tr>
                         <td>
                         @if($upload->type==1)
-                        <a href="{{ route('schoolplans.show',$upload->id) }}"><span class="glyphicon glyphicon-folder-open"></span> {{ $upload->name }}</a>
+                        <a href="{{ route('schoolplans.show',$upload->id) }}" class='btn btn-warning btn-xs'><span class="glyphicon glyphicon-folder-open"></span> {{ $upload->name }}</a>
                         @else
                             <?php $filename = explode('&',$upload->name); ?>
                             <a href="{{ route('schoolplans.downloadfile',$upload->name) }}"><span class="glyphicon glyphicon-file"></span> {{ $filename[1] }}</a>

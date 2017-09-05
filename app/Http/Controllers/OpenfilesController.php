@@ -14,9 +14,9 @@ class OpenfilesController extends Controller
      */
     public function index()
     {
-        $folder_path = "<a href=\"".route('openfiles.index')."\"><span class=\"glyphicon glyphicon-folder-open\"></span> 根目錄</a> / ";
+        $folder_path = "<a href=\"".route('openfiles.index')."\" class='btn btn-warning btn-sm'><span class=\"glyphicon glyphicon-folder-open\"></span> 根目錄</a> / ";
         $folder_id = 0;
-        $uploads = Upload::where('folder_id',$folder_id)->where('fun',1)->orderBy('name')->get();
+        $uploads = Upload::where('folder_id',$folder_id)->where('fun',1)->orderBy('type')->orderBy('name')->get();
         if(auth()->check()) $who_do = auth()->user()->job_title;
 
         $data = compact("folder_id",'uploads','folder_path','who_do');
@@ -91,7 +91,7 @@ class OpenfilesController extends Controller
         $who_do = $open_folder->who_do;
 
         $folder_id = $id;
-        $uploads = Upload::where('folder_id',$folder_id)->where('fun',1)->orderBy('name')->get();
+        $uploads = Upload::where('folder_id',$folder_id)->where('fun',1)->orderBy('type')->orderBy('name')->get();
 
 
 
@@ -100,10 +100,10 @@ class OpenfilesController extends Controller
         $folder_path = "";
         while ($find_folder_id <> 0){
             $last_folder = Upload::where('id',$find_folder_id)->where('type',1)->first();
-            $folder_path = "<a href=\"{$find_folder_id}\"><span class=\"glyphicon glyphicon-folder-open\"></span> ".$last_folder->name . "</a> / " .$folder_path;
+            $folder_path = "<a href=\"{$find_folder_id}\" class='btn btn-warning btn-sm'><span class=\"glyphicon glyphicon-folder-open\"></span> ".$last_folder->name . "</a> / " .$folder_path;
             $find_folder_id = $last_folder->folder_id;
         }
-        $folder_path = "<a href=\"".route('openfiles.index')."\"><span class=\"glyphicon glyphicon-folder-open\"></span> 根目錄</a> / " . $folder_path;
+        $folder_path = "<a href=\"".route('openfiles.index')."\" class='btn btn-warning btn-sm'><span class=\"glyphicon glyphicon-folder-open\"></span> 根目錄</a> / " . $folder_path;
 
         $data = compact("folder_id",'uploads','folder_path','who_do');
         return view('openfiles.index',$data);
