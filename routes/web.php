@@ -106,12 +106,14 @@ Route::get('openfiles', 'OpenfilesController@index')->name('openfiles.index');
 Route::post('openfiles', 'OpenfilesController@store')->name('openfiles.store');
 Route::get('openfiles/{id}', 'OpenfilesController@show')->name('openfiles.show');
 Route::get('openfiles/{downloadfile}/downloadfile' , 'OpenfilesController@downloadfile')->name('openfiles.downloadfile');
+Route::get('openfiles/{upload}/destroy' , 'OpenfilesController@destroy')->name('openfiles.destroy');
 
 //校務計畫
 Route::get('schoolplans', 'SchoolplansController@index')->name('schoolplans.index');
 Route::post('schoolplans', 'SchoolplansController@store')->name('schoolplans.store');
 Route::get('schoolplans/{id}', 'SchoolplansController@show')->name('schoolplans.show');
 Route::get('schoolplans/{downloadfile}/downloadfile' , 'SchoolplansController@downloadfile')->name('schoolplans.downloadfile');
+Route::get('schoolplans/{upload}/destroy' , 'SchoolplansController@destroy')->name('schoolplans.destroy');
 
 //Auth::routes();
 

@@ -24,6 +24,13 @@
                                 <a href="{{ route('schoolplans.downloadfile',$upload->name) }}"><span class="glyphicon glyphicon-download-alt"></span> {{ $filename[1] }}</a>
                         @endif
                         </td>
+                        @if(auth()->check())
+                            @if(auth()->user()->job_title == $upload->who_do)
+                                <td>
+                                    <a href="{{ route('schoolplans.destroy',$upload->id) }}" class="btn btn-danger btn-xs">刪除</a>
+                                </td>
+                            @endif
+                        @endif
                     </tr>
                 @endforeach
                 </table>

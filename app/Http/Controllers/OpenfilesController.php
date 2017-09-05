@@ -138,10 +138,26 @@ class OpenfilesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Upload $upload)
     {
-        //
+        $folder_id = $upload->folder_id;
+        if (auth()->user()->job_title == $upload->who_do) {
+            if ($upload->type == 2) {
+                $filename = str_replace("&", "/", $upload->name);
+                $realFile = "../storage/app/public/openfiles/" . $filename;
+                unlink($realFile);
+            }else{
+                $something = Upload::where('folder_id',$upload->id)->first();
+                if($something != null){
+                    return redirect()->route('openfiles.show',$folder_id);
+                }
+            }
+
+            $upload->delete();
+        }
+        return redirect()->route('openfiles.show',$folder_id);
     }
+
     public function downloadfile($downloadfile)
     {
         if ($downloadfile) {

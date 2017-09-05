@@ -13,8 +13,16 @@
             <ul class="nav navbar-nav">
                 <li><a href="{{ route('posts.index') }}">公告系統</a></li>
                 <li><a href="{{ route('openfiles.index') }}">公開文件</a></li>
-                <li><a href="{{ route('mornings.index') }}">會議文稿</a></li>
-                <li><a href="{{ route('schoolplans.index') }}">校務計畫</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">校內行政
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ route('mornings.index') }}">會議文稿</a></li>
+                        <li><a href="{{ route('schoolplans.index') }}">校務計畫</a></li>
+                        <li><a href="#">問卷系統(x)</a></li>
+                        <li><a href="#">午餐系統(x)</a></li>
+                    </ul>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 @if (auth()->check())
