@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Upload;
 use Illuminate\Http\Request;
 
-class OpenfilesController extends Controller
+class SchoolplansController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,13 +18,13 @@ class OpenfilesController extends Controller
      */
     public function index()
     {
-        $folder_path = "<a href=\"".route('openfiles.index')."\"><span class=\"glyphicon glyphicon-folder-open\"></span> 根目錄</a> / ";
+        $folder_path = "<a href=\"".route('schoolplans.index')."\"><span class=\"glyphicon glyphicon-folder-open\"></span> 根目錄</a> / ";
         $folder_id = 0;
-        $uploads = Upload::where('folder_id',$folder_id)->where('fun',1)->orderBy('name')->get();
+        $uploads = Upload::where('folder_id',$folder_id)->where('fun',2)->orderBy('name')->get();
         if(auth()->check()) $who_do = auth()->user()->job_title;
 
         $data = compact("folder_id",'uploads','folder_path','who_do');
-        return view('openfiles.index',$data);
+        return view('schoolplans.index',$data);
     }
 
     /**
@@ -42,7 +46,7 @@ class OpenfilesController extends Controller
     public function store(Request $request)
     {
         $att = $request->all();
-        $att['fun']=1;//1是公開文件的功能，2是不公開
+        $att['fun']=2;//1是公開文件的功能，2是不公開
         $att['who_do'] = auth()->user()->job_title;
 
         if($request->input('type')==1){
@@ -51,7 +55,7 @@ class OpenfilesController extends Controller
             //處理檔案上傳
             if ($request->hasFile('upload')) {
                 $files = $request->file('upload');
-                $folder = 'openfiles/'.date('Ymd');
+                $folder = 'schoolplans/'.date('Ymd');
                 foreach($files as $file){
                     $info = [
                         'mime-type' => $file->getMimeType(),
@@ -72,7 +76,7 @@ class OpenfilesController extends Controller
             }
         }
 
-        return redirect()->route('openfiles.show',$att['folder_id']);
+        return redirect()->route('schoolplans.show',$att['folder_id']);
     }
 
     /**
@@ -84,14 +88,14 @@ class OpenfilesController extends Controller
     public function show($id)
     {
         //遇到 $id =0 跳到 index
-        if($id==0) return redirect()->route('openfiles.index');
+        if($id==0) return redirect()->route('schoolplans.index');
 
         //開啟誰的folder
         $open_folder = Upload::where('id',$id)->first();
         $who_do = $open_folder->who_do;
 
         $folder_id = $id;
-        $uploads = Upload::where('folder_id',$folder_id)->orderBy('name')->get();
+        $uploads = Upload::where('folder_id',$folder_id)->where('fun',1)->orderBy('name')->get();
 
 
 
@@ -103,10 +107,10 @@ class OpenfilesController extends Controller
             $folder_path = "<a href=\"{$find_folder_id}\"><span class=\"glyphicon glyphicon-folder-open\"></span> ".$last_folder->name . "</a> / " .$folder_path;
             $find_folder_id = $last_folder->folder_id;
         }
-        $folder_path = "<a href=\"".route('openfiles.index')."\"><span class=\"glyphicon glyphicon-folder-open\"></span> 根目錄</a> / " . $folder_path;
+        $folder_path = "<a href=\"".route('schoolplans.index')."\"><span class=\"glyphicon glyphicon-folder-open\"></span> 根目錄</a> / " . $folder_path;
 
         $data = compact("folder_id",'uploads','folder_path','who_do');
-        return view('openfiles.index',$data);
+        return view('schoolplans.index',$data);
     }
 
     /**
@@ -147,7 +151,7 @@ class OpenfilesController extends Controller
         if ($downloadfile) {
             $downloadfile = str_replace("&","/",$downloadfile);
             $filename = explode('/',$downloadfile);
-            $realFile = "../storage/app/public/openfiles/".$downloadfile;
+            $realFile = "../storage/app/public/schoolplans/".$downloadfile;
             header("Content-type:application");
             header("Content-Length: " .(string)(filesize($realFile)));
             header("Content-Disposition: attachment; filename=".$filename[1]);

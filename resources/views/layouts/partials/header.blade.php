@@ -14,7 +14,7 @@
                 <li><a href="{{ route('posts.index') }}">公告系統</a></li>
                 <li><a href="{{ route('openfiles.index') }}">公開文件</a></li>
                 <li><a href="{{ route('mornings.index') }}">會議文稿</a></li>
-                <li><a href="">校務計畫(x)</a></li>
+                <li><a href="{{ route('schoolplans.index') }}">校務計畫</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 @if (auth()->check())

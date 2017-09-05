@@ -107,6 +107,11 @@ Route::post('openfiles', 'OpenfilesController@store')->name('openfiles.store');
 Route::get('openfiles/{id}', 'OpenfilesController@show')->name('openfiles.show');
 Route::get('openfiles/{downloadfile}/downloadfile' , 'OpenfilesController@downloadfile')->name('openfiles.downloadfile');
 
+//校務計畫
+Route::get('schoolplans', 'SchoolplansController@index')->name('schoolplans.index');
+Route::post('schoolplans', 'SchoolplansController@store')->name('schoolplans.store');
+Route::get('schoolplans/{id}', 'SchoolplansController@show')->name('schoolplans.show');
+Route::get('schoolplans/{downloadfile}/downloadfile' , 'SchoolplansController@downloadfile')->name('schoolplans.downloadfile');
 
 //Auth::routes();
 
