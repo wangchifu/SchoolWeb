@@ -17,7 +17,8 @@ class OpenfilesController extends Controller
         $folder_path = "<a href=\"".route('openfiles.index')."\"><span class=\"glyphicon glyphicon-folder-open\"></span> 根目錄</a> / ";
         $folder_id = 0;
         $uploads = Upload::where('folder_id',$folder_id)->orderBy('name')->get();
-        $who_do = auth()->user()->job_title;
+        if(auth()->check()) $who_do = auth()->user()->job_title;
+
         $data = compact("folder_id",'uploads','folder_path','who_do');
         return view('openfiles.index',$data);
     }
