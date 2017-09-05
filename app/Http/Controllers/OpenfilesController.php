@@ -83,6 +83,9 @@ class OpenfilesController extends Controller
      */
     public function show($id)
     {
+        //遇到 $id =0 跳到 index
+        if($id==0) return redirect()->route('openfiles.index');
+
         //開啟誰的folder
         $open_folder = Upload::where('id',$id)->first();
         $who_do = $open_folder->who_do;
