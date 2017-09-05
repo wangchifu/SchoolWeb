@@ -18,10 +18,10 @@
                     <tr>
                         <td>
                         @if($upload->type==1)
-                            <a href="{{ route('openfiles.show',$upload->id) }}" class='btn btn-warning btn-xs'><span class="glyphicon glyphicon-folder-open"></span> {{ $upload->name }}</a>
+                            <a href="{{ route('openfiles.show',$upload->id) }}"><span class="glyphicon glyphicon-folder-open"></span> {{ $upload->name }}</a>
                         @else
                             <?php $filename = explode('&',$upload->name); ?>
-                            <a href="{{ route('openfiles.downloadfile',$upload->name) }}"><span class="glyphicon glyphicon-file"></span> {{ $filename[1] }}</a>
+                            <a href="{{ route('openfiles.downloadfile',$upload->name) }}"><span class="glyphicon glyphicon-download-alt"></span> {{ $filename[1] }}</a>
                         @endif
                         </td>
                     </tr>
