@@ -63,7 +63,7 @@ class SchoolplansController extends Controller
                         'extension' => $file->getClientOriginalExtension(),
                         'size' => $file->getClientSize(),
                     ];
-                    if ($info['size'] > 5100000)
+                    if ($info['size'] > 10100000)
                     {
 
                     } else {
