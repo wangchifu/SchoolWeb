@@ -30,7 +30,7 @@ class OpenfilePolicy
      */
     public function create(User $user)
     {
-        return $user->group_id === "1";
+        return $user->group_id === 1;
     }
 
     /**

@@ -31,7 +31,7 @@ class MorningPolicy
      */
     public function create(User $user)
     {
-        return $user->group_id === "1";
+        return $user->group_id === 1;
     }
 
     /**
@@ -43,7 +43,7 @@ class MorningPolicy
      */
     public function update(User $user)
     {
-        return $user->admin === "1";
+        return $user->admin === 1;
     }
 
     /**
@@ -55,7 +55,7 @@ class MorningPolicy
      */
     public function delete(User $user)
     {
-        return $user->admin === "1";
+        return $user->admin === 1;
     }
 
 }

@@ -40,7 +40,7 @@ class ReportsController extends Controller
                 'report_id'=>$report->id,
                 'morning_id'=>$morning->id,
             ];
-            return redirect()->route('reports.create',$data);
+            return redirect()->route('reports.edit',$data);
         }
 
         $data = compact('morning');
