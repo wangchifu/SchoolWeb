@@ -29,6 +29,9 @@
                             <td>
                                 <a href="{{ route('openfiles.destroy',$upload->id) }}" class="btn btn-danger btn-xs">刪除</a>
                             </td>
+                            @else
+                            <td>
+                            </td>
                             @endif
                         @endif
                     </tr>
