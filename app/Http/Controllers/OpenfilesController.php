@@ -91,7 +91,7 @@ class OpenfilesController extends Controller
         $who_do = $open_folder->who_do;
 
         $folder_id = $id;
-        $uploads = Upload::where('folder_id',$folder_id)->orderBy('name')->get();
+        $uploads = Upload::where('folder_id',$folder_id)->where('fun',1)->orderBy('name')->get();
 
 
 

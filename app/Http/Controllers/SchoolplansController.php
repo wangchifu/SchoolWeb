@@ -95,7 +95,7 @@ class SchoolplansController extends Controller
         $who_do = $open_folder->who_do;
 
         $folder_id = $id;
-        $uploads = Upload::where('folder_id',$folder_id)->where('fun',1)->orderBy('name')->get();
+        $uploads = Upload::where('folder_id',$folder_id)->where('fun',2)->orderBy('name')->get();
 
 
 
