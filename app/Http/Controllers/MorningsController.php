@@ -158,8 +158,8 @@ class MorningsController extends Controller
         $order_reports = array();
 
         foreach ($morning->reports as $report) {
-            $content = str_replace('->', '<font color=red><strong>',$report->content);
-            $content = str_replace('<-','</strong></font>',$content);
+            $content = str_replace('-*', '<font color=red><strong>',$report->content);
+            $content = str_replace('*-','</strong></font>',$content);
             $order_reports[$report->order_by]['content'] = str_replace(chr(13) . chr(10), '<br>', $content);
 
             $order_reports[$report->order_by]['id'] = $report->id;

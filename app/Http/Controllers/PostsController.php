@@ -47,6 +47,12 @@ class PostsController extends Controller
         $attributes = $request->all();
         $attributes['user_id'] = auth()->user()->id;
         $attributes['who_do'] = auth()->user()->job_title;
+
+        //如果沒有填unpublished_at，一年後下架
+        if($attributes['unpublished_at']==null) {
+            $published = explode('-',$request->input('published_at'));
+            $attributes['unpublished_at'] = $published[0] + 1 . "-" . $published[1] . "-" . $published[2] . "-" . $published[3];
+        }
         $post = Post::create($attributes);
 
         //處理檔案上傳

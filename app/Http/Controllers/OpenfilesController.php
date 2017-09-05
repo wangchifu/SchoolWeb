@@ -17,7 +17,8 @@ class OpenfilesController extends Controller
         $folder_path = "<a href=\"".route('openfiles.index')."\"><span class=\"glyphicon glyphicon-folder-open\"></span> 根目錄</a> / ";
         $folder_id = 0;
         $uploads = Upload::where('folder_id',$folder_id)->orderBy('name')->get();
-        $data = compact("folder_id",'uploads','folder_path');
+        $who_do = auth()->user()->job_title;
+        $data = compact("folder_id",'uploads','folder_path','who_do');
         return view('openfiles.index',$data);
     }
 
@@ -81,8 +82,13 @@ class OpenfilesController extends Controller
      */
     public function show($id)
     {
+        //開啟誰的folder
+        $open_folder = Upload::where('id',$id)->first();
+        $who_do = $open_folder->who_do;
+
         $folder_id = $id;
         $uploads = Upload::where('folder_id',$folder_id)->orderBy('name')->get();
+
 
 
 
@@ -95,7 +101,7 @@ class OpenfilesController extends Controller
         }
         $folder_path = "<a href=\"".route('openfiles.index')."\"><span class=\"glyphicon glyphicon-folder-open\"></span> 根目錄</a> / " . $folder_path;
 
-        $data = compact("folder_id",'uploads','folder_path');
+        $data = compact("folder_id",'uploads','folder_path','who_do');
         return view('openfiles.index',$data);
     }
 

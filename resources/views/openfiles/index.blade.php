@@ -31,10 +31,11 @@
             <div class="panel-footer">
                 @if(auth()->check())
                     @if(auth()->user()->group_id == "1")
+                        @if($who_do==auth()->user()->job_title)
                 {{ Form::open(['route' => 'openfiles.store', 'method' => 'POST']) }}
                 <table>
                     <tr>
-                        <td>{{ Form::text('name', null, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '請入目錄名稱']) }}</td><td><button type="submit" class="btn btn-success">新增目錄</button></td>
+                        <td>{{ Form::text('name', null, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '請入目錄名稱','required'=>'required']) }}</td><td><button type="submit" class="btn btn-success">新增目錄</button></td>
                     </tr>
 
                 <input type="hidden" name="type" value="1">
@@ -43,12 +44,13 @@
                 {{ Form::open(['route' => 'openfiles.store', 'method' => 'POST','files'=>true]) }}
 
                     <tr>
-                        <td><input name="upload[]" type="file" multiple></td><td><button type="submit" class="btn btn-info">新增檔案</button></td>
+                        <td><input name="upload[]" type="file" required="required" multiple></td><td><button type="submit" class="btn btn-info">新增檔案</button></td>
                     </tr>
                 </table>
                 <input type="hidden" name="type" value="2">
                 <input type="hidden" name="folder_id" value="{{ $folder_id }}">
                 {{ Form::close() }}
+                        @endif
                     @endif
                 @endif
 

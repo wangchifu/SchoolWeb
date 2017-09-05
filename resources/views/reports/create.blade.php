@@ -54,13 +54,15 @@
         <div class="col-md-4">
             <div class="well">
                 <h4>編輯提示</h4>
-                <ul>
-                    <li>使用 ->想要提醒的字<- <br>
-                        會變成 <font color="red"><strong>想要提醒的字</strong></font></li>
-                    <li>
-                        會議報告於會議當日13時後，不得再增修。
-                    </li>
-                </ul>
+                <div>
+                    <ul>
+                        <li>使用 -*想要提醒的字*- <br>
+                            會變成 <font color="red"><strong>想要提醒的字</strong></font></li>
+                        <li>教師晨會當日中午後，將鎖定不得再更改。</li>
+                        <li>校務會議當日凌晨後，將鎖定不得再更改。</li>
+                        <li>附檔單個超過5MB將自動略過不上傳。</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
