@@ -30,13 +30,13 @@
                 <li><a href="{{ url('admin') }}">系統設定</a></li>
                     @endif
                 <li><a href="#" onclick="hi()">Hi, {{ auth()->user()->name }}</a></li>
-                <li><a href="{{ route('resetPassword') }}">變更密碼</a></li>
+                <li><a href="{{ route('perSetup.index') }}"><span class="glyphicon glyphicon-user"></span>個人設定</a></li>
                 <li>
 
                     <a href="{{ route('logout') }}"
                     onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">
-                        登出
+                        <span class="glyphicon glyphicon-log-out"></span>登出
                     </a>
 
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

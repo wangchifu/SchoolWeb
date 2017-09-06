@@ -97,9 +97,10 @@ Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
-//變更密碼
-Route::get('resetPassword', 'ResetPasswordController@index')->name('resetPassword');
-Route::post('updatePassword', 'ResetPasswordController@update')->name('updatePassword');
+//變更個人設定
+Route::get('perSetup', 'PerSetupController@index')->name('perSetup.index');
+Route::post('updatePassword', 'PerSetupController@updatePwd')->name('perSetup.updatePassword');
+Route::post('updateData/{user}', 'PerSetupController@updateData')->name('perSetup.updateData');
 
 //公開文件
 Route::get('openfiles', 'OpenfilesController@index')->name('openfiles.index');
