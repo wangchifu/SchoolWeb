@@ -23,7 +23,7 @@
         }
     }
     $ip = explode('.',$ipAddress);
-    if(($ip[0]=="192" and $ip[1]=="168") or ( $ipAddress < "163.23.93.126" and $ipAddress > "163.23.93.65")){
+    if($_SERVER['REMOTE_ADDR'] == "163.23.93.126"){
         $client_in = "1";
     }else{
         $client_in = "0";
