@@ -33,6 +33,14 @@
                         <a class="btn btn-success btn-xs" href="{{ route('posts.create') }}" role="button"><span class="glyphicon glyphicon-plus"></span>新增公告</a>
                     </div>
                 @endcan
+                <?php
+                if($_SERVER['REMOTE_ADDR'] == "163.23.93.126"){
+                    $client_in = "1";
+                }else{
+                    $client_in = "0";
+                }
+
+                ?>
                 <table class="table table-striped">
                     <thead>
                     <tr>
@@ -45,10 +53,24 @@
                     </thead>
                     <tbody>
                     @foreach($posts as $post)
-                        <?php $updated = substr($post->published_at,0,10); ?>
+                        <?php
+                        $updated = substr($post->published_at,0,10);
+                        if($post->insite){
+                            if($client_in=="1"){
+                                $title = "<a href=\"". route('posts.show', $post->id) ."\"><p class='btn btn-danger btn-xs'>校內文件</p> ". $post->title . "</a>";
+                            }else{
+                                $title = "<p class='btn btn-danger btn-xs'>校內文件</p>";
+                            }
+                        }else{
+                            $title = "<a href=\"". route('posts.show', $post->id) ."\">". $post->title . "</a>";
+                        };
+
+
+
+                        ?>
                     <tr>
                         <th scope="row">{{ $updated }}</th>
-                        <td><a href="{{ route('posts.show', $post->id) }}">{{ $post->title }}</a></td>
+                        <td>{!! $title !!}</td>
                         <td><a href="{{ route('posts.index',['who_do'=>$post->who_do]) }}">{{ $post->who_do }}</a></td>
                         <td><a href="{{ route('posts.index',['category_id'=>$post->category_id]) }}">{{ $post->category->name }}</a></td>
                         <td>{{ $post->page_view }}</td>
