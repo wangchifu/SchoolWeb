@@ -96,17 +96,6 @@ class PostsController extends Controller
 
     public function show(Post $post)
     {
-        $ipAddress = '';
-
-        // Check for X-Forwarded-For headers and use those if found
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && ('' !== trim($_SERVER['HTTP_X_FORWARDED_FOR']))) {
-            $ipAddress = trim($_SERVER['HTTP_X_FORWARDED_FOR']);
-        } else {
-            if (isset($_SERVER['REMOTE_ADDR']) && ('' !== trim($_SERVER['REMOTE_ADDR']))) {
-                $ipAddress = trim($_SERVER['REMOTE_ADDR']);
-            }
-        }
-        $ip = explode('.',$ipAddress);
         if($_SERVER['REMOTE_ADDR'] == "163.23.93.126"){
             $client_in = "1";
         }else{
