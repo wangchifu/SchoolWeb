@@ -20,6 +20,13 @@
         </div>
 
         <div class="col-md-8">
+            <?php
+            if($post->insite==1){
+                $checked = "checked=checked";
+            }else{
+                $checked="";
+            }
+            ?>
 
             @include('layouts.partials.alert')
 
