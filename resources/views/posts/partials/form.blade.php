@@ -1,4 +1,10 @@
 <div class="form-group">
+    <label for="insite">校內文件請打勾：</label>
+    <div>
+    <input name="insite" type="checkbox" value="1" style="zoom:200%">
+    </div>
+</div>
+<div class="form-group">
     <label for="category_id">分類*：</label>
     <?php
         $c = substr(auth()->user()->order_by,1,1);

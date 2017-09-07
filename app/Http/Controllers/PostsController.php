@@ -96,6 +96,28 @@ class PostsController extends Controller
 
     public function show(Post $post)
     {
+        $ipAddress = '';
+
+        // Check for X-Forwarded-For headers and use those if found
+        if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && ('' !== trim($_SERVER['HTTP_X_FORWARDED_FOR']))) {
+            $ipAddress = trim($_SERVER['HTTP_X_FORWARDED_FOR']);
+        } else {
+            if (isset($_SERVER['REMOTE_ADDR']) && ('' !== trim($_SERVER['REMOTE_ADDR']))) {
+                $ipAddress = trim($_SERVER['REMOTE_ADDR']);
+            }
+        }
+        $ip = explode('.',$ipAddress);
+        if($ip[0]=="192" and $ip[1]=="168"){
+            $client_in = "1";
+        }else{
+            $client_in = "0";
+        }
+        //校內文件不許校外看
+        if($client_in=="0" and $post->insite==1){
+            return redirect()->route('posts.index');
+        }
+
+
         $s_key = "pv".$post->id;
         if(!session($s_key)){
             $att['page_view'] = $post->page_view+1;

@@ -19,6 +19,7 @@ class Post extends Model
         'unpublished_at',
         'category_id',
         'user_id',
+        'insite',
     ];
 
     public function category()
