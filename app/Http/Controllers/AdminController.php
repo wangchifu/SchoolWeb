@@ -49,7 +49,6 @@ class AdminController extends Controller
     public function resetUser(User $user)
     {
         $attributes['password'] = bcrypt(env('DEFAULT_USER_PWD'));
-        dd(env('DEFAULT_USER_PWD'));
         $user->update($attributes);
 
         return redirect()->route('admin.index');
