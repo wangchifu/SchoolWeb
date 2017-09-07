@@ -54,7 +54,7 @@ class OpenfilesController extends Controller
                 $folder = 'openfiles/'.date('Ymd');
                 foreach($files as $file){
                     $info = [
-                        'mime-type' => $file->getMimeType(),
+                        //'mime-type' => $file->getMimeType(),
                         'original_filename' => $file->getClientOriginalName(),
                         'extension' => $file->getClientOriginalExtension(),
                         'size' => $file->getClientSize(),
