@@ -40,7 +40,7 @@
                 <tr>
                     <td>
                         <div class="form-group">
-                            {{ Form::text('username', 'hd', ['id' => 'username', 'class' => 'form-control']) }}
+                            {{ Form::text('username', env('DEFAULT_USER_ACC'), ['id' => 'username', 'class' => 'form-control']) }}
                         </div>
                     </td>
                     <td>

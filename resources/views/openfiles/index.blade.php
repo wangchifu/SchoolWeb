@@ -15,10 +15,13 @@
             <div class="panel-body forum-content">
                 <table class="table table-bordered">
                 @foreach($uploads as $upload)
+                    <?php
+                        $n = \App\Upload::where('folder_id',$upload->id)->count();
+                    ?>
                     <tr>
                         <td>
                         @if($upload->type==1)
-                            <a href="{{ route('openfiles.show',$upload->id) }}"><span class="glyphicon glyphicon-folder-open"></span> {{ $upload->name }}</a>
+                            <a href="{{ route('openfiles.show',$upload->id) }}"><span class="glyphicon glyphicon-folder-open"></span> {{ $upload->name }} ({{ $n }})</a>
                         @else
                             <?php $filename = explode('&',$upload->name); ?>
                             <a href="{{ route('openfiles.downloadfile',$upload->name) }}"><span class="glyphicon glyphicon-download-alt"></span> {{ $filename[1] }}</a>
