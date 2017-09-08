@@ -21,7 +21,7 @@
         </div>
         <div class="col-md-8">
             <?php $img = "/img/banner". rand(1,10) .".png" ?>
-            <img class="img-responsive img-rounded" src="{{ asset($img) }}">
+            <img class="img-responsive img-rounded" src="{{ asset($img) }}" alt="學校照片">
             <div class="page-header">
                 <h1><a href="http://163.23.93.73/xoops2" target="_blank" class="btn btn-success btn-lg">->舊站入口<-</a></h1>
             </div>
