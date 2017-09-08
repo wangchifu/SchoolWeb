@@ -18,18 +18,22 @@
                     <tr>
                         <th>職稱</th>
                         <th>姓名</th>
-                        <th>連結</th>
+                        <th>郵件</th>
                     </tr>
                     </thead>
                     <tbody>
                 @foreach($users as $user)
                     <tr>
                         <td>{{ $user->job_title }}</td>
-                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->name }}
                         @if($user->website)
-                        <td><a href="{{ $user->website }}" target="_blank"><span class="glyphicon glyphicon-globe"></span></a></td>
+                             <a href="{{ $user->website }}" target="_blank"><span class="glyphicon glyphicon-globe"></span></a>
+                        @endif
+                        </td>
+                        @if($user->email)
+                            <td>{{ $user->email }}</td>
                         @else
-                        <td></td>
+                            <td></td>
                         @endif
                     </tr>
                 @endforeach
