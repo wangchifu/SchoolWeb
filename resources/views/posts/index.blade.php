@@ -34,7 +34,7 @@
             <?php
             $updated = substr($post->published_at,0,10);
             if($post->insite){
-                if($client_in=="1"){
+                if($client_in=="1" or auth()->check()){
                     $title = "<a href=\"". route('posts.show', $post->id) ."\"><p class='btn btn-danger btn-xs'>校內文件</p> ". $post->title . "</a>";
                 }else{
                     $title = "<p class='btn btn-danger btn-xs'>校內文件</p>";

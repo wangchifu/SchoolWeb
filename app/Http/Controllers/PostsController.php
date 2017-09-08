@@ -102,7 +102,7 @@ class PostsController extends Controller
             $client_in = "0";
         }
         //校內文件不許校外看
-        if($client_in=="0" and $post->insite==1){
+        if($client_in=="0" and $post->insite==1 and !auth()->check()){
             return redirect()->route('posts.index');
         }
 
@@ -147,7 +147,7 @@ class PostsController extends Controller
             foreach($files as $file)
             {
                 $info = [
-                    'mime-type' => $file->getMimeType(),
+                    //'mime-type' => $file->getMimeType(),
                     'original_filename' => $file->getClientOriginalName(),
                     'extension' => $file->getClientOriginalExtension(),
                     'size' => $file->getClientSize(),
