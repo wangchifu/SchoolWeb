@@ -62,7 +62,7 @@
                     {{ Form::text('website', auth()->user()->website, ['id' => 'website', 'class' => 'form-control']) }}
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" onclick="if(confirm('您確定送出嗎?')) return true;else return false">
                         更改個人資料
                     </button>
                 </div>

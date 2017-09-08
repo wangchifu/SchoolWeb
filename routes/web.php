@@ -91,6 +91,9 @@ Route::group(['middleware' => 'admin'],function(){
 });
 //內容顯示
 Route::get('contents/{content}' , 'ContentController@show')->name('content.show');
+//教職員工
+Route::get('allusers' , 'AllUsersController@index')->name('allusers');
+
 
 # 登入/登出
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
