@@ -21,7 +21,7 @@
                     <tr>
                         <td>
                         @if($upload->type==1)
-                        <a href="{{ route('schoolplans.show',$upload->id) }}"><span class="glyphicon glyphicon-folder-open"></span> {{ $upload->name }} ({{ $n }}</a>
+                        <a href="{{ route('schoolplans.show',$upload->id) }}"><span class="glyphicon glyphicon-folder-open"></span> {{ $upload->name }} ({{ $n }})</a>
                         @else
                             <?php $filename = explode('&',$upload->name); ?>
                                 <a href="{{ route('schoolplans.downloadfile',$upload->name) }}"><span class="glyphicon glyphicon-download-alt"></span> {{ $filename[1] }}</a>
