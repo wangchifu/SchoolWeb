@@ -1,6 +1,5 @@
 <div class="form-group">
     <label for="insite">校內文件請打勾：</label>
-    <?php $checked=($post->insite==1)?"checked=checked":""; ?>
     <div>
     <input name="insite" type="checkbox" value="1" style="zoom:200%" {{ $checked }}>
     </div>
