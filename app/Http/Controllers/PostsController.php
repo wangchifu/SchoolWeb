@@ -18,15 +18,14 @@ class PostsController extends Controller
 
     public function index()
     {
-
         $category_id = Input::get('category_id');
         $who_do = Input::get('who_do');
         if($category_id){
-            $posts = Post::orderBy('created_at', 'DESC')->where('category_id',$category_id)->paginate(20);
+            $posts = Post::orderBy('published_at', 'DESC')->orderBy('created_at', 'DESC')->where('category_id',$category_id)->paginate(20);
         }elseif($who_do){
-            $posts = Post::orderBy('created_at', 'DESC')->where('who_do',$who_do)->paginate(20);
+            $posts = Post::orderBy('published_at', 'DESC')->orderBy('created_at', 'DESC')->where('who_do',$who_do)->paginate(20);
         }else {
-            $posts = Post::orderBy('created_at', 'DESC')->paginate(20);
+            $posts = Post::orderBy('published_at', 'DESC')->orderBy('created_at', 'DESC')->paginate(20);
         }
         $data = compact('posts');
 
@@ -35,6 +34,28 @@ class PostsController extends Controller
 
     public function create()
     {
+        //順便刪掉過期一年的公告
+        $this_year = date('Y');
+        $last_year = $this_year-1;
+        $this_mdate = date('m-d H:i:s');
+        $last_date = $last_year."-".$this_mdate;
+
+        $posts = Post::where('created_at','<',$last_date)->get();
+        foreach($posts as $post){
+            foreach($post->pfiles as $pfile){
+                $filename = str_replace("&","/",$pfile->name);
+
+                $realFile = "../storage/app/public/posts/".$filename;
+
+                unlink($realFile);
+
+                $pfile->delete();
+            }
+
+            $post->delete();
+        }
+
+
         $categories = Category::all()->pluck('name', 'id')->toArray();
 
         $data = compact('categories');
@@ -105,7 +126,18 @@ class PostsController extends Controller
         if($client_in=="0" and $post->insite==1 and !auth()->check()){
             return redirect()->route('posts.index');
         }
-
+        //未來公告非公告者，不給看
+        $this_date = date("Y-m-d");
+        $updated = substr($post->published_at,0,10);
+        if($updated > $this_date) {
+            if (auth()->check()) {
+                if($post->who_do != auth()->user()->job_title) {
+                    return redirect()->route('posts.index');
+                }
+            }else{
+                return redirect()->route('posts.index');
+            }
+        }
 
         $s_key = "pv".$post->id;
         if(!session($s_key)){
@@ -171,6 +203,17 @@ class PostsController extends Controller
     public function destroy(Post $post)
     {
         $this->authorize('delete', $post);
+
+        //刪掉附檔
+        foreach($post->pfiles as $pfile){
+            $filename = str_replace("&","/",$pfile->name);
+
+            $realFile = "../storage/app/public/posts/".$filename;
+
+            unlink($realFile);
+
+            $pfile->delete();
+        }
 
         $post->delete();
 

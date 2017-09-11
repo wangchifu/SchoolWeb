@@ -12,9 +12,9 @@ class HomeController extends Controller
     {
         $category_id = Input::get('category_id');
         if($category_id){
-            $posts = Post::orderBy('created_at', 'DESC')->where('category_id',$category_id)->paginate(10);
+            $posts = Post::orderBy('published_at', 'DESC')->orderBy('created_at', 'DESC')->where('category_id',$category_id)->paginate(10);
         }else {
-            $posts = Post::orderBy('created_at', 'DESC')->paginate(10);
+            $posts = Post::orderBy('published_at', 'DESC')->orderBy('created_at', 'DESC')->paginate(10);
         }
 
         //區塊
