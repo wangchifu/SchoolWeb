@@ -37,7 +37,7 @@
                         filebrowserImageUploadUrl: '/laravel-filemanager/upload?type=Images&_token=',
                         filebrowserBrowseUrl: '/laravel-filemanager?type=Files',
                         filebrowserUploadUrl: '/laravel-filemanager/upload?type=Files&_token=',
-                        allowedContent: true,
+                        allowedContent: true
                     };
                 </script>
                 <script>
