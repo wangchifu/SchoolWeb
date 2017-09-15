@@ -6,36 +6,47 @@
     <div class="page-header">
         <h1>個人設定</h1>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            修改密碼
-        </div>
-        <div class="panel-body forum-content">
-            <div class="col-md-3">
+    @if(env('DEFAULT_LOGIN_TYPE')=='eloquent')
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                修改密碼
             </div>
-            <div class="col-md-6">
-                 <form id="thForm"  class="form-horizontal" method="POST" action="{{ route('perSetup.updatePassword') }}">
-                    {{ csrf_field() }}
+            <div class="panel-body forum-content">
+                <div class="col-md-3">
+                </div>
+                <div class="col-md-6">
+                     <form id="thForm"  class="form-horizontal" method="POST" action="{{ route('perSetup.updatePassword') }}">
+                        {{ csrf_field() }}
 
-                    <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                        <label for="password">新密碼</label>
-                        <input id="password" name="password" type="password" class="form-control" name="password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password-confirm">再輸入一次密碼</label>
-                        <input id="password-confirm" name="password-confirm" type="password" class="form-control" name="password_confirmation"  required>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary" onclick="check();return false;">
-                            更改密碼
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-3">
+                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+                            <label for="password">新密碼</label>
+                            <input id="password" name="password" type="password" class="form-control" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password-confirm">再輸入一次密碼</label>
+                            <input id="password-confirm" name="password-confirm" type="password" class="form-control" name="password_confirmation"  required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary" onclick="check();return false;">
+                                更改密碼
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-3">
+                </div>
             </div>
         </div>
-    </div>
+    @elseif(env('DEFAULT_LOGIN_TYPE')=='adldap')
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                修改密碼
+            </div>
+            <div class="panel-body forum-content">
+                本系統已使用LDAP統一帳號密碼管理，請至<a href="http://{{ env('ADLDAP_CONTROLLERS') }}" target="_blank" class="btn btn-info btn-xs">LDAP 伺服器更改密碼</a>
+            </div>
+        </div>
+    @endif
     <div class="panel panel-default">
         <div class="panel-heading">
             個人資料
