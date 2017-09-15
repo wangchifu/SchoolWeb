@@ -66,7 +66,9 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
+            //'driver' => 'eloquent',  //使用本機資料庫登入
+            //'driver' => 'adldap',  //使用ldap登入，目前為openldap,更改設在在同層目錄的adldap.php及adldap_auth.php
+            'driver' => env('DEFAULT_LOGIN_TYPE','eloquent'),
             'model' => App\User::class,
         ],
 

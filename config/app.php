@@ -165,6 +165,8 @@ return [
         Unisharp\Ckeditor\ServiceProvider::class,
         Unisharp\Laravelfilemanager\LaravelFilemanagerServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        Adldap\Laravel\AdldapAuthServiceProvider::class,
+        Adldap\Laravel\AdldapServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -233,6 +235,7 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'Image' => Intervention\Image\Facades\Image::class,
+        'Adldap' => Adldap\Laravel\Facades\Adldap::class,
 
     ],
 
