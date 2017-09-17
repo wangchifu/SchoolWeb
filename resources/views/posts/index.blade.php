@@ -12,7 +12,7 @@
     </div>
     @endcan
     <?php
-     if($_SERVER['REMOTE_ADDR'] == "163.23.93.126"){
+     if($_SERVER['REMOTE_ADDR'] == env('SCHOOL_IP')){
         $client_in = "1";
     }else{
         $client_in = "0";
