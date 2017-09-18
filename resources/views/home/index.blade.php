@@ -57,6 +57,7 @@
                         <?php
                         $updated = substr($post->published_at,0,10);
                         $this_date = date("Y-m-d");
+                        $this_title = mb_substr($post->title,0,30,"UTF-8")."...";
                         ?>
                         @if($updated <= $this_date)
                         <?php
@@ -68,7 +69,7 @@
                                 $title = "<p class='btn btn-danger btn-xs'>校內文件</p>";
                             }
                         }else{
-                            $title = "<a href=\"". route('posts.show', $post->id) ."\">". $post->title . "</a>";
+                            $title = "<a href=\"". route('posts.show', $post->id) ."\">". $this_title . "</a>";
                         };
 
 
