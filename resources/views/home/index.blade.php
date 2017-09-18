@@ -11,7 +11,11 @@
                     <div class="panel-body">
                         <ul>
                             @foreach($blockL->links as $link)
-                                <li><a href="{{ $link->link }}" target="_blank">{{ $link->title }}</a></li>
+                                @if($link->$link!="")
+                                    <li><a href="{{ $link->link }}" target="_blank">{{ $link->title }}</a></li>
+                                @else
+                                    <li>{{ $link->title }}</li>
+                                @endif
                             @endforeach
                         </ul>
                     </div>
@@ -94,7 +98,11 @@
                     <div class="panel-body">
                         <ul>
                         @foreach($blockR->links as $link)
-                                <li><a href="{{ $link->link }}" target="_blank">{{ $link->title }}</a></li>
+                                @if($link->$link!="")
+                                    <li><a href="{{ $link->link }}" target="_blank">{{ $link->title }}</a></li>
+                                @else
+                                    <li>{{ $link->title }}</li>
+                                @endif
                         @endforeach
                         </ul>
                     </div>

@@ -20,6 +20,9 @@
                         <li><a href="{{ route('mornings.index') }}">會議文稿</a></li>
                         <li><a href="{{ route('schoolplans.index') }}">校務計畫</a></li>
                         <li><a href="#">問卷系統(x)</a></li>
+                        <li><a href="#">報修系統(x)</a></li>
+                        <li><a href="#">教室預約(x)</a></li>
+                        <li><a href="#">運動會報名(x)</a></li>
                         <li><a href="#">午餐系統(x)</a></li>
                     </ul>
                 </li>
