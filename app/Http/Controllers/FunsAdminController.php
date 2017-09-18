@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Block;
-use App\Http\Requests\LinkRequest;
-use App\Link;
+use App\Fun;
 use Illuminate\Http\Request;
 
-class LinksController extends Controller
+class FunsAdminController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,19 +14,10 @@ class LinksController extends Controller
      */
     public function index()
     {
-        $blocks = Block::orderBy('id', 'ASC')->get();
-        //為了做select menu
-        $blocks2 = $blocks->pluck('name', 'id')->toArray();
+        $funs = Fun::orderBy('id')->get();
 
-        $links = Link::orderBy('id', 'ASC')->get();
+        return view('admin.funAdmin',compact('funs',$funs));
 
-        $data = [
-            'blocks'=>$blocks,
-            'blocks2'=>$blocks2,
-            'links'=>$links,
-        ];
-
-        return view('admin.linkAdmin',$data);
     }
 
     /**
@@ -47,11 +36,11 @@ class LinksController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(LinkRequest $request)
+    public function store(Request $request)
     {
-        Link::create($request->all());
+        Fun::create($request->all());
+        return view('admin.funAdmin');
 
-        return redirect()->route('admin.linkAdmin');
     }
 
     /**
@@ -83,10 +72,9 @@ class LinksController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Link $link)
+    public function update(Request $request, $id)
     {
-        $link->update($request->all());
-        return redirect()->route('admin.linkAdmin');
+        //
     }
 
     /**
@@ -95,10 +83,8 @@ class LinksController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Link $link)
+    public function destroy($id)
     {
-        $link->delete();
-        return redirect()->route('admin.linkAdmin');
+        //
     }
-
 }

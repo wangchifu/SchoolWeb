@@ -58,6 +58,10 @@ Route::group(['middleware' => 'admin'],function(){
     Route::patch('admin/{user}/updateUser' , 'AdminController@updateUser')->name('admin.updateUser');
     Route::get('admin/{user}/activeUser', 'AdminController@activeUser')->name('admin.activeUser');
 
+//指定管理
+    Route::get('admin/funAdmin','FunsAdminController@index')->name('admin.funAdmin');
+    Route::post('admin/storeFun', 'FunsAdminController@store')->name('admin.storeFun');
+
 //公告管理
     Route::get('admin/postAdmin','AdminController@postAdmin')->name('admin.postAdmin');
     Route::get('admin/{post}/post','AdminController@postDel')->name('admin.postDel');

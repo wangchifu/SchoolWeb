@@ -8,6 +8,7 @@
     </div>
     <ul class="nav nav-tabs">
         <li class="active"><a href="{{ url('admin') }}">使用者管理</a></li>
+        <li><a href="{{ url('admin/funAdmin') }}">指定管理</a></li>
         <li><a href="{{ url('admin/postAdmin') }}">公告管理</a></li>
         <li><a href="{{ url('admin/reportAdmin') }}">報告管理</a></li>
         <li><a href="{{ url('admin/linkAdmin') }}">連結管理</a></li>
