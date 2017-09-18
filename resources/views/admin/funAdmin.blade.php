@@ -26,12 +26,25 @@
                     <?php
                         $select = ["1"=>"報修系統","2"=>"運動會報名"];
                     ?>
-                    {{ Form::open(['route' => 'admin.storeFun', 'method' => 'POST']) }}
-                    {{ Form::select('type', $select, null, ['id' => 'type', 'class' => 'form-control', 'placeholder' => '請選擇功能']) }}
-                    {{ Form::text('name', null, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '名稱']) }}
-                    {{ Form::text('username', null, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '使用者帳號']) }}
-                    <button class="btn btn-success">新增</button>
-                    {{ Form::close() }}
+                        {{ Form::open(['route' => 'admin.storeFun', 'method' => 'POST']) }}
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>功能模組</th>
+                            <th>名稱</th>
+                            <th>管理者</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{ Form::select('type', $select, null, ['id' => 'type', 'class' => 'form-control', 'placeholder' => '請選擇功能','required'=>'required']) }}</td>
+                            <td>{{ Form::text('name', null, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '名稱','required'=>'required']) }}</td>
+                            <td>{{ Form::text('username', null, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '使用者帳號','required'=>'required']) }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                        <button class="btn btn-success">新增</button>
+                        {{ Form::close() }}
 
 
                 </div>
@@ -55,11 +68,13 @@
                 <div class="panel-body forum-content">
                     <table class="table table-striped">
                         <thead>
-                            <tr><th>功能</th><th>名稱</th><th>管理者</th></tr>
+                            <tr><th>功能</th><th>名稱</th><th>管理者</th><th>動作</th></tr>
                         </thead>
                         <tbody>
                         @foreach($funs as $fun)
-                            <tr><td>{{ $fun->type }}</td><td>{{ $fun->name }}</td><td>{{ $fun->username }}</td></tr><br>
+                            {{ Form::open(['route' => ['admin.updateFun',$fun->id], 'method' => 'PATCH']) }}
+                            <tr><td><input name="type" value="{{ $fun->type }}"></td><td><input name="name" value="{{ $fun->name }}"></td><td><input name="username" value="{{ $fun->username }}"></td><td><button class="btn btn-info btn-xs" onclick="return confirm('是否確定修改？');">修</button> <a href="{{ route('admin.delFun',$fun->id) }}" class="btn btn-danger btn-xs" onclick="return confirm('是否確定刪除？');">刪</a></td></tr><br>
+                            {{ Form::close() }}
                         @endforeach
                         </tbody>
                     </table>

@@ -15,4 +15,8 @@ class Fun extends Model
     {
         return $this->belongsTo('App\Fun')->withDefault();
     }
+    public function fixes()
+    {
+        return $this->hasMany(Fix::class);
+    }
 }

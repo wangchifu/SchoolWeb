@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Fix;
 use App\Fun;
 use Illuminate\Http\Request;
 
-class FunsAdminController extends Controller
+class FixesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,10 +19,15 @@ class FunsAdminController extends Controller
      */
     public function index()
     {
-        $funs = Fun::orderBy('id')->get();
-
-        return view('admin.funAdmin',compact('funs'));
-
+        $funs = Fun::where('type','1')->get();
+        return view('fixes.index',compact('funs'));
+    }
+    public function select($id)
+    {
+        $fun = Fun::where('id',$id)->first();
+        $fixes = Fix::where('fun_id',$id)->orderBy('id','DESC')->paginate(10);
+        $data = compact('fun','fixes');
+        return view('fixes.select',$data);
     }
 
     /**
@@ -25,10 +35,11 @@ class FunsAdminController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Fun $fun)
     {
-        //
+        return view('fixes.create',compact('fun'));
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -38,9 +49,10 @@ class FunsAdminController extends Controller
      */
     public function store(Request $request)
     {
-        Fun::create($request->all());
-        return redirect()->route('admin.funAdmin');
-
+        $att = $request->all();
+        $att['user_id'] = auth()->user()->id;
+        Fix::create($att);
+        return redirect()->route('fixes.select',$request->input('fun_id'));
     }
 
     /**
@@ -72,10 +84,9 @@ class FunsAdminController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Fun $fun)
+    public function update(Request $request, $id)
     {
-        $fun->update($request->all());
-        return redirect()->route('admin.funAdmin');
+        //
     }
 
     /**
@@ -84,9 +95,8 @@ class FunsAdminController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Fun $fun)
+    public function destroy($id)
     {
-        $fun->delete();
-        return redirect()->route('admin.funAdmin');
+        //
     }
 }

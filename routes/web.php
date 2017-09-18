@@ -48,6 +48,13 @@ Route::delete('reports/{report}', 'ReportsController@destroy')->name('reports.de
 Route::post('reports/addFile' , 'ReportsController@addFile')->name('reports.addFile');
 Route::get('delMfile/{mfile}' , 'ReportsController@delMfile')->name('reports.delMfile');
 
+//報修系統
+Route::get('fixes/index','FixesController@index')->name('fixes.index');
+Route::get('fixes/{id}','FixesController@select')->name('fixes.select');
+Route::get('fixes/{fun}/create','FixesController@create')->name('fixes.create');
+Route::post('fixes/store','FixesController@store')->name('fixes.store');
+
+
 //管理介面
 Route::group(['middleware' => 'admin'],function(){
 //使用者管理
@@ -61,6 +68,8 @@ Route::group(['middleware' => 'admin'],function(){
 //指定管理
     Route::get('admin/funAdmin','FunsAdminController@index')->name('admin.funAdmin');
     Route::post('admin/storeFun', 'FunsAdminController@store')->name('admin.storeFun');
+    Route::get('admin/{fun}/funAdmin','FunsAdminController@destroy')->name('admin.delFun');
+    Route::patch('admin/{fun}/funAdmin' , 'FunsAdminController@update')->name('admin.updateFun');
 
 //公告管理
     Route::get('admin/postAdmin','AdminController@postAdmin')->name('admin.postAdmin');
