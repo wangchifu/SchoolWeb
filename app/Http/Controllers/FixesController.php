@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Fix;
 use App\Fun;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 
 class FixesController extends Controller
 {
@@ -25,7 +26,15 @@ class FixesController extends Controller
     public function select($id)
     {
         $fun = Fun::where('id',$id)->first();
-        $fixes = Fix::where('fun_id',$id)->orderBy('id','DESC')->paginate(10);
+
+        $undone = Input::get('undone');
+        if($undone){
+            $fixes = Fix::where('fun_id',$id)->where('done','=',null)->orderBy('id','DESC')->paginate(50);
+        }else{
+            $fixes = Fix::where('fun_id',$id)->orderBy('id','DESC')->paginate(10);
+        }
+
+
         $data = compact('fun','fixes');
         return view('fixes.select',$data);
     }
@@ -88,7 +97,7 @@ class FixesController extends Controller
     public function update(Request $request, Fix $fix)
     {
         $att= $request->all();
-        if($request->input('done')==null) $att['done']="0";
+        if($request->input('done')==null) $att['done']=null;
         $fix->update($att);
         return redirect()->route('fixes.select',$fix->fun->id);
     }

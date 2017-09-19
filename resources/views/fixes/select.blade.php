@@ -10,7 +10,9 @@
         <div class="panel-heading">
         <h3>{{ $fun->name }}</h3>
             <div>
-                <a href="{{ route('fixes.index') }}" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> 返回</a> <a class="btn btn-success" href="{{ route('fixes.create',$fun->id) }}" role="button"><span class="glyphicon glyphicon-plus"></span> 我要報修</a>
+                <a href="{{ route('fixes.index') }}" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> 返回</a>
+                <a class="btn btn-success" href="{{ route('fixes.create',$fun->id) }}" role="button"><span class="glyphicon glyphicon-plus"></span> 我要報修</a>
+                <a href="{{ route('fixes.select',['id'=>$fun->id,'undone'=>'1']) }}" class="btn btn-info"><span class="glyphicon glyphicon-th-list"></span> 列出未完成</a>
             </div>
         </div>
         <div class="panel-content">
@@ -20,11 +22,13 @@
                 $content = str_replace(chr(13) . chr(10), '<br>', $fix->content);
                 ?>
                 <div>
+                    <div>
                     @if($fix->done=="1")
-                        <h4><span class="glyphicon glyphicon-ok-sign"></span> [已修復] {{ $fix->title }}</h4>
+                            <h4><span class="label label-success"><span class="glyphicon glyphicon-ok-sign"></span> 已修復</span> {{ $fix->title }}</h4>
                     @else
-                        <h4><span class="glyphicon glyphicon-paperclip"></span> {{ $fix->title }}</h4>
+                            <h4><span class="label label-warning"><span class="glyphicon glyphicon-paperclip"></span> 待修中</span> {{ $fix->title }}</h4>
                     @endif
+                    </div>
 
                     <hr>
                     {!! $content !!}<br>
