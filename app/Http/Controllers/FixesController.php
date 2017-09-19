@@ -52,6 +52,7 @@ class FixesController extends Controller
         $att = $request->all();
         $att['user_id'] = auth()->user()->id;
         Fix::create($att);
+
         return redirect()->route('fixes.select',$request->input('fun_id'));
     }
 
@@ -84,9 +85,12 @@ class FixesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Fix $fix)
     {
-        //
+        $att= $request->all();
+        if($request->input('done')==null) $att['done']="0";
+        $fix->update($att);
+        return redirect()->route('fixes.select',$fix->fun->id);
     }
 
     /**
