@@ -61,7 +61,7 @@
                                         <input name="reply" type="test" value="{{ $fix->reply }}">
                                     </td>
                                     <td>
-                                        <button class="btn btn-info btn-xs">送出</button>
+                                        <button class="btn btn-info btn-xs">送出</button> <a href="{{ route('fixes.destroy',$fix->id) }}" class="btn btn-danger btn-xs" onclick="return confirm('是否確定刪除這則報修？');">刪</a>
                                     </td>
                                 </tr>
                             </table>

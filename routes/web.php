@@ -54,6 +54,7 @@ Route::get('fixes/{id}','FixesController@select')->name('fixes.select');
 Route::get('fixes/{fun}/create','FixesController@create')->name('fixes.create');
 Route::post('fixes/store','FixesController@store')->name('fixes.store');
 Route::patch('fixes/{fix}/storeReply','FixesController@update')->name('fixes.update');
+Route::get('fixes/{fix}/destroy','FixesController@destroy')->name('fixes.destroy');
 
 
 //管理介面

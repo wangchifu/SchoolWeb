@@ -108,8 +108,12 @@ class FixesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Fix $fix)
     {
-        //
+        //無權限不得刪
+        if($fix->fun->username == auth()->user()->username){
+            $fix->delete();
+        }
+        return redirect()->route('fixes.select',$fix->fun->id);
     }
 }
