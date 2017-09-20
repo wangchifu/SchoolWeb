@@ -147,5 +147,8 @@ Route::get('schoolplans/{id}', 'SchoolplansController@show')->name('schoolplans.
 Route::get('schoolplans/{downloadfile}/downloadfile' , 'SchoolplansController@downloadfile')->name('schoolplans.downloadfile');
 Route::get('schoolplans/{upload}/destroy' , 'SchoolplansController@destroy')->name('schoolplans.destroy');
 
+
+Route::get('generate-docx', 'HomeController@generateDocx');
+
 //Auth::routes();
 

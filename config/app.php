@@ -167,6 +167,7 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Adldap\Laravel\AdldapAuthServiceProvider::class,
         Adldap\Laravel\AdldapServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -236,6 +237,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Adldap' => Adldap\Laravel\Facades\Adldap::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
 
