@@ -2,15 +2,16 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\OpenfilesController;
 use App\Models\Post;
 use App\Morning;
 use App\Policies\MorningPolicy;
+use App\Policies\OpenfilePolicy;
 use App\Policies\ReportPolicy;
 use App\Policies\PostPolicy;
+use App\Policies\TestPolicy;
 use App\Report;
+use App\Test;
 use App\Upload;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -24,7 +25,8 @@ class AuthServiceProvider extends ServiceProvider
         Post::class => PostPolicy::class,
         Morning::class => MorningPolicy::class,
         Report::class => ReportPolicy::class,
-        Upload::class => OpenfilesController::class,
+        Upload::class => OpenfilePolicy::class,
+        Test::class => TestPolicy::class,
     ];
 
     /**

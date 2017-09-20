@@ -30,7 +30,7 @@ class PostPolicy
      */
     public function create(User $user)
     {
-        return $user->group_id >= "1" & $user->group_id < "400";
+        return $user->group_id === 1 or $user->group_id2 === 1;
     }
 
     /**

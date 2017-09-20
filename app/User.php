@@ -26,6 +26,7 @@ class User extends Authenticatable
         'password',
         'job_title',
         'group_id',
+        'group_id2',
         'order_by',
         'admin',
     ];
@@ -54,5 +55,13 @@ class User extends Authenticatable
     public function fixs()
     {
         return $this->hasMany(Fix::class);
+    }
+    public function tests()
+    {
+        return $this->hasMany(Test::class);
+    }
+    public function answers()
+    {
+        return $this->hasMany(Answer::class);
     }
 }

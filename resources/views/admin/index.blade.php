@@ -29,10 +29,10 @@
                 <tr>
                     <th>帳號</th>
                     <th>姓名</th>
-                    <th>Email</th>
                     <th>職稱</th>
                     <th>排序</th>
-                    <th>群組</th>
+                    <th>群組1</th>
+                    <th>群組2</th>
                     <th>管理權</th>
                     <th>動作</th>
                 </tr>
@@ -46,12 +46,7 @@
                     </td>
                     <td>
                         <div class="form-group">
-                            {{ Form::text('name', null, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '姓名']) }}
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            {{ Form::text('email', null, ['id' => 'email', 'class' => 'form-control', 'placeholder' => 'Email']) }}
+                            {{ Form::text('name', null, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '姓名','required'=>'required']) }}
                         </div>
                     </td>
                     <td>
@@ -65,8 +60,21 @@
                         </div>
                     </td>
                     <td>
+                        <?php
+                            $groups = [
+                                '1'=>'1.行政人員',
+                                '4'=>'4.級任老師',
+                                '5'=>'5.科任老師',
+                                '9'=>'9.一般職員',
+                            ];
+                        ?>
                         <div class="form-group">
-                            {{ Form::text('group_id', null, ['id' => 'group_id', 'class' => 'form-control', 'placeholder' => '群組代號']) }}
+                            {{ Form::select('group_id', $groups, null, ['id' => 'group_id', 'class' => 'form-control', 'placeholder' => '請選擇','required'=>'required']) }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            {{ Form::select('group_id2', $groups, null, ['id' => 'group_id2', 'class' => 'form-control', 'placeholder' => '請選擇']) }}
                         </div>
                     </td>
                     <td>
@@ -98,11 +106,6 @@
                         </td>
                         <td>
                             <div class="form-group">
-                                {{ Form::text('email', null, ['id' => 'email', 'class' => 'form-control', 'placeholder' => 'Email']) }}
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
                                 {{ Form::text('job_title', null, ['id' => 'job_title', 'class' => 'form-control', 'placeholder' => '職稱']) }}
                             </div>
                         </td>
@@ -114,6 +117,11 @@
                         <td>
                             <div class="form-group">
                                 {{ Form::text('group_id', null, ['id' => 'group_id', 'class' => 'form-control', 'placeholder' => '群組代號']) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                {{ Form::text('group_id2', null, ['id' => 'group_id2', 'class' => 'form-control', 'placeholder' => '群組代號']) }}
                             </div>
                         </td>
                         <td>
@@ -158,9 +166,9 @@
             <div class="well">
                 <h4>群組代號</h4>
                 <p>行政人員：1</p>
-                <p>級任教師：2</p>
-                <p>科任教師：3</p>
-                <p>註冊成員：4</p>
+                <p>級任教師：4</p>
+                <p>科任教師：5</p>
+                <p>註冊成員：9</p>
 
             </div>
         </div>

@@ -2,29 +2,28 @@
 
 namespace App\Policies;
 
-use App\Report;
 use App\User;
-use App\Morning;
+use App\Test;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class MorningPolicy
+class TestPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view the morning.
+     * Determine whether the user can view the test.
      *
      * @param  \App\User  $user
-     * @param  \App\Morning  $morning
+     * @param  \App\Test  $test
      * @return mixed
      */
-    public function view(User $user)
+    public function view(User $user, Test $test)
     {
         return $user->group_id > "0";
     }
 
     /**
-     * Determine whether the user can create mornings.
+     * Determine whether the user can create tests.
      *
      * @param  \App\User  $user
      * @return mixed
@@ -35,27 +34,26 @@ class MorningPolicy
     }
 
     /**
-     * Determine whether the user can update the morning.
+     * Determine whether the user can update the test.
      *
      * @param  \App\User  $user
-     * @param  \App\Morning  $morning
+     * @param  \App\Test  $test
      * @return mixed
      */
-    public function update(User $user)
+    public function update(User $user, Test $test)
     {
-        return $user->admin === 1;
+        //
     }
 
     /**
-     * Determine whether the user can delete the morning.
+     * Determine whether the user can delete the test.
      *
      * @param  \App\User  $user
-     * @param  \App\Morning  $morning
+     * @param  \App\Test  $test
      * @return mixed
      */
-    public function delete(User $user)
+    public function delete(User $user, Test $test)
     {
-        return $user->admin === 1;
+        //
     }
-
 }

@@ -56,6 +56,18 @@ Route::post('fixes/store','FixesController@store')->name('fixes.store');
 Route::patch('fixes/{fix}/storeReply','FixesController@update')->name('fixes.update');
 Route::get('fixes/{fix}/destroy','FixesController@destroy')->name('fixes.destroy');
 
+//問卷系統
+Route::get('tests/index','TestsController@index')->name('tests.index');
+Route::get('tests/admin','TestsController@admin')->name('tests.admin');
+Route::post('tests/store' , 'TestsController@store')->name('tests.store');
+Route::patch('tests/{test}/update','TestsController@update')->name('tests.update');
+
+Route::get('questions/{test}','QuestionsController@index')->name('questions.index');
+Route::post('questions/store', 'QuestionsController@store')->name('questions.store');
+Route::get('questions/{question}/destroy', 'QuestionsController@destroy')->name('questions.destroy');
+
+Route::get('answers/{test}/create','AnswersController@create')->name('answers.create');
+Route::post('answers/store', 'AnswersController@store')->name('answers.store');
 
 //管理介面
 Route::group(['middleware' => 'admin'],function(){
