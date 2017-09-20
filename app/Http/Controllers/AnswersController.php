@@ -39,11 +39,21 @@ class AnswersController extends Controller
     public function store(Request $request)
     {
         foreach($request->input('Q') as $k=>$v){
-            $att['answer'] = $v;
+            $question = Question::where('id','=',$k)->first();
+            if($question->type =="checkbox" or $question->type =="radio"){
+                foreach($v as $k1=>$v1){
+                    $att['answer'] .= $v1.",";
+                }
+                $att['answer'] = substr($att['answer'],0,-1);
+            }else{
+                $att['answer'] = $v;
+            }
+
             $att['question_id'] = $k;
             $att['user_id'] = auth()->user()->id;
             $att['test_id'] = $request->input('test_id');
             Answer::create($att);
+            $att['answer'] = "";
         }
         return redirect()->route('tests.index');
     }
@@ -88,8 +98,9 @@ class AnswersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($test_id)
     {
-        //
+        Answer::where('test_id','=',$test_id)->where('user_id','=',auth()->user()->id)->delete();
+        return redirect()->route('tests.index');
     }
 }

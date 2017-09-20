@@ -42,7 +42,7 @@
                                 $items = explode("\r\n",$question->content);
                                 ?>
                                 @foreach($items as $k=>$v)
-                                    <input name="Q[{{ $question->id }}]" type="{{ $question->type }}"  value="{{ $v }}" style="zoom:150%;"> {{ $v }}<br>
+                                    <input name="Q[{{ $question->id }}][]" type="{{ $question->type }}"  value="{{ $v }}" style="zoom:150%;"> {{ $v }}<br>
                                 @endforeach
                             @elseif($question->type == "textarea")
                                 <textarea name="Q[{{ $question->id }}]" class="form-control" required="required"></textarea>

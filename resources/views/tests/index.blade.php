@@ -12,6 +12,7 @@
             <li><a href="{{ route('tests.admin') }}">管理</a></li>
         @endcan
     </ul>
+    <br><br>
     <div class="row">
         <div class="col-md-8">
             <div class="panel panel-default">
@@ -32,12 +33,13 @@
                                     </td>
                                     <td>
                                         <?php
-                                        $done = (empty($test->answers->toArray()))?"NO":"YES";
+                                            $answers = \App\Answer::where('test_id','=',$test->id)->where('user_id','=',auth()->user()->id)->get();
+                                        $done = (empty($answers->toArray()))?"NO":"YES";
                                         ?>
                                         @if($done == "NO")
                                             <a href="{{  route('answers.create',$test->id) }}" class="btn btn-success">填寫</a>
                                         @else
-                                                <a href="" class="btn btn-danger" onclick="return confirm('確定刪除？')">刪除重寫</a>
+                                                <a href="{{ route('answers.destroy',$test->id) }}" class="btn btn-danger" onclick="return confirm('確定刪除？')">刪除重寫</a>
                                         @endif
                                     </td>
                                 </tr>

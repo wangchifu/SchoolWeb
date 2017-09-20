@@ -10,6 +10,7 @@
         <li><a href="{{ route('tests.index') }}">問卷</a></li>
         <li class="active"><a href="{{ route('tests.admin') }}">管理</a></li>
     </ul>
+    <br><br>
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4>新增問卷</h4>

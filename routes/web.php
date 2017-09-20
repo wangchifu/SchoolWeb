@@ -68,6 +68,7 @@ Route::get('questions/{question}/destroy', 'QuestionsController@destroy')->name(
 
 Route::get('answers/{test}/create','AnswersController@create')->name('answers.create');
 Route::post('answers/store', 'AnswersController@store')->name('answers.store');
+Route::get('answers/{test_id}/destroy', 'AnswersController@destroy')->name('answers.destroy');
 
 //管理介面
 Route::group(['middleware' => 'admin'],function(){
