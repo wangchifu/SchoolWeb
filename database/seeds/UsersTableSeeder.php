@@ -15,10 +15,10 @@ class UsersTableSeeder extends Seeder
         User::truncate();
 
         User::create([
-            'name' => '王麒富',
+            'name' => '王老師',
             'email' => 'hd96@hdes.chc.edu.tw',
-            'username' => 'hd96',
-            'password' => bcrypt('demo1234'),
+            'username' => env('ADMIN_USERNAME'),
+            'password' => bcrypt(env('DEFAULT_USER_PWD')),
             'job_title' => '資訊組長',
             'group_id' =>'1',
             'order_by' => '323',
