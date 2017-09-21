@@ -62,6 +62,7 @@ Route::get('tests/admin','TestsController@admin')->name('tests.admin');
 Route::post('tests/store' , 'TestsController@store')->name('tests.store');
 Route::patch('tests/{test}/update','TestsController@update')->name('tests.update');
 Route::get('tests/{test}/download','TestsController@download')->name('tests.download');
+Route::get('tests/{test}/destroy','TestsController@destroy')->name('tests.destroy');
 
 //Route::get('importExport', 'MaatwebsiteDemoController@importExport');
 //Route::get('downloadExcel/{type}', 'MaatwebsiteDemoController@downloadExcel');

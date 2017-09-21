@@ -24,6 +24,8 @@
                         <thead><th>名稱</th><th>建立者</th><th>動作</th></thead>
                         <tbody>
                             @foreach($tests as $test)
+                                <?php $today =date('Y-m-d'); ?>
+                                @if($test->unpublished_at > $today)
                                 <tr>
                                     <td>
                                         {{ $test->name }}
@@ -43,6 +45,7 @@
                                         @endif
                                     </td>
                                 </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>

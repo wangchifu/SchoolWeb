@@ -104,9 +104,12 @@ class TestsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Test $test)
     {
-        //
+        $test->delete();
+        Question::where('test_id','=',$test->id)->delete();
+        Answer::where('test_id','=',$test->id)->delete();
+        return redirect()->route('tests.admin');
     }
     public function download(Request $request,Test $test)
     {
