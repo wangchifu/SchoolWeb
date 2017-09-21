@@ -61,6 +61,13 @@ Route::get('tests/index','TestsController@index')->name('tests.index');
 Route::get('tests/admin','TestsController@admin')->name('tests.admin');
 Route::post('tests/store' , 'TestsController@store')->name('tests.store');
 Route::patch('tests/{test}/update','TestsController@update')->name('tests.update');
+Route::get('tests/{test}/download','TestsController@download')->name('tests.download');
+
+//Route::get('importExport', 'MaatwebsiteDemoController@importExport');
+//Route::get('downloadExcel/{type}', 'MaatwebsiteDemoController@downloadExcel');
+//Route::post('importExcel', 'MaatwebsiteDemoController@importExcel');
+
+
 
 Route::get('questions/{test}','QuestionsController@index')->name('questions.index');
 Route::post('questions/store', 'QuestionsController@store')->name('questions.store');

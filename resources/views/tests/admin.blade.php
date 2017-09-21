@@ -100,7 +100,7 @@
                         </td>
                         <td>
                             @if( auth()->user()->id == $test->user_id)
-                                <button class="btn btn-info" onclick="return confirm('是否確定修改？');">儲存修改</button> <a href="{{ route('questions.index',$test->id) }}" class="btn btn-success">管理題目</a> <a href="" class="btn btn-primary">下載結果</a> <a href="" class="btn btn-danger" onclick="return confirm('是否確定刪除？');">刪除</a>
+                                <button class="btn btn-info btn-xs" onclick="return confirm('是否確定修改？');">儲存修改</button> <a href="{{ route('questions.index',$test->id) }}" class="btn btn-success btn-xs">管理題目</a> <a href="{{ route('tests.download',['test'=>$test->id,'type'=>'csv']) }}" class="btn btn-primary btn-xs">下載結果[CSV]</a> <a href="{{ route('tests.download',['test'=>$test->id,'type'=>'xls']) }}" class="btn btn-primary btn-xs">下載結果[EXCEL]</a> <a href="" class="btn btn-danger btn-xs" onclick="return confirm('是否確定刪除？');">刪除</a>
                             @endif
                         </td>
                     </tr>

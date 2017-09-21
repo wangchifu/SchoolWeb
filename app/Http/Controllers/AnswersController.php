@@ -42,9 +42,9 @@ class AnswersController extends Controller
             $question = Question::where('id','=',$k)->first();
             if($question->type =="checkbox" or $question->type =="radio"){
                 foreach($v as $k1=>$v1){
-                    $att['answer'] .= $v1.",";
+                    $att['answer'] .= $v1." ; ";
                 }
-                $att['answer'] = substr($att['answer'],0,-1);
+                $att['answer'] = substr($att['answer'],0,-3);
             }else{
                 $att['answer'] = $v;
             }
