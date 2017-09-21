@@ -26,8 +26,27 @@ class AnswersController extends Controller
      */
     public function create(Test $test)
     {
-        $questions = Question::where('test_id','=',$test->id)->orderBy('order')->get();
-        return view('answers.create',compact('test','questions'));
+        $today =date('Y-m-d');
+        if($test->unpublished_at < $today){
+            return redirect()->route('tests.index');
+        }else{
+            if(substr_count($test->do,auth()->user()->group_id)){
+                $questions = Question::where('test_id','=',$test->id)->orderBy('order')->get();
+                return view('answers.create',compact('test','questions'));
+            }else{
+                $group_id2=(auth()->user()->group_id2)?auth()->user()->group_id2:"0";
+                if(substr_count($test->do,$group_id2)){
+                    $questions = Question::where('test_id','=',$test->id)->orderBy('order')->get();
+                    return view('answers.create',compact('test','questions'));
+                }else{
+                    return redirect()->route('tests.index');
+                }
+
+            }
+
+        }
+
+
     }
 
     /**

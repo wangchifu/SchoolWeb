@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Answer;
 use App\Question;
 use App\Test;
 use Illuminate\Http\Request;
@@ -91,6 +92,7 @@ class QuestionsController extends Controller
     public function destroy(Question $question)
     {
         $question->delete();
+        Answer::where('question_id','=',$question->id)->delete();
         return redirect()->route('questions.index',$question->test_id);
     }
 }
