@@ -64,6 +64,9 @@ Route::patch('tests/{test}/update','TestsController@update')->name('tests.update
 Route::get('tests/{test}/download','TestsController@download')->name('tests.download');
 Route::get('tests/{test}/destroy','TestsController@destroy')->name('tests.destroy');
 
+//教室預約
+Route::get('classrooms/index','ClassroomsController@index')->name('classrooms.index');
+
 //Route::get('importExport', 'MaatwebsiteDemoController@importExport');
 //Route::get('downloadExcel/{type}', 'MaatwebsiteDemoController@downloadExcel');
 //Route::post('importExcel', 'MaatwebsiteDemoController@importExcel');
