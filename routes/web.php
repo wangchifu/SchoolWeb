@@ -64,13 +64,10 @@ Route::patch('tests/{test}/update','TestsController@update')->name('tests.update
 Route::get('tests/{test}/download','TestsController@download')->name('tests.download');
 Route::get('tests/{test}/destroy','TestsController@destroy')->name('tests.destroy');
 
-//教室預約
-Route::get('classrooms/index','ClassroomsController@index')->name('classrooms.index');
 
 //Route::get('importExport', 'MaatwebsiteDemoController@importExport');
 //Route::get('downloadExcel/{type}', 'MaatwebsiteDemoController@downloadExcel');
 //Route::post('importExcel', 'MaatwebsiteDemoController@importExcel');
-
 
 
 Route::get('questions/{test}','QuestionsController@index')->name('questions.index');
@@ -80,6 +77,15 @@ Route::get('questions/{question}/destroy', 'QuestionsController@destroy')->name(
 Route::get('answers/{test}/create','AnswersController@create')->name('answers.create');
 Route::post('answers/store', 'AnswersController@store')->name('answers.store');
 Route::get('answers/{test_id}/destroy', 'AnswersController@destroy')->name('answers.destroy');
+
+//教室預約
+Route::get('classrooms/index','ClassroomsController@index')->name('classrooms.index');
+Route::get('classrooms/admin','ClassroomsController@admin')->name('classrooms.admin');
+Route::post('classrooms/addClassroom', 'ClassroomsController@addClassroom')->name('classrooms.addClassroom');
+Route::patch('classrooms/updateClassroom','ClassroomsController@updateClassroom')->name('classrooms.updateClassroom');
+Route::get('classrooms/{$id}/delClassroom','ClassroomsController@delClassroom')->name('classrooms.delClassroom');
+Route::post('classrooms/storeOrder', 'ClassroomsController@storeOrder')->name('classrooms.storeOrder');
+
 
 //管理介面
 Route::group(['middleware' => 'admin'],function(){
