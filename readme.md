@@ -1,10 +1,16 @@
 ## 關於SchoolWeb
 ### 安裝php lib
-sudo apt-get install php7.0-ldap
-sudo apt-get install sendmail
+#### 佈好laravel的環境
+- sudo apt-get install unzip zip
+- sudo apt-get install php7.0-cli  php7.0-json php7.0-mcrypt php7.0-mbstring php7.0-gd php7.0-xml
+- sudo apt-get install php7.0-ldap
 
+#### 下載composer
+- wget -c https://getcomposer.org/composer.phar
+- chmod +x composer.phar
+- sudo mv composer.phar /usr/local/bin/composer
 
-### 安裝
+### 安裝SchoolWeb
 git clone https://github.com/wangchifu/SchoolWeb.git
 
 進入 SchoolWeb
