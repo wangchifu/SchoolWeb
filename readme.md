@@ -31,3 +31,9 @@ git clone https://github.com/wangchifu/SchoolWeb.git
   ADLDAP_ACCOUNT_SUFFIX=,cn=users,dc=xxx,dc=xxx<br>
   ADLDAP_CONTROLLERS=your_address<br>
   ADLDAP_BASEDN=dc=xxx,dc=xxx<br>
+  
+### 建資料表
+- php artisan migrate
+
+### 建管理者
+- php artisan db:seed
