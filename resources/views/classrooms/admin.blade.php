@@ -72,7 +72,7 @@
                                 <td class="col-md-2">{{ Form::text('name', $classroom->name, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '教室名稱','required'=>'required']) }}</td>
                                 <td class="col-md-3">{{ Form::text('openSections', $classroom->openSections, ['id' => 'openSections', 'class' => 'form-control', 'placeholder' => '開放節次','required'=>'required']) }}</td>
                                 <td class="col-md-6">{{ Form::text('closeSections', $classroom->closeSections, ['id' => 'closeSections', 'class' => 'form-control', 'placeholder' => '不開放星期節次']) }}</td>
-                                <td><button class="btn btn-info btn-xs" onclick="return confirm('是否確定修改？');">修改</button> <a href="{{ route('classrooms.delClassroom',$classroom->id) }}" class="btn btn-danger btn-xs" onclick="return confirm('是否確定刪除？');">刪除</a></td>
+                                <td class="col-md-1"><button class="btn btn-info btn-xs" onclick="return confirm('是否確定修改？');">修改</button> <a href="{{ route('classrooms.delClassroom',$classroom->id) }}" class="btn btn-danger btn-xs" onclick="return confirm('是否確定刪除？');">刪除</a></td>
                             </tr>
                             {{ Form::close() }}
                         @endforeach

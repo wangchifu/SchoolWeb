@@ -13,7 +13,7 @@ class CreateOrderClassroomsTable extends Migration
      */
     public function up()
     {
-        Schema::create('Order_Classrooms', function (Blueprint $table) {
+        Schema::create('order_classrooms', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('classroom_id');
             $table->string('orderDate');
@@ -30,6 +30,6 @@ class CreateOrderClassroomsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Order_Classrooms');
+        Schema::dropIfExists('order_classrooms');
     }
 }
