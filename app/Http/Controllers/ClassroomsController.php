@@ -54,13 +54,19 @@ class ClassroomsController extends Controller
         Classroom::create($request->all());
         return redirect()->route('classrooms.admin');
     }
-    public function updateClassroom(Request $request)
+    public function updateClassroom(Classroom $classroom,Request $request)
     {
+        $att = $request->all();
+        if($request->input('active')==null) $att['active']=null;
+        $classroom->update($att);
+        return redirect()->route('classrooms.admin');
 
     }
-    public function delClassrom(Classroom $classroom)
+    public function delClassroom(Classroom $classroom)
     {
-        //
+        $classroom->delete();
+        $classroom->orderClassrooms()->delete();
+        return redirect()->route('classrooms.admin');
     }
     /**
      * Show the form for creating a new resource.
@@ -89,7 +95,18 @@ class ClassroomsController extends Controller
         OrderClassroom::create($att);
         $data = [
             'classroom_id'=>$request->input('classroom_id'),
-            'this_date'=>$request->input('orderDate'),
+            //'this_date'=>$request->input('orderDate'),
+        ];
+        return redirect()->route('classrooms.index',$data);
+    }
+
+    public function delOrder(OrderClassroom $orderClassroom)
+    {
+        if(auth()->user()->id == $orderClassroom->user_id) {
+            $orderClassroom->delete();
+        }
+        $data = [
+            'classroom_id'=>$orderClassroom->classroom_id,
         ];
         return redirect()->route('classrooms.index',$data);
     }

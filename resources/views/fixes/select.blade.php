@@ -42,7 +42,7 @@
                             }
                         ?>
                         <div>
-                            <span class="glyphicon glyphicon-comment"></span> 回覆：
+                            <p class="text-danger"><span class="glyphicon glyphicon-comment"></span> 回覆：{{ $fix->reply }}</p>
                             {{ Form::open(['route' => ['fixes.update',$fix->id], 'method' => 'PATCH']) }}
                             <table>
                                 <tr>
@@ -51,6 +51,9 @@
                                     </td>
                                     <td>
                                         <input name="done" type="checkbox" value="1" style="zoom:200%" {{ $checked }}>
+                                    </td>
+                                    <td>
+
                                     </td>
                                 </tr>
                                 <tr>

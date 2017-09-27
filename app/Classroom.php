@@ -16,4 +16,8 @@ class Classroom extends Model
     {
         return $this->belongsTo('App\Classroom')->withDefault();
     }
+    public function orderClassrooms()
+    {
+        return $this->hasMany(OrderClassroom::class);
+    }
 }

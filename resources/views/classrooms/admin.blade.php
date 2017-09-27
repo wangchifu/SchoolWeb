@@ -67,12 +67,12 @@
                                 $checked="";
                             }
                             ?>
-                            {{ Form::open(['route' => ['classrooms.updateClassroom'], 'method' => 'PATCH']) }}
+                            {{ Form::open(['route' => ['classrooms.updateClassroom',$classroom->id],'id'=>'form'.$classroom->id ,'onsubmit'=>'return false;','method' => 'PATCH']) }}
                             <tr><td><input name="active" type="checkbox" value="1" class="form-control" style="zoom:80%" {{ $checked }}></td>
-                                <td class="col-md-2">{{ Form::text('name', $classroom->name, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '教室名稱','required'=>'required']) }}</td>
+                                <td class="col-md-1">{{ Form::text('name', $classroom->name, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '教室名稱','required'=>'required']) }}</td>
                                 <td class="col-md-3">{{ Form::text('openSections', $classroom->openSections, ['id' => 'openSections', 'class' => 'form-control', 'placeholder' => '開放節次','required'=>'required']) }}</td>
                                 <td class="col-md-6">{{ Form::text('closeSections', $classroom->closeSections, ['id' => 'closeSections', 'class' => 'form-control', 'placeholder' => '不開放星期節次']) }}</td>
-                                <td class="col-md-1"><button class="btn btn-info btn-xs" onclick="return confirm('是否確定修改？');">修改</button> <a href="{{ route('classrooms.delClassroom',$classroom->id) }}" class="btn btn-danger btn-xs" onclick="return confirm('是否確定刪除？');">刪除</a></td>
+                                <td class="col-md-1"><button class="btn btn-info btn-xs" onclick="bbconfirm('form{{$classroom->id}}','你要修改教室 {{ $classroom->name }} ?')">修改</button> <a href="{{ route('classrooms.delClassroom',$classroom->id) }}" id="link{{ $classroom->id }}" class="btn btn-danger btn-xs" onclick="bbconfirm2('link{{ $classroom->id }}','你要刪除教室 {{ $classroom->name }}')">刪除</a></td>
                             </tr>
                             {{ Form::close() }}
                         @endforeach
@@ -85,3 +85,5 @@
 
 
 @endsection
+
+@include('layouts.partials.bootbox')

@@ -82,9 +82,10 @@ Route::get('answers/{test_id}/destroy', 'AnswersController@destroy')->name('answ
 Route::get('classrooms/index','ClassroomsController@index')->name('classrooms.index');
 Route::get('classrooms/admin','ClassroomsController@admin')->name('classrooms.admin');
 Route::post('classrooms/addClassroom', 'ClassroomsController@addClassroom')->name('classrooms.addClassroom');
-Route::patch('classrooms/updateClassroom','ClassroomsController@updateClassroom')->name('classrooms.updateClassroom');
-Route::get('classrooms/{$id}/delClassroom','ClassroomsController@delClassroom')->name('classrooms.delClassroom');
+Route::patch('classrooms/{classroom}/updateClassroom','ClassroomsController@updateClassroom')->name('classrooms.updateClassroom');
+Route::get('classrooms/{classroom}/delClassroom','ClassroomsController@delClassroom')->name('classrooms.delClassroom');
 Route::post('classrooms/storeOrder', 'ClassroomsController@storeOrder')->name('classrooms.storeOrder');
+Route::get('classrooms/{orderClassroom}/delOrder','ClassroomsController@delOrder')->name('classrooms.delOrder');
 
 
 //管理介面

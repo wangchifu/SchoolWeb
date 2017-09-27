@@ -74,22 +74,42 @@
                             </thead>
                             <tbody>
                             <?php
+                                $openSections = explode(',',$classroom->openSections);
+                                $closeSections = explode(',',$classroom->closeSections);
                                 $cols=array('早修',1,2,3,4,'午休',5,6,7,8);
                             ?>
-                            @foreach($cols as $v1)
+                            @foreach($cols as $k1=>$v1)
                                 <tr>
                                     <th>{{ $v1 }}</th>
                                 @foreach($dates as $date)
                                     <?php
-                                        $date = substr($date,0,10);
+                                        $date2 = substr($date,0,10);
+                                        $hasOrder = App\OrderClassroom::where('classroom_id','=',$classroom->id)->where('orderDate','=',$date2)->where('section','=',$v1)->first();
                                     ?>
                                         <td>
-                                            {{ Form::open(['route' => 'classrooms.storeOrder', 'method' => 'POST']) }}
-                                            <input type="hidden" name="classroom_id" value="{{ $classroom->id }}">
-                                            <input type="hidden" name="orderDate" value="{{ $date }}">
-                                            <input type="hidden" name="section" value="{{ $v1 }}">
-                                            <button class="btn btn-success btn-xs" onclick="return confirm('是否確定？');">預</button>
-                                            {{ Form::close() }}
+                                            @if(in_array($v1,$openSections))
+                                                <?php $ws = date("w",strtotime($date2)) . $v1; ?>
+                                                @if(in_array($ws,$closeSections))
+                                                    -
+                                                @else
+                                                    @if($hasOrder)
+                                                        <small class="text-primary">({{ $hasOrder->user->name }})</small>
+                                                        @if(auth()->user()->id == $hasOrder->user_id)
+                                                            <br>
+                                                            <a href="{{ route('classrooms.delOrder',$hasOrder->id) }}" id="OC{{ $hasOrder->id }}" class="btn btn-danger btn-xs" onclick="bbconfirm2('OC{{ $hasOrder->id }}','確定刪除 {{ $classroom->name }}<br>{{ $date2 }} 節次 {{ $v1 }} 的預約？')">刪</a></form>
+                                                        @endif
+                                                    @else
+                                                        {{ Form::open(['route' => 'classrooms.storeOrder','id'=>'form'.$date2.$v1,'onsubmit' => 'return false;', 'method' => 'POST']) }}
+                                                        <input type="hidden" name="classroom_id" value="{{ $classroom->id }}">
+                                                        <input type="hidden" name="orderDate" value="{{ $date2 }}">
+                                                        <input type="hidden" name="section" value="{{ $v1 }}">
+                                                        <button class="btn btn-success btn-xs" onclick="bbconfirm('form{{$date2.$v1}}','你預約的是：{{ $classroom->name."<br>".$date2." 節次：".$v1 }}');">預</button>
+                                                        {{ Form::close() }}
+                                                    @endif
+                                                @endif
+                                            @else
+                                                -
+                                            @endif
                                         </td>
                                 @endforeach
                                 </tr>
@@ -104,3 +124,5 @@
         </div>
     </div>
 @endsection
+
+@include('layouts.partials.bootbox')
