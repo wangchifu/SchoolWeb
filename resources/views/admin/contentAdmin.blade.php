@@ -9,6 +9,7 @@
     </div>
     <ul class="nav nav-tabs">
         <li><a href="{{ url('admin') }}">使用者管理</a></li>
+        <li><a href="">學生管理</a></li>
         <li><a href="{{ url('admin/funAdmin') }}">指定管理</a></li>
         <li><a href="{{ url('admin/postAdmin') }}">公告管理</a></li>
         <li><a href="{{ url('admin/reportAdmin') }}">報告管理</a></li>
