@@ -10,8 +10,12 @@ class Student extends Model
         'sn',
         'name',
         'sex',
-        'curr_year_class_num',
+        'YearClass_id',
         'at_school',
     ];
+    public function YearClass()
+    {
+        return $this->belongsTo(YearClass::class);
+    }
 
 }

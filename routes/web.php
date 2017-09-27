@@ -98,6 +98,10 @@ Route::group(['middleware' => 'admin'],function(){
     Route::patch('admin/{user}/updateUser' , 'AdminController@updateUser')->name('admin.updateUser');
     Route::get('admin/{user}/activeUser', 'AdminController@activeUser')->name('admin.activeUser');
 
+//學生管理
+    Route::get('admin/studAdmin','StudentsController@index')->name('admin.indexStud');
+    Route::post('admin/storeYearClass', 'StudentsController@storeYearClass')->name('admin.storeYearClass');
+
 //指定管理
     Route::get('admin/funAdmin','FunsAdminController@index')->name('admin.funAdmin');
     Route::post('admin/storeFun', 'FunsAdminController@store')->name('admin.storeFun');
