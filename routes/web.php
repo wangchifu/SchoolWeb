@@ -101,8 +101,12 @@ Route::group(['middleware' => 'admin'],function(){
 //學生管理
     Route::get('admin/studAdmin','StudentsController@index')->name('admin.indexStud');
     Route::post('admin/storeYearClass', 'StudentsController@storeYearClass')->name('admin.storeYearClass');
+    Route::post('admin/studAdmin','StudentsController@index')->name('admin.indexStud');
+    Route::get('admin/{semester}/dekYearClass', 'StudentsController@delYearClass')->name('admin.delYearClass');
+    Route::post('admin/importStud', 'StudentsController@importStud')->name('admin.importStud');
 
-//指定管理
+
+    //指定管理
     Route::get('admin/funAdmin','FunsAdminController@index')->name('admin.funAdmin');
     Route::post('admin/storeFun', 'FunsAdminController@store')->name('admin.storeFun');
     Route::get('admin/{fun}/funAdmin','FunsAdminController@destroy')->name('admin.delFun');

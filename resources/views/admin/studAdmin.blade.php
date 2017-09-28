@@ -19,16 +19,50 @@
     <br><br>
     <div class="row">
         <div class="col-md-8">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>學生管理</h4>
-                </div>
-                <div class="panel-body forum-content">
-
-
-
-                </div>
+            <div class="well">
+                <h4>現有學年班級</h4>
+                {{ Form::open(['route' => 'admin.indexStud', 'method' => 'POST']) }}
+                {{ Form::select('semester', $semesters, null, ['id' => 'semester', 'class' => 'form-control', 'placeholder' => '請選擇學期']) }}
+                <br>
+                <button class="btn btn-success">查詢</button>
+                {{ Form::close() }}
             </div>
+            @if($semester)
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>學生管理</h4>
+                    </div>
+                    <div class="panel-body forum-content">
+                        <div class="text-danger">1.請先確認新學期的班級資料已建立後，再行上傳！</div>
+                        <div class="text-danger">3.同學期已經上傳過的，請勿再上傳！</div><br>
+                        {{ Form::open(['route' => 'admin.importStud', 'method' => 'POST','files'=>true]) }}
+                        <table>
+                        <tr>
+                            <td><input name="csv" type="file" required="required" multiple></td><td><button type="submit" class="btn btn-info">上傳CSV檔</button></td>
+                        </tr>
+                        </table>
+                        {{ Form::close() }}
+                        <a href="" class="btn btn-primary"><span class="glyphicon glyphicon-download-alt"></span> CSV範例檔</a>
+                    </div>
+                </div>
+
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>{{ $semester }} 學期 班級學生資料</h4>
+                            <div class="text-right"><a href="{{ route('admin.delYearClass',$semester) }}" id="DelLink" class="btn btn-danger" onclick="bbconfirm2('DelLink','你確定要刪除全學期的班級設定嗎？')">刪除重置</a></div>
+                    </div>
+                    <div class="panel-body forum-content">
+                        <h4>班級數</h4>
+                        @if($year_class)
+                            @foreach($year_class as $k=>$v)
+                                <div>{{ $k }}：{{ $v }} 班</div>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+            @endif
+
         </div>
         <div class="col-md-4">
             <div class="well">
@@ -91,6 +125,14 @@
                             {{ Form::text('class6', null, ['id' => 'class6', 'class' => 'form-control', 'placeholder' => '班級數']) }}
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            特教班
+                        </td>
+                        <td>
+                            {{ Form::text('class9', null, ['id' => 'class9', 'class' => 'form-control', 'placeholder' => '班級數']) }}
+                        </td>
+                    </tr>
                 </table>
                 <button class="btn btn-success">新增</button>
 
@@ -104,19 +146,59 @@
         <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>管理者清單</h4>
+                    <h4>{{ $semester }} 學期 各班詳細資料</h4>
                 </div>
                 <div class="panel-body forum-content">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>
+                                班級代號
+                            </th>
+                            <th>
+                                班級名稱
+                            </th>
+                            <th>
+                                班級人數(男；女)
+                            </th>
+                            <th>
+                                級任老師
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @if($YearClasses)
+                            @foreach($YearClasses as $YearClass)
+                                <tr>
+                                    <td>
+                                        {{ $YearClass->year_class }}
+                                    </td>
+                                    <td>
+                                        {{ $YearClass->name }}
+                                    </td>
+                                    <td>
 
+                                    </td>
+                                    <td>
+                                        @if($YearClass->user_id)
+                                            {{ $YearClass->user->name }}
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
+
         <div class="col-md-4">
-            <div class="well">
-                <h4>現有學年班級</h4>
-            </div>
+
         </div>
     </div>
 
 
+
 @endsection
+@include('layouts.partials.bootbox')

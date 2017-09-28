@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\YearClass;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class StudentsController extends Controller
 {
@@ -12,9 +16,54 @@ class StudentsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('admin.studAdmin');
+        //學年選單
+        $semesters = DB::table('year_classes')
+            ->select('semester')
+            ->groupBy('semester')
+            ->pluck('semester', 'semester')->toArray();
+
+        $semester = $request->input('semester');
+        if($semester) {
+            $YearClasses = YearClass::where('semester', '=', $semester)->get();
+            $year_class = [
+                '一年級' => "",
+                '二年級' => "",
+                '三年級' => "",
+                '四年級' => "",
+                '五年級' => "",
+                '六年級' => "",
+                '特教班' => "",
+                '總共' => "",
+            ];
+
+            foreach ($YearClasses as $YearClass) {
+                if (substr($YearClass->year_class, 0, 1) == 1) $year_class['一年級']++;
+                if (substr($YearClass->year_class, 0, 1) == 2) $year_class['二年級']++;
+                if (substr($YearClass->year_class, 0, 1) == 3) $year_class['三年級']++;
+                if (substr($YearClass->year_class, 0, 1) == 4) $year_class['四年級']++;
+                if (substr($YearClass->year_class, 0, 1) == 5) $year_class['五年級']++;
+                if (substr($YearClass->year_class, 0, 1) == 6) $year_class['六年級']++;
+                if (substr($YearClass->year_class, 0, 1) == 9) $year_class['特教班']++;
+                $year_class['總共']++;
+            }
+        }else{
+            $year_class = array();
+            $YearClasses = "";
+
+        }
+
+        $data = [
+            'semesters'=>$semesters,
+            'semester'=>$semester,
+
+            'year_class'=>$year_class,
+            'YearClasses'=>$YearClasses,
+        ];
+
+
+        return view('admin.studAdmin',$data);
     }
 
     /**
@@ -96,6 +145,15 @@ class StudentsController extends Controller
 
             }
         }
+        if($r['class9'] > 0){
+            for ( $i=1 ; $i<=$r['class9'] ; $i++ ) {
+                $att['semester'] = $r['semester'];
+                $att['year_class'] = "9".sprintf("%02s",$i);
+                $att['name'] = "特教".$i."班";
+                YearClass::create($att);
+
+            }
+        }
 
         return redirect()->route('admin.indexStud');
     }
@@ -106,9 +164,11 @@ class StudentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function delYearClass($semester)
     {
-        //
+        YearClass::where('semester','=',$semester)->delete();
+
+        return redirect()->route('admin.indexStud');
     }
 
     /**
@@ -143,5 +203,18 @@ class StudentsController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function importStud(Request $request)
+    {
+        if(Input::hasFile('csv')) {
+            $filePath = $request->file('csv')->getRealPath();
+            $data = Excel::load($filePath, function ($reader) {
+            })->get();
+
+            foreach ($data as $key => $value) {
+                echo $value['姓名'] . "<br>";
+            }
+        }
+
     }
 }
