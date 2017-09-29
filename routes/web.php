@@ -99,9 +99,9 @@ Route::group(['middleware' => 'admin'],function(){
     Route::get('admin/{user}/activeUser', 'AdminController@activeUser')->name('admin.activeUser');
 
 //學生管理
-    Route::get('admin/studAdmin','StudentsController@index')->name('admin.indexStud');
+    Route::any('admin/studAdmin','StudentsController@index')->name('admin.indexStud');
     Route::post('admin/storeYearClass', 'StudentsController@storeYearClass')->name('admin.storeYearClass');
-    Route::post('admin/studAdmin','StudentsController@index')->name('admin.indexStud');
+    //Route::post('admin/studAdmin','StudentsController@index')->name('admin.indexStud');
     Route::get('admin/{semester}/dekYearClass', 'StudentsController@delYearClass')->name('admin.delYearClass');
     Route::post('admin/importStud', 'StudentsController@importStud')->name('admin.importStud');
 

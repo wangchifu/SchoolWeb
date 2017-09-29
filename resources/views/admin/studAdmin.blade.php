@@ -42,7 +42,7 @@
                         </tr>
                         </table>
                         {{ Form::close() }}
-                        <a href="" class="btn btn-primary"><span class="glyphicon glyphicon-download-alt"></span> CSV範例檔</a>
+                        <a href="../demo.csv" class="btn btn-primary"><span class="glyphicon glyphicon-download-alt"></span> CSV範例檔</a>
                     </div>
                 </div>
 

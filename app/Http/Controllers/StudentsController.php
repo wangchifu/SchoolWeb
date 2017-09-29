@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\SemesterStudent;
+use App\Student;
+use App\User;
 use App\YearClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +28,7 @@ class StudentsController extends Controller
             ->pluck('semester', 'semester')->toArray();
 
         $semester = $request->input('semester');
+
         if($semester) {
             $YearClasses = YearClass::where('semester', '=', $semester)->get();
             $year_class = [
@@ -212,9 +216,34 @@ class StudentsController extends Controller
             })->get();
 
             foreach ($data as $key => $value) {
-                echo $value['姓名'] . "<br>";
+                $stud_class = $value['年級'].sprintf("%02s",$value['班級']);
+                $yearclass = YearClass::where('semester','=',$value['學期'])->where('year_class','=',$stud_class)->first();
+                $user = User::where('name','=',$value['導師'])->first();
+
+                if($user) {
+                    $att1['user_id'] = $user->id;
+                    $yearclass->update($att1);
+                }
+
+
+
+                $att2['sn'] = $value['學號'];
+                $att2['name'] = $value['姓名'];
+                $att2['sex'] = $value['性別'];
+                $att2['YearClass_id'] = $yearclass->id;
+                $att2['num'] = sprintf("%02s",$value['座號']);
+                $att2['at_school'] = 1;
+                $student = Student::create($att2);
+
+                $att3['student_id'] = $student->id;
+                $att3['YearClass_id'] = $yearclass->id;
+                $att3['num'] = sprintf("%02s",$value['座號']);
+
+                SemesterStudent::create($att3);
+
             }
         }
+        return redirect()->route('admin.indexStud',"semester=".$value['學期']);
 
     }
 }
