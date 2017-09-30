@@ -8,14 +8,14 @@ class SemesterStudent extends Model
 {
     protected $fillable = [
         'student_id',
-        'YearClass_id',
+        'year_class_id',
         'num',
     ];
     public function student()
     {
         return $this->belongsTo(Student::class);
     }
-    public function yearClass()
+    public function year_class()
     {
         return $this->belongsTo(YearClass::class);
     }

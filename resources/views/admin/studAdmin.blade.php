@@ -28,24 +28,25 @@
                 {{ Form::close() }}
             </div>
             @if($semester)
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4>學生管理</h4>
+                @if($all_school == "0")
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4>學生管理</h4>
+                        </div>
+                        <div class="panel-body forum-content">
+                            <div class="text-danger">1.請先確認新學期的班級資料已建立後，再行上傳！</div>
+                            <div class="text-danger">3.同學期已經上傳過的，請勿再上傳！</div><br>
+                            {{ Form::open(['route' => 'admin.importStud', 'method' => 'POST','files'=>true]) }}
+                            <table>
+                            <tr>
+                                <td><input name="csv" type="file" required="required" multiple></td><td><button type="submit" class="btn btn-info">上傳CSV檔</button></td>
+                            </tr>
+                            </table>
+                            {{ Form::close() }}
+                            <a href="../demo.csv" class="btn btn-primary"><span class="glyphicon glyphicon-download-alt"></span> CSV範例檔</a>
+                        </div>
                     </div>
-                    <div class="panel-body forum-content">
-                        <div class="text-danger">1.請先確認新學期的班級資料已建立後，再行上傳！</div>
-                        <div class="text-danger">3.同學期已經上傳過的，請勿再上傳！</div><br>
-                        {{ Form::open(['route' => 'admin.importStud', 'method' => 'POST','files'=>true]) }}
-                        <table>
-                        <tr>
-                            <td><input name="csv" type="file" required="required" multiple></td><td><button type="submit" class="btn btn-info">上傳CSV檔</button></td>
-                        </tr>
-                        </table>
-                        {{ Form::close() }}
-                        <a href="../demo.csv" class="btn btn-primary"><span class="glyphicon glyphicon-download-alt"></span> CSV範例檔</a>
-                    </div>
-                </div>
-
+                @endif
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -59,6 +60,7 @@
                                 <div>{{ $k }}：{{ $v }} 班</div>
                             @endforeach
                         @endif
+                        <div>全校：{{ $all_school }} 人</div>
                     </div>
                 </div>
             @endif
@@ -159,7 +161,7 @@
                                 班級名稱
                             </th>
                             <th>
-                                班級人數(男；女)
+                                班級人數 ( 男；女 )
                             </th>
                             <th>
                                 級任老師
@@ -177,7 +179,7 @@
                                         {{ $YearClass->name }}
                                     </td>
                                     <td>
-
+                                        {{ $stud_num[$YearClass->id]['num'] }} 人 ( 男： {{ $stud_num[$YearClass->id]['boy'] }} 人 ； 女： {{ $stud_num[$YearClass->id]['girl'] }} 人)
                                     </td>
                                     <td>
                                         @if($YearClass->user_id)

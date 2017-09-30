@@ -16,7 +16,7 @@ class CreateSemesterStudentsTable extends Migration
         Schema::create('semester_students', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('student_id');
-            $table->unsignedInteger('YearClass_id');
+            $table->unsignedInteger('year_class_id');
             $table->string('num');
             $table->timestamps();
         });

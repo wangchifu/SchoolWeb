@@ -29,8 +29,10 @@ class StudentsController extends Controller
 
         $semester = $request->input('semester');
 
+
         if($semester) {
             $YearClasses = YearClass::where('semester', '=', $semester)->get();
+
             $year_class = [
                 '一年級' => "",
                 '二年級' => "",
@@ -42,6 +44,9 @@ class StudentsController extends Controller
                 '總共' => "",
             ];
 
+            //統計全校人數用
+            $all_school = 0;
+
             foreach ($YearClasses as $YearClass) {
                 if (substr($YearClass->year_class, 0, 1) == 1) $year_class['一年級']++;
                 if (substr($YearClass->year_class, 0, 1) == 2) $year_class['二年級']++;
@@ -51,19 +56,36 @@ class StudentsController extends Controller
                 if (substr($YearClass->year_class, 0, 1) == 6) $year_class['六年級']++;
                 if (substr($YearClass->year_class, 0, 1) == 9) $year_class['特教班']++;
                 $year_class['總共']++;
+                $num = 0 ;
+                $boy = 0 ;
+                $girl = 0 ;
+                foreach($YearClass->semester_students as $semester_student){
+                    $all_school++;
+                    $num++;
+                    if($semester_student->student->sex =="1") $boy++;
+                    if($semester_student->student->sex =="2") $girl++;
+                }
+                $stud_num[$YearClass->id] = [
+                    'num'=>$num,
+                    'boy'=>$boy,
+                    'girl'=>$girl,
+                ];
             }
         }else{
             $year_class = array();
             $YearClasses = "";
-
+            $all_school = "";
+            $stud_num = "";
         }
+
 
         $data = [
             'semesters'=>$semesters,
             'semester'=>$semester,
-
             'year_class'=>$year_class,
             'YearClasses'=>$YearClasses,
+            'stud_num'=>$stud_num,
+            'all_school'=>$all_school,
         ];
 
 
@@ -170,7 +192,14 @@ class StudentsController extends Controller
      */
     public function delYearClass($semester)
     {
-        YearClass::where('semester','=',$semester)->delete();
+        $YearClasses = YearClass::where('semester','=',$semester)->get();
+
+        foreach($YearClasses as $YearClass) {
+            $YearClass->delete();
+            foreach ($YearClass->semester_students as $semester_student) {
+                $semester_student->delete();
+            }
+        }
 
         return redirect()->route('admin.indexStud');
     }
@@ -230,13 +259,13 @@ class StudentsController extends Controller
                 $att2['sn'] = $value['學號'];
                 $att2['name'] = $value['姓名'];
                 $att2['sex'] = $value['性別'];
-                $att2['YearClass_id'] = $yearclass->id;
+                $att2['year_class_id'] = $yearclass->id;
                 $att2['num'] = sprintf("%02s",$value['座號']);
                 $att2['at_school'] = 1;
                 $student = Student::create($att2);
 
                 $att3['student_id'] = $student->id;
-                $att3['YearClass_id'] = $yearclass->id;
+                $att3['year_class_id'] = $yearclass->id;
                 $att3['num'] = sprintf("%02s",$value['座號']);
 
                 SemesterStudent::create($att3);
