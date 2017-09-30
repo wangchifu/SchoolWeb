@@ -10,6 +10,5 @@ class Student extends Model
         'sn',
         'name',
         'sex',
-        'at_school',
     ];
 }

@@ -22,9 +22,7 @@
             <div class="well">
                 <h4>現有學年班級</h4>
                 {{ Form::open(['route' => 'admin.indexStud', 'method' => 'POST']) }}
-                {{ Form::select('semester', $semesters, null, ['id' => 'semester', 'class' => 'form-control', 'placeholder' => '請選擇學期']) }}
-                <br>
-                <button class="btn btn-success">查詢</button>
+                {{ Form::select('semester', $semesters, null, ['id' => 'semester', 'class' => 'form-control', 'placeholder' => '請選擇學期','onchange'=>'if(this.value != 0) { this.form.submit(); }']) }}
                 {{ Form::close() }}
             </div>
             @if($semester)

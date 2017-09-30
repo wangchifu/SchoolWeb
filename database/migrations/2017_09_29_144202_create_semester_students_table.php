@@ -18,6 +18,7 @@ class CreateSemesterStudentsTable extends Migration
             $table->unsignedInteger('student_id');
             $table->unsignedInteger('year_class_id');
             $table->string('num');
+            $table->unsignedInteger('at_school')->nullable();
             $table->timestamps();
         });
     }

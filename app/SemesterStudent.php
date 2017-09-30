@@ -10,6 +10,7 @@ class SemesterStudent extends Model
         'student_id',
         'year_class_id',
         'num',
+        'at_school',
     ];
     public function student()
     {

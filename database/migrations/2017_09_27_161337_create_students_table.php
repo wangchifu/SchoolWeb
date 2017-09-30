@@ -18,7 +18,6 @@ class CreateStudentsTable extends Migration
             $table->unsignedInteger('sn');
             $table->string('name');
             $table->unsignedInteger('sex');
-            $table->unsignedInteger('at_school')->nullable();
             $table->timestamps();
         });
     }

@@ -261,12 +261,12 @@ class StudentsController extends Controller
                 $att2['sex'] = $value['性別'];
                 $att2['year_class_id'] = $yearclass->id;
                 $att2['num'] = sprintf("%02s",$value['座號']);
-                $att2['at_school'] = 1;
                 $student = Student::create($att2);
 
                 $att3['student_id'] = $student->id;
                 $att3['year_class_id'] = $yearclass->id;
                 $att3['num'] = sprintf("%02s",$value['座號']);
+                $att3['at_school'] = 1;
 
                 SemesterStudent::create($att3);
 
