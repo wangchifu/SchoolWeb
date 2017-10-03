@@ -20,7 +20,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="well">
-                <h4>現有學年班級</h4>
+                <h4>查詢學期</h4>
                 {{ Form::open(['route' => 'admin.indexStud', 'method' => 'POST']) }}
                 {{ Form::select('semester', $semesters, null, ['id' => 'semester', 'class' => 'form-control', 'placeholder' => '請選擇學期','onchange'=>'if(this.value != 0) { this.form.submit(); }']) }}
                 {{ Form::close() }}
@@ -53,12 +53,40 @@
                     </div>
                     <div class="panel-body forum-content">
                         <h4>班級數</h4>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>
+                                    年級
+                                </th>
+                                <th>
+                                    班級數
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
                         @if($year_class)
                             @foreach($year_class as $k=>$v)
-                                <div>{{ $k }}：{{ $v }} 班</div>
+                                <tr>
+                                    <td>
+                                        {{ $k }}
+                                    </td>
+                                    <td>
+                                        {{ $v }} 班
+                                    </td>
+                                </tr>
                             @endforeach
                         @endif
-                        <div>全校：{{ $all_school }} 人</div>
+                            <tr>
+                                <td>
+                                    全校人數
+                                </td>
+                                <td>
+                                    {{ $all_school }} 人
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             @endif
@@ -174,7 +202,7 @@
                                         {{ $YearClass->year_class }}
                                     </td>
                                     <td>
-                                        {{ $YearClass->name }}
+                                        <a href="{{ route('admin.showStud',$YearClass->id) }}" class="btn btn-success">{{ $YearClass->name }}</a>
                                     </td>
                                     <td>
                                         {{ $stud_num[$YearClass->id]['num'] }} 人 ( 男： {{ $stud_num[$YearClass->id]['boy'] }} 人 ； 女： {{ $stud_num[$YearClass->id]['girl'] }} 人)

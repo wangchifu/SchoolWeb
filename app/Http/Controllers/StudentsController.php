@@ -249,21 +249,30 @@ class StudentsController extends Controller
                 $yearclass = YearClass::where('semester','=',$value['學期'])->where('year_class','=',$stud_class)->first();
                 $user = User::where('name','=',$value['導師'])->first();
 
+                //更新班級的導師
                 if($user) {
                     $att1['user_id'] = $user->id;
                     $yearclass->update($att1);
                 }
 
-
-
+                //更新學生
                 $att2['sn'] = $value['學號'];
                 $att2['name'] = $value['姓名'];
                 $att2['sex'] = $value['性別'];
                 $att2['year_class_id'] = $yearclass->id;
                 $att2['num'] = sprintf("%02s",$value['座號']);
-                $student = Student::create($att2);
 
-                $att3['student_id'] = $student->id;
+                $has_student = Student::where('sn','=',$value['學號'])->first();
+                if($has_student){
+                    $has_student->update($att2);
+                    $id = $has_student->id;
+                }else{
+                    $student = Student::create($att2);
+                    $id = $student->id;
+                }
+
+
+                $att3['student_id'] = $id;
                 $att3['year_class_id'] = $yearclass->id;
                 $att3['num'] = sprintf("%02s",$value['座號']);
                 $att3['at_school'] = 1;
@@ -274,5 +283,28 @@ class StudentsController extends Controller
         }
         return redirect()->route('admin.indexStud',"semester=".$value['學期']);
 
+    }
+
+    public function showStud(YearClass $yearClass)
+    {
+        $student_data = array();
+        foreach ($yearClass->semester_students as $semester_student) {
+            $student_data[$semester_student->num]['姓名'] = $semester_student->student->name;
+            if ($semester_student->student->sex == "1") {
+                $student_data[$semester_student->num]['性別'] = "男";
+            } else {
+                $student_data[$semester_student->num]['性別'] = "女";
+            }
+        }
+        if($student_data){
+            ksort($student_data);
+        }
+
+        $data = [
+            "yearClass"=>$yearClass,
+            "student_data"=>$student_data,
+        ];
+
+        return view('admin.studShow',$data);
     }
 }
