@@ -289,7 +289,11 @@ class StudentsController extends Controller
     {
         $student_data = array();
         foreach ($yearClass->semester_students as $semester_student) {
+            $student_data[$semester_student->num]['id'] = $semester_student->id;
+            $student_data[$semester_student->num]['stud_id'] = $semester_student->student->id;
+            $student_data[$semester_student->num]['班級'] = $yearClass->year_class;
             $student_data[$semester_student->num]['姓名'] = $semester_student->student->name;
+            $student_data[$semester_student->num]['學號'] = $semester_student->student->sn;
             if ($semester_student->student->sex == "1") {
                 $student_data[$semester_student->num]['性別'] = "男";
             } else {
@@ -300,11 +304,72 @@ class StudentsController extends Controller
             ksort($student_data);
         }
 
+        $users = User::all()->pluck('name', 'id')->toArray();
+
         $data = [
             "yearClass"=>$yearClass,
             "student_data"=>$student_data,
+            "users"=>$users,
         ];
 
         return view('admin.studShow',$data);
+    }
+
+    public function storeClassTea(Request $request,YearClass $yearClass)
+    {
+        $yearClass->update($request->all());
+        return redirect()->route('admin.showStud',$yearClass->id);
+
+    }
+
+    public function updateStud(Request $request)
+    {
+        $semester = $request->input('semester');
+        $year_class = $request->input('year_class');
+        $id = $request->input('id');
+
+        $new_year_class = YearClass::where('semester','=',$semester)->where('year_class','=',$year_class)->first();
+        $att1['year_class_id'] = $new_year_class->id;
+        $att1['num'] = $request->input('num');
+
+
+        $semester_student = SemesterStudent::where('id','=',$id)->first();
+        $semester_student-> update($att1);
+
+        $att2['name'] = $request->input('name');
+        Student::where('id','=',$semester_student->student_id)->update($att2);
+
+
+        return redirect()->route('admin.showStud',$att1['year_class_id']);
+
+    }
+
+    public function addStud(Request $request)
+    {
+        $att1['sn'] = $request->input('sn');
+        $att1['name'] = $request->input('name');
+        $att1['sex'] = $request->input('sex');
+        $student = Student::where('sn','=',$att1['sn'])->first();
+        if($student){
+            $student->update($att1);
+        }else{
+            $student =  Student::create($att1);
+        }
+        $att2['student_id'] = $student->id;
+        $att2['year_class_id'] = $request->input('year_class_id');
+        $att2['num'] = $request->input('num');
+        $att2['at_school'] = "1";
+        SemesterStudent::create($att2);
+
+        return redirect()->route('admin.showStud',$att2['year_class_id']);
+
+    }
+
+    public function outStud(SemesterStudent $semesterStudent)
+    {
+
+        $att['at_school'] = "0";
+        $semesterStudent->update($att);
+        //return redirect()->route('admin.showStud',$att2['year_class_id']);
     }
 }
