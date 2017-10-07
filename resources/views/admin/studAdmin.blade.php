@@ -222,7 +222,27 @@
         </div>
 
         <div class="col-md-4">
-
+            <div class="well">
+                <h4>本學期轉出名單</h4>
+                <table class="table table-striped">
+                    <thead>
+                    <th>學號</th>
+                    <th>班級 姓名</th>
+                    </thead>
+                    <tbody>
+                @foreach($out_students as $k=>$v)
+                    <tr>
+                        <td>
+                            {{$k}}
+                        </td>
+                        <td>
+                            {{$v}}
+                        </td>
+                    </tr>
+                @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

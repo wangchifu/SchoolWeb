@@ -60,10 +60,14 @@ class StudentsController extends Controller
                 $boy = 0 ;
                 $girl = 0 ;
                 foreach($YearClass->semester_students as $semester_student){
-                    $all_school++;
-                    $num++;
-                    if($semester_student->student->sex =="1") $boy++;
-                    if($semester_student->student->sex =="2") $girl++;
+                    if($semester_student->at_school == "1") {
+                        $all_school++;
+                        $num++;
+                        if ($semester_student->student->sex == "1") $boy++;
+                        if ($semester_student->student->sex == "2") $girl++;
+                    }else{
+                        $out_students[$semester_student->student->sn] = $semester_student->year_class->name." ".$semester_student->student->name;
+                    }
                 }
                 $stud_num[$YearClass->id] = [
                     'num'=>$num,
@@ -86,6 +90,7 @@ class StudentsController extends Controller
             'YearClasses'=>$YearClasses,
             'stud_num'=>$stud_num,
             'all_school'=>$all_school,
+            'out_students'=>$out_students,
         ];
 
 
@@ -289,15 +294,18 @@ class StudentsController extends Controller
     {
         $student_data = array();
         foreach ($yearClass->semester_students as $semester_student) {
-            $student_data[$semester_student->num]['id'] = $semester_student->id;
-            $student_data[$semester_student->num]['stud_id'] = $semester_student->student->id;
-            $student_data[$semester_student->num]['班級'] = $yearClass->year_class;
-            $student_data[$semester_student->num]['姓名'] = $semester_student->student->name;
-            $student_data[$semester_student->num]['學號'] = $semester_student->student->sn;
-            if ($semester_student->student->sex == "1") {
-                $student_data[$semester_student->num]['性別'] = "男";
-            } else {
-                $student_data[$semester_student->num]['性別'] = "女";
+            if($semester_student->at_school == "1") {
+                $student_data[$semester_student->num]['id'] = $semester_student->id;
+                $student_data[$semester_student->num]['stud_id'] = $semester_student->student->id;
+                $student_data[$semester_student->num]['班級'] = $yearClass->year_class;
+                $student_data[$semester_student->num]['姓名'] = $semester_student->student->name;
+                $student_data[$semester_student->num]['學號'] = $semester_student->student->sn;
+                //if ($semester_student->student->sex == "1") {
+                //    $student_data[$semester_student->num]['性別'] = "男";
+                //} else {
+                //    $student_data[$semester_student->num]['性別'] = "女";
+                //}
+                $student_data[$semester_student->num]['性別'] = $semester_student->student->sex;
             }
         }
         if($student_data){
@@ -337,6 +345,7 @@ class StudentsController extends Controller
         $semester_student-> update($att1);
 
         $att2['name'] = $request->input('name');
+        $att2['sex'] = $request->input('sex');
         Student::where('id','=',$semester_student->student_id)->update($att2);
 
 
@@ -359,7 +368,14 @@ class StudentsController extends Controller
         $att2['year_class_id'] = $request->input('year_class_id');
         $att2['num'] = $request->input('num');
         $att2['at_school'] = "1";
-        SemesterStudent::create($att2);
+
+        $semester_student = SemesterStudent::where('year_class_id','=',$att2['year_class_id'])->where('student_id','=',$student->id)->first();
+
+        if($semester_student) {
+            $semester_student->update($att2);
+        }else{
+            SemesterStudent::create($att2);
+        }
 
         return redirect()->route('admin.showStud',$att2['year_class_id']);
 
@@ -370,6 +386,6 @@ class StudentsController extends Controller
 
         $att['at_school'] = "0";
         $semesterStudent->update($att);
-        //return redirect()->route('admin.showStud',$att2['year_class_id']);
+        return redirect()->route('admin.showStud',$semesterStudent->year_class_id);
     }
 }
