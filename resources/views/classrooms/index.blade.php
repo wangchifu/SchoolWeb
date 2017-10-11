@@ -8,7 +8,9 @@
     </div>
     <ul class="nav nav-tabs">
         <li class="active"><a href="{{ route('classrooms.index',date('Y-m-d')) }}">預約</a></li>
-        <li><a href="{{ route('classrooms.admin') }}">管理</a></li>
+        @can('create', App\Classroom::class)
+            <li><a href="{{ route('classrooms.admin') }}">管理</a></li>
+        @endcan
     </ul>
     <br><br>
     <div class="row">

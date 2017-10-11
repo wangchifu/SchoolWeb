@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Classroom;
 use App\Models\Post;
 use App\Morning;
+use App\Policies\ClassroomPolicy;
 use App\Policies\MorningPolicy;
 use App\Policies\OpenfilePolicy;
 use App\Policies\ReportPolicy;
@@ -27,6 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         Report::class => ReportPolicy::class,
         Upload::class => OpenfilePolicy::class,
         Test::class => TestPolicy::class,
+        Classroom::class => ClassroomPolicy::class,
     ];
 
     /**

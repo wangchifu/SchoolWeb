@@ -17,6 +17,11 @@ class LunchController extends Controller
         //$funs = Fun::where('type','3')->get();
         return view('lunch.index');
     }
+    public function setup()
+    {
+
+        return view('lunch.setup');
+    }
 
     /**
      * Show the form for creating a new resource.

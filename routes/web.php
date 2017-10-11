@@ -89,6 +89,7 @@ Route::get('classrooms/{orderClassroom}/delOrder','ClassroomsController@delOrder
 
 //午餐系統
 Route::get('lunch/index','LunchController@index')->name('lunch.index');
+Route::get('lunch/setup','LunchController@setup')->name('lunch.setup');
 
 //管理介面
 Route::group(['middleware' => 'admin'],function(){
