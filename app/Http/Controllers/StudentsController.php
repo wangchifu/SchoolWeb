@@ -81,7 +81,7 @@ class StudentsController extends Controller
             $all_school = "";
             $stud_num = "";
         }
-
+        if(empty($out_students)) $out_students = [];
 
         $data = [
             'semesters'=>$semesters,
