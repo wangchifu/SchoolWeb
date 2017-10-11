@@ -25,7 +25,7 @@
                 </div>
                 <div class="panel-body forum-content">
                     <?php
-                        $select = ["1"=>"報修系統","2"=>"運動會報名"];
+                        $select = ["1"=>"報修系統","2"=>"運動會報名","3"=>"午餐系統"];
                     ?>
                         {{ Form::open(['route' => 'admin.storeFun', 'method' => 'POST']) }}
                     <table class="table table-striped">

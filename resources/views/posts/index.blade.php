@@ -41,9 +41,9 @@
             <?php
             if($post->insite){
                 if($client_in=="1" or auth()->check()){
-                    $title = "<a href=\"". route('posts.show', $post->id) ."\"><p class='btn btn-danger btn-xs'>校內文件</p> ". $this_title . "</a>";
+                    $title = "<a href=\"". route('posts.show', $post->id) ."\"><p class='btn btn-danger btn-xs'>校內</p> ". $this_title . "</a>";
                 }else{
-                    $title = "<p class='btn btn-danger btn-xs'>校內文件</p>";
+                    $title = "<p class='btn btn-danger btn-xs'>校內</p>";
                 }
             }else{
                 $title = "<a href=\"". route('posts.show', $post->id) ."\">". $this_title . "</a>";
@@ -65,9 +65,9 @@
                     <?php
                     if($post->insite){
                         if($client_in=="1" or auth()->check()){
-                            $title = "[未來公告] <a href=\"". route('posts.show', $post->id) ."\"><p class='btn btn-danger btn-xs'>校內文件</p> ". $post->title . "</a>";
+                            $title = "[未來公告] <a href=\"". route('posts.show', $post->id) ."\"><p class='btn btn-danger btn-xs'>校內</p> ". $post->title . "</a>";
                         }else{
-                            $title = "[未來公告] <p class='btn btn-danger btn-xs'>校內文件</p>";
+                            $title = "[未來公告] <p class='btn btn-danger btn-xs'>校內</p>";
                         }
                     }else{
                         $title = "[未來公告] <a href=\"". route('posts.show', $post->id) ."\">". $post->title . "</a>";
