@@ -15,12 +15,12 @@ class CreateLunchSetup extends Migration
     {
         Schema::create('lunch_setups', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('semester');
+            $table->string('semester')->unique();
             $table->unsignedInteger('tea_money');
             $table->unsignedInteger('stud_money');
             $table->unsignedInteger('stud_back_money');
             $table->unsignedInteger('die_line');
-            $table->string('stud_gra_date');
+            $table->string('stud_gra_date')->nullable();
             $table->timestamps();
         });
     }

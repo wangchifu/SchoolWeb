@@ -259,30 +259,33 @@ class StudentsController extends Controller
                     $att1['user_id'] = $user->id;
                     $yearclass->update($att1);
                 }
+                //無此班級跳過
+                if($yearclass) {
 
-                //更新學生
-                $att2['sn'] = $value['學號'];
-                $att2['name'] = $value['姓名'];
-                $att2['sex'] = $value['性別'];
-                $att2['year_class_id'] = $yearclass->id;
-                $att2['num'] = sprintf("%02s",$value['座號']);
+                    //更新學生
+                    $att2['sn'] = $value['學號'];
+                    $att2['name'] = $value['姓名'];
+                    $att2['sex'] = $value['性別'];
+                    $att2['year_class_id'] = $yearclass->id;
+                    $att2['num'] = sprintf("%02s", $value['座號']);
 
-                $has_student = Student::where('sn','=',$value['學號'])->first();
-                if($has_student){
-                    $has_student->update($att2);
-                    $id = $has_student->id;
-                }else{
-                    $student = Student::create($att2);
-                    $id = $student->id;
+                    $has_student = Student::where('sn', '=', $value['學號'])->first();
+                    if ($has_student) {
+                        $has_student->update($att2);
+                        $id = $has_student->id;
+                    } else {
+                        $student = Student::create($att2);
+                        $id = $student->id;
+                    }
+
+
+                    $att3['student_id'] = $id;
+                    $att3['year_class_id'] = $yearclass->id;
+                    $att3['num'] = sprintf("%02s", $value['座號']);
+                    $att3['at_school'] = 1;
+
+                    SemesterStudent::create($att3);
                 }
-
-
-                $att3['student_id'] = $id;
-                $att3['year_class_id'] = $yearclass->id;
-                $att3['num'] = sprintf("%02s",$value['座號']);
-                $att3['at_school'] = 1;
-
-                SemesterStudent::create($att3);
 
             }
         }

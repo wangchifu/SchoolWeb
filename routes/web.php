@@ -90,6 +90,11 @@ Route::get('classrooms/{orderClassroom}/delOrder','ClassroomsController@delOrder
 //午餐系統
 Route::get('lunch/index','LunchController@index')->name('lunch.index');
 Route::get('lunch/setup','LunchController@setup')->name('lunch.setup');
+Route::post('lunch/store_setup','LunchController@store_setup')->name('lunch.store_setup');
+Route::patch('lunch/{lunch_setup}/update_setup','LunchController@update_setup')->name('lunch.update_setup');
+Route::get('lunch/{lunch_setup}/delete_setup','LunchController@delete_setup')->name('lunch.delete_setup');
+Route::get('lunch/{semester}/create_order','LunchController@create_order')->name('lunch.create_order');
+Route::post('lunch/store_order','LunchController@store_order')->name('lunch.store_order');
 
 //管理介面
 Route::group(['middleware' => 'admin'],function(){
