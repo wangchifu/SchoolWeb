@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Fun;
+use App\LunchOrder;
+use App\LunchOrderDate;
 use App\LunchSetup;
 use Illuminate\Http\Request;
 
@@ -29,8 +31,11 @@ class LunchController extends Controller
 
 
         $lunch_setups = LunchSetup::orderBy('id')->get();
+        foreach($lunch_setups as $lunch_setup){
+            $has_order[$lunch_setup->semester] = LunchOrder::where('semester','=',$lunch_setup->semester)->first();
+        }
 
-        return view('lunch.setup',compact('lunch_setups'));
+        return view('lunch.setup',compact('lunch_setups','has_order'));
     }
     public function store_setup(Request $request)
     {
@@ -44,7 +49,10 @@ class LunchController extends Controller
     }
     public function delete_setup(LunchSetup $lunch_setup)
     {
+        $semester = $lunch_setup->semester;
         $lunch_setup->delete();
+        LunchOrder::where('semester','=',$semester)->delete();
+        LunchOrderDate::where('semester','=',$semester)->delete();
         return redirect()->route('lunch.setup');
     }
     public function create_order($semester)
@@ -55,7 +63,7 @@ class LunchController extends Controller
         if($this_seme == 1){
             $month_array = ["八月"=>$this_year."-08","九月"=>$this_year."-09","十月"=>$this_year."-10","十一月"=>$this_year."-11","十二月"=>$this_year."-12","一月"=>$next_year."-01"];
         }else{
-            $month_array = ["二月"=>$this_year."-02","三月"=>$this_year."-03","四月"=>$this_year."-04","五月"=>$this_year."-05","六月"=>$this_year."-06"];
+            $month_array = ["二月"=>$next_year."-02","三月"=>$next_year."-03","四月"=>$next_year."-04","五月"=>$next_year."-05","六月"=>$next_year."-06"];
         }
         ;
 
@@ -75,7 +83,22 @@ class LunchController extends Controller
 
     public function store_order(Request $request)
     {
-        print_r($request->all());
+        $order_date = $request->input('order_date');
+        $last_name = "";
+        foreach($order_date as $k=>$v){
+            $att['name'] = substr($k,0,7);
+            if($att['name'] != $last_name){
+                 $att['semester'] = $request->input('semester');
+                $att['enable'] = 1;
+                $lunch_order = LunchOrder::create($att);
+            }
+            $last_name = $att['name'];
+            $att2['order_date'] = $k;
+            $att2['semester'] = $request->input('semester');
+            $att2['lunch_order_id'] = $lunch_order->id;
+            LunchOrderDate::create($att2);
+        }
+        return redirect()->route('lunch.setup');
     }
 
     /**

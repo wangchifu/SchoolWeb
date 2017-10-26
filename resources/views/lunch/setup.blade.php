@@ -55,11 +55,11 @@
                                 </td>
                             </tr>
                             {{ Form::close() }}
-                        @foreach($lunch_setups as $lunch_setup)
-                            {{ Form::open(['route'=>['lunch.update_setup',$lunch_setup->id],'method'=>'PATCH','id'=>'updateSetup','onsubmit'=>'return false;']) }}
+                        @foreach($lunch_setups as $k=>$lunch_setup)
+                            {{ Form::open(['route'=>['lunch.update_setup',$lunch_setup->id],'method'=>'PATCH','id'=>'updateSetup'.$k,'onsubmit'=>'return false;']) }}
                             <tr>
                                 <td>
-                                    {{ Form::text('semester',$lunch_setup->semester,['id'=>'semester','class' => 'form-control', 'placeholder' => '學年學期：1061','required'=>'required','maxlength'=>'4']) }}
+                                    {{ Form::text('semester',$lunch_setup->semester,['id'=>'semester','class' => 'form-control', 'placeholder' => '學年學期：1061','required'=>'required','maxlength'=>'4','readonly'=>'readonly']) }}
                                 </td>
                                 <td>
                                     {{ Form::text('tea_money',$lunch_setup->tea_money,['id'=>'tea_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'4']) }}
@@ -77,7 +77,13 @@
                                     {{ Form::text('stud_gra_date',$lunch_setup->stud_gra_date,['id'=>'stud_gra_date','class' => 'form-control', 'placeholder' => '2016-06-25','maxlength'=>'10']) }}
                                 </td>
                                 <td>
-                                    <button class="btn btn-info" onclick="bbconfirm('updateSetup','確定修改？')">修改</button> <a href="{{ route('lunch.delete_setup',$lunch_setup->id) }}" id="DelLink" class="btn btn-danger" onclick="bbconfirm2('DelLink','你確定要刪除這學期的設定嗎？<br>有訂餐資料時，切勿刪除！')">刪除</a> <a href="{{ route('lunch.create_order',$lunch_setup->semester) }}" class="btn btn-success">新增餐期</a>
+                                    <button class="btn btn-info" onclick="bbconfirm('updateSetup{{ $k }}','確定修改？')">修改</button>
+                                    @if($has_order[$lunch_setup->semester])
+                                        <a href="" class="btn btn-primary">觀看餐期</a>
+                                    @else
+                                    <a href="{{ route('lunch.create_order',$lunch_setup->semester) }}" class="btn btn-success">設定餐期</a>
+                                    @endif
+                                    <a href="{{ route('lunch.delete_setup',$lunch_setup->id) }}" id="DelLink{{ $k }}" class="btn btn-danger" onclick="bbconfirm2('DelLink{{ $k }}','你確定要刪除這學期的設定嗎？<br>若已有任何訂餐資料時，切勿刪除！')">整個刪除</a>
                                 </td>
                             </tr>
                             {{ Form::close() }}
@@ -171,6 +177,7 @@
                             </tbody>
                         </table>
                 @endforeach
+                    <input name="semester" type="hidden" value="{{ $semester }}">
                     <button class="btn btn-success">送出</button>
                     {{ Form::close() }}
                     整學期共 <input type="text" id="total_days" value="{{ $total_days }}" size="2" readonly="readonly"> 天
