@@ -6,6 +6,7 @@ use App\Fun;
 use App\LunchOrder;
 use App\LunchOrderDate;
 use App\LunchSetup;
+use App\LunchTeaDate;
 use Illuminate\Http\Request;
 
 class LunchController extends Controller
@@ -19,17 +20,30 @@ class LunchController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $semester = "";
-        return view('lunch.index',compact('semester'));
+
+        $semester = ($request->input('semester'))?$request->input('semester'):"";
+        $semester_dates = $this->get_semester_dates($semester);
+        $order_dates = $this->get_order_dates($semester);
+
+        $tea_dates = $order_dates;
+
+        $semesters = LunchSetup::orderBy('id')->pluck('semester', 'semester')->toArray();
+
+        $data = [
+            "semester"=>$semester,
+            "semesters"=>$semesters,
+            "semester_dates"=>$semester_dates,
+            "order_dates"=>$order_dates,
+            "tea_dates"=>$tea_dates,
+        ];
+        return view('lunch.index',$data);
     }
     public function setup()
     {
         $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
         if(empty($check)) return view('errors.not_admin');
-
-
         $lunch_setups = LunchSetup::orderBy('id')->get();
         foreach($lunch_setups as $lunch_setup){
             $has_order[$lunch_setup->semester] = LunchOrder::where('semester','=',$lunch_setup->semester)->first();
@@ -37,6 +51,28 @@ class LunchController extends Controller
 
         return view('lunch.setup',compact('lunch_setups','has_order'));
     }
+
+    public function show_order($show_semester)
+    {
+        $lunch_setups = LunchSetup::orderBy('id')->get();
+        foreach($lunch_setups as $lunch_setup){
+            $has_order[$lunch_setup->semester] = LunchOrder::where('semester','=',$lunch_setup->semester)->first();
+        }
+
+        $order_dates = $this->get_order_dates($show_semester);
+
+        $semester_dates = $this->get_semester_dates($show_semester);
+
+        $data = [
+            'lunch_setups'=>$lunch_setups,
+            'has_order'=>$has_order,
+            'show_semester'=>$show_semester,
+            'semester_dates'=>$semester_dates,
+            'order_dates'=>$order_dates,
+        ];
+        return view('lunch.setup',$data);
+    }
+
     public function store_setup(Request $request)
     {
         LunchSetup::create($request->all());
@@ -57,25 +93,11 @@ class LunchController extends Controller
     }
     public function create_order($semester)
     {
-        $this_year = substr($semester,0,3)+1911;
-        $this_seme = substr($semester,-1,1);
-        $next_year = $this_year +1 ;
-        if($this_seme == 1){
-            $month_array = ["八月"=>$this_year."-08","九月"=>$this_year."-09","十月"=>$this_year."-10","十一月"=>$this_year."-11","十二月"=>$this_year."-12","一月"=>$next_year."-01"];
-        }else{
-            $month_array = ["二月"=>$next_year."-02","三月"=>$next_year."-03","四月"=>$next_year."-04","五月"=>$next_year."-05","六月"=>$next_year."-06"];
-        }
-        ;
-
-        foreach($month_array as $k => $v) {
-            $semester_order[$k] = $this->get_date($v);
-        }
-
+        $semester_dates = $this->get_semester_dates($semester);
 
         $data = [
             "semester" => $semester,
-            "month_array"=>$month_array,
-            "semester_order"=>$semester_order,
+            "semester_dates"=>$semester_dates,
         ];
 
         return view('lunch.setup',$data);
@@ -99,6 +121,18 @@ class LunchController extends Controller
             LunchOrderDate::create($att2);
         }
         return redirect()->route('lunch.setup');
+    }
+
+    public function store_tea_date(Request $request)
+    {
+        $order_date = $request->input('order_date');
+        $att['semester'] = $request->input('semester');
+        $att['user_id'] = auth()->user()->id;
+        foreach($order_date as $k=> $v){
+            $att['order_date'] = $k;
+            //$att['lunch_order_id'] =
+            //LunchTeaDate::create($att);
+        }
     }
 
     /**
@@ -165,6 +199,38 @@ class LunchController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function get_order_dates($semester)
+    {
+        $order_dates = [];
+        $lunch_order_dates = LunchOrderDate::where('semester','=',$semester)->get();
+        if($lunch_order_dates) {
+            foreach ($lunch_order_dates as $k => $v) {
+                $order_dates[$v->order_date] = 'on';
+            }
+        }
+
+
+        return $order_dates;
+    }
+    //秀某學期的每一天
+    public function get_semester_dates($semester)
+    {
+        $this_year = substr($semester,0,3)+1911;
+        $this_seme = substr($semester,-1,1);
+        $next_year = $this_year +1 ;
+        if($this_seme == 1){
+            $month_array = ["八月"=>$this_year."-08","九月"=>$this_year."-09","十月"=>$this_year."-10","十一月"=>$this_year."-11","十二月"=>$this_year."-12","一月"=>$next_year."-01"];
+        }else{
+            $month_array = ["二月"=>$next_year."-02","三月"=>$next_year."-03","四月"=>$next_year."-04","五月"=>$next_year."-05","六月"=>$next_year."-06"];
+        }
+
+
+        foreach($month_array as $k => $v) {
+            $semester_dates[$k] = $this->get_date($v);
+        }
+        return $semester_dates;
     }
 
     //秀某月的每一天

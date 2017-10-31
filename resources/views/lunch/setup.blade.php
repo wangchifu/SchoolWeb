@@ -79,7 +79,7 @@
                                 <td>
                                     <button class="btn btn-info" onclick="bbconfirm('updateSetup{{ $k }}','確定修改？')">修改</button>
                                     @if($has_order[$lunch_setup->semester])
-                                        <a href="" class="btn btn-primary">觀看餐期</a>
+                                        <a href="{{ route('lunch.show_order',$lunch_setup->semester) }}" class="btn btn-primary">觀看餐期</a>
                                     @else
                                     <a href="{{ route('lunch.create_order',$lunch_setup->semester) }}" class="btn btn-success">設定餐期</a>
                                     @endif
@@ -94,6 +94,72 @@
             </div>
         </div>
     </div>
+        @if(!empty($show_semester))
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3>{{ $show_semester }} 學期供餐日期：共 {{ count($order_dates) }} 天</h3>
+                        </div>
+                        <div class="panel-content">
+                            @foreach($semester_dates as $k1 =>$v1)
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th class="bg-success">六</th><th class="bg-danger">日</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                <?php
+                                    $first_d = explode("-",$v1[1]);
+                                    $first_w = date("w",mktime(0,0,0,$first_d[1],$first_d[2],$first_d[0]));
+                                    if($first_w==0) $first_w=7;
+
+                                    for($k=1;$k<$first_w;$k++){
+                                        if($k < 6){
+                                            echo "<td></td>";
+                                        }else{
+                                            echo "<td class = \"bg-success\"></td>";
+                                        }
+                                    }
+                                ?>
+                                @foreach( $v1 as $k2=>$v2)
+                                    <?php
+                                        $d = explode("-",$v2);
+                                        $w = date("w",mktime(0,0,0,$d[1],$d[2],$d[0]));
+                                        if($w == "6"){
+                                            $checked = "";
+                                            $bgcolor = "bg-success";
+                                        }elseif($w == "0"){
+                                            $checked = "";
+                                            $bgcolor = "bg-danger";
+                                        }else{
+                                            $checked = "checked";
+                                            $bgcolor = "";
+                                        }
+                                    ?>
+                                    <td class="{{ $bgcolor }}">{{ $v2 }}
+                                        @if(!empty($order_dates[$v2]))
+                                            <span class="btn btn-success btn-xs">供餐</span>
+                                        @else
+                                            <span class="btn btn-danger btn-xs">不供餐</span>
+                                        @endif
+                                    </td>
+                                        <?php
+                                        if($w == "0") echo "</tr><tr>";
+                                        ?>
+                                @endforeach
+                            @endforeach
+                                    </tr>
+                                    </tbody>
+                                </table>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+        @endif
     @else
     <div class="row">
         <div class="col-md-12">
@@ -107,7 +173,7 @@
                 <div class="panel-content">
                     {{ Form::open(['route'=>'lunch.store_order','method'=>'POST']) }}
                     <?php $total_days = "";$i=1; ?>
-                @foreach($semester_order as $k1=>$v1)
+                @foreach($semester_dates as $k1=>$v1)
                         <table class="table table-bordered">
                             <thead>
                             <tr>
@@ -133,7 +199,6 @@
                                         echo "<td class = \"bg-success\"></td>";
                                     }
                                 }
-                                $month_days = "";
                                 ?>
                                 @foreach($v1 as $v2)
                                         <SCRIPT type='text/javascript'>
@@ -161,12 +226,11 @@
                                         }else{
                                             $checked = "checked";
                                             $bgcolor = "";
-                                            $month_days++;
                                             $total_days++;
                                         }
                                     ?>
                                     <td class="{{ $bgcolor }}">
-                                        {{ substr($v2,5,5) }} 供餐<br><input id="checkbox{{ $i }}" type="checkbox" name="order_date[{{ $v2 }}]" style="zoom:250%" {{ $checked }} onclick="goChangeBg{{ $i }}(this)">
+                                        {{ $v2 }} 供餐<br><input id="checkbox{{ $i }}" type="checkbox" name="order_date[{{ $v2 }}]" style="zoom:250%" {{ $checked }} onclick="goChangeBg{{ $i }}(this)">
                                     </td>
                                     <?php
                                         if($w == "0") echo "</tr><tr align=\"center\">";
