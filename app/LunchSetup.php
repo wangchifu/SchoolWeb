@@ -11,7 +11,11 @@ class LunchSetup extends Model
         'tea_money',
         'stud_money',
         'stud_back_money',
+        'support_part_money',
+        'support_all_money',
         'die_line',
+        'place',
+        'factory',
         'stud_gra_date',
     ];
 }

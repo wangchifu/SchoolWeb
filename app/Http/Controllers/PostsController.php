@@ -167,9 +167,9 @@ class PostsController extends Controller
     public function update(PostRequest $request, Post $post)
     {
         $this->authorize('update', $post);
-
-        $post->update($request->all());
-
+        $att = $request->all();
+        if(empty($att['insite']))  $att['insite'] = null;
+        $post->update($att);
 
         //處理檔案上傳
         $att['post_id'] = $post->id;

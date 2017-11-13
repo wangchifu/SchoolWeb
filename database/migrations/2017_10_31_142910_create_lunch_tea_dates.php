@@ -16,9 +16,13 @@ class CreateLunchTeaDates extends Migration
         Schema::create('lunch_tea_dates', function (Blueprint $table) {
             $table->increments('id');
             $table->string('order_date');
-            $table->string('semester');
+            $table->string('enable');
+            $table->unsignedInteger('semester');
             $table->unsignedInteger('lunch_order_id');
             $table->unsignedInteger('user_id');
+            $table->string('place');
+            $table->string('factory');
+            $table->unsignedInteger('eat_style');
             $table->timestamps();
         });
     }

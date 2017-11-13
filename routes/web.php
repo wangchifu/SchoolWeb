@@ -99,6 +99,9 @@ Route::get('lunch/{semester}/create_order','LunchController@create_order')->name
 Route::post('lunch/store_order','LunchController@store_order')->name('lunch.store_order');
 Route::get('lunch/{show_semester}/show_order','LunchController@show_order')->name('lunch.show_order');
 Route::post('lunch/store_tea_date','LunchController@store_tea_date')->name('lunch.store_tea_date');
+Route::post('lunch/del_tea_date','LunchController@del_tea_date')->name('lunch.del_tea_date');
+
+Route::get('lunch/stu','LunchController@stu')->name('lunch.stu');
 
 //管理介面
 Route::group(['middleware' => 'admin'],function(){

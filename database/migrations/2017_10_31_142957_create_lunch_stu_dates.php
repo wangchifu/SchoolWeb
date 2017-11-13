@@ -16,9 +16,12 @@ class CreateLunchStuDates extends Migration
         Schema::create('lunch_stu_dates', function (Blueprint $table) {
             $table->increments('id');
             $table->string('order_date');
-            $table->string('semester');
+            $table->string('enable');
+            $table->unsignedInteger('semester');
             $table->unsignedInteger('lunch_order_id');
-            $table->unsignedInteger('student_id');
+            $table->unsignedInteger('semester_student_id');
+            $table->unsignedInteger('p_id');
+            $table->unsignedInteger('eat_style');
             $table->timestamps();
         });
     }

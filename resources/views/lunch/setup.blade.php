@@ -8,7 +8,7 @@
     </div>
     <ul class="nav nav-tabs">
         <li><a href="{{ route('lunch.index') }}">1.教職員訂餐</a></li>
-        <li><a href="">2.學生訂餐</a></li>
+        <li><a href="{{ route('lunch.stu') }}">2.學生訂餐</a></li>
         <li><a href="">3.供餐確認表</a></li>
         <li><a href="">4.滿意度調查</a></li>
         <li><a href="">5.報表輸出</a></li>
@@ -26,7 +26,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th class="col-md-2">學期</th><th class="col-md-1">教職收費</th><th class="col-md-1">學生收費</th><th class="col-md-1">學生退費</th><th class="col-md-2">退餐幾日前</th><th class="col-md-2">六年級畢業日期</th><th>動作</th>
+                                <th class="col-md-1">學期</th><th>教職收費</th><th>學生收費</th><th>學生退費</th><th>部分補助</th><th>全額補助</th><th>幾日前退</th><th class="col-md-2">供餐地點</th><th class="col-md-1">廠商名稱</th><th class="col-md-1">畢業日期</th><th class="col-md-3">動作</th>
                         </thead>
                             </tr>
                         <tbody>
@@ -45,7 +45,19 @@
                                     {{ Form::text('stud_back_money',null,['id'=>'stud_back_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'4']) }}
                                 </td>
                                 <td>
+                                    {{ Form::text('support_part_money',null,['id'=>'support_part_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'4']) }}
+                                </td>
+                                <td>
+                                    {{ Form::text('support_all_money',null,['id'=>'support_all_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'4']) }}
+                                </td>
+                                <td>
                                     {{ Form::text('die_line',null,['id'=>'die_line','class' => 'form-control', 'placeholder' => '例：2 (天前)','required'=>'required','maxlength'=>'1']) }}
+                                </td>
+                                <td>
+                                    {{ Form::text('place',null,['id'=>'place','class' => 'form-control', 'placeholder' => '用逗號分隔','required'=>'required']) }}
+                                </td>
+                                <td>
+                                    {{ Form::text('factory',null,['id'=>'factory','class' => 'form-control', 'placeholder' => '用逗號分隔','required'=>'required']) }}
                                 </td>
                                 <td>
                                     {{ Form::text('stud_gra_date',null,['id'=>'stud_gra_date','class' => 'form-control', 'placeholder' => '2016-06-25','maxlength'=>'10']) }}
@@ -71,7 +83,19 @@
                                     {{ Form::text('stud_back_money',$lunch_setup->stud_back_money,['id'=>'stud_back_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'4']) }}
                                 </td>
                                 <td>
+                                    {{ Form::text('support_part_money',$lunch_setup->support_part_money,['id'=>'support_part_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'4']) }}
+                                </td>
+                                <td>
+                                    {{ Form::text('support_all_money',$lunch_setup->support_all_money,['id'=>'support_all_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'4']) }}
+                                </td>
+                                <td>
                                     {{ Form::text('die_line',$lunch_setup->die_line,['id'=>'die_line','class' => 'form-control', 'placeholder' => '例：2 (天前)','required'=>'required','maxlength'=>'1']) }}
+                                </td>
+                                <td>
+                                    {{ Form::text('place',$lunch_setup->place,['id'=>'die_line','class' => 'form-control', 'placeholder' => '用逗號分隔','required'=>'required']) }}
+                                </td>
+                                <td>
+                                    {{ Form::text('factory',$lunch_setup->factory,['id'=>'die_line','class' => 'form-control', 'placeholder' => '用逗號分隔','required'=>'required']) }}
                                 </td>
                                 <td>
                                     {{ Form::text('stud_gra_date',$lunch_setup->stud_gra_date,['id'=>'stud_gra_date','class' => 'form-control', 'placeholder' => '2016-06-25','maxlength'=>'10']) }}
@@ -99,7 +123,13 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3>{{ $show_semester }} 學期供餐日期：共 {{ count($order_dates) }} 天</h3>
+                            <?php
+                                $total_order_dates = "";
+                                foreach($order_dates as $v){
+                                    if($v == "1") $total_order_dates++;
+                                }
+                            ?>
+                            <h3>{{ $show_semester }} 學期供餐日期：共 {{ $total_order_dates }} 天</h3>
                         </div>
                         <div class="panel-content">
                             @foreach($semester_dates as $k1 =>$v1)
@@ -140,7 +170,7 @@
                                         }
                                     ?>
                                     <td class="{{ $bgcolor }}">{{ $v2 }}
-                                        @if(!empty($order_dates[$v2]))
+                                        @if($order_dates[$v2]=="1")
                                             <span class="btn btn-success btn-xs">供餐</span>
                                         @else
                                             <span class="btn btn-danger btn-xs">不供餐</span>

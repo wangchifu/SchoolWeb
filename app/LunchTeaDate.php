@@ -8,8 +8,12 @@ class LunchTeaDate extends Model
 {
     protected $fillable = [
         'order_date',
+        'enable',
         'semester',
         'lunch_order_id',
         'user_id',
+        'place',
+        'factory',
+        'eat_style',
     ];
 }
