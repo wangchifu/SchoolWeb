@@ -101,6 +101,7 @@ Route::get('lunch/{show_semester}/show_order','LunchController@show_order')->nam
 Route::post('lunch/store_tea_date','LunchController@store_tea_date')->name('lunch.store_tea_date');
 Route::post('lunch/del_tea_date','LunchController@del_tea_date')->name('lunch.del_tea_date');
 
+Route::get('lunch/special','LunchController@special')->name('lunch.special');
 Route::get('lunch/stu','LunchController@stu')->name('lunch.stu');
 
 //管理介面

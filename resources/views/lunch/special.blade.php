@@ -4,14 +4,14 @@
 
 @section('content')
     <div class="page-header">
-        <h1>學生訂餐</h1>
+        <h1>特殊處理</h1>
     </div>
     <ul class="nav nav-tabs">
         <li><a href="{{ route('lunch.index') }}">1.教職員訂餐</a></li>
-        <li class="active"><a href="{{ route('lunch.stu') }}">2.學生訂餐</a></li>
+        <li><a href="{{ route('lunch.stu') }}">2.學生訂餐</a></li>
         <li><a href="">3.供餐確認表</a></li>
         <li><a href="">4.滿意度調查</a></li>
-        <li><a href="{{ route('lunch.special') }}">5.特殊處理</a></li>
+        <li class="active"><a href="{{ route('lunch.special') }}">5.特殊處理</a></li>
         <li><a href="">6.報表輸出</a></li>
         <li><a href="{{ route('lunch.setup') }}">7.系統管理</a></li>
     </ul>

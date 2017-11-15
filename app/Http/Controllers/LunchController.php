@@ -215,25 +215,36 @@ class LunchController extends Controller
         $second_date = str_replace ("-","",$die_date);
 
         if($first_date < $second_date){
-            die($order_date.'當日已經無法做變更！ <button class="btn btn-default" onclick="history.back()">返回</button>');
+            $words = "當日已經無法做變更！";
+            return view('errors.errors',compact('words'));
         }
 
         $tea_date = LunchTeaDate::where('order_date','=',$order_date)->first();
         if(!empty($tea_date)){
             if($tea_date->enable == "no_eat"){
-                die($order_date.' 你當天本來就取消訂餐了！<button class="btn btn-default" onclick="history.back()">返回</button>');
+                $words = $order_date." 你當天本來就取消訂餐了！";
+                return view('errors.errors',compact('words'));
             }
             if($tea_date->enable == "no"){
-                die($order_date.' 當天沒有供餐！<button class="btn btn-default" onclick="history.back()">返回</button>');
+                $words = $order_date." 當天沒有供餐！";
+                return view('errors.errors',compact('words'));
             }
         }else{
-            die($order_date.' 這天沒有供餐資料！<button class="btn btn-default" onclick="history.back()">返回</button>');
+            $words = $order_date." 這天沒有供餐資料！";
+            return view('errors.errors',compact('words'));
         }
 
 
         $att['enable'] = "no_eat";
         LunchTeaDate::where('order_date','=',$order_date)->update($att);
         return redirect()->route('lunch.index');
+    }
+
+    public function special()
+    {
+        $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
+        if(empty($check)) return view('errors.not_admin');
+        return view('lunch.special');
     }
 
     public function stu()
@@ -252,7 +263,8 @@ class LunchController extends Controller
         }
 
         if($is_tea == 0 and $is_admin == 0){
-            die(' 你沒有權限來這裡！<button class="btn btn-default" onclick="history.back()">返回</button>');
+            $words = $order_date." 你沒有權限來這裡！";
+            return view('errors.errors',compact('words'));
         }
 
 
