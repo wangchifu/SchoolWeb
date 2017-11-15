@@ -7,7 +7,7 @@
         <h1>系統管理</h1>
     </div>
     <ul class="nav nav-tabs">
-        <li><a href="{{ url('admin') }}">學生管理</a></li>
+        <li><a href="{{ url('admin') }}">使用者管理</a></li>
         <li class="active"><a href="{{ url('admin/studAdmin') }}">學生管理</a></li>
         <li><a href="{{ url('admin/funAdmin') }}">指定管理</a></li>
         <li><a href="{{ url('admin/postAdmin') }}">公告管理</a></li>
