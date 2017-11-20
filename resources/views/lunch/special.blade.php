@@ -17,13 +17,144 @@
     </ul>
     <div class="row">
         <div class="col-md-12">
+            <div class="well">
+                {{ Form::open(['route' => 'lunch.special', 'method' => 'POST']) }}
+                請先選擇學期：{{ Form::select('semester', $semesters, $semester, ['id' => 'semester', 'class' => 'form-control', 'placeholder' => '請先選擇學期','onchange'=>'if(this.value != 0) { this.form.submit(); }']) }}
+                {{ Form::close() }}
+            </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
+                    <h4>一、教師補訂餐</h4>
                 </div>
                 <div class="panel-content">
-
+                    {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST','id'=>'order_tea','onsubmit'=>'return false;']) }}
+                    <input type="hidden" name="op" value="order_tea">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>教師</th><th>學期</th><th>廠商</th><th>葷素</th><th>取餐地點</th><th>開始訂餐日</th><th>動作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                {{ Form::select('user_id', $users, null, ['id' => 'user_id', 'class' => 'form-control', 'placeholder' => '請選擇老師','required' => 'required'])}}
+                            </td>
+                            <td>
+                                {{ Form::text('semester',$semester, ['id' => 'semester', 'class' => 'form-control', 'readonly' => 'readonly']) }}
+                            </td>
+                            <td>
+                                {{ Form::select('factory', $factorys,null, ['id' => 'factory', 'class' => 'form-control']) }}
+                            </td>
+                            <td>
+                                <input name="eat_style" type="radio" value="1" checked> <span class="btn btn-danger btn-xs">葷食</span><br>
+                                <input name="eat_style" type="radio" value="2"> <span class="btn btn-success btn-xs">素食</span>
+                            </td>
+                            <td>
+                                {{ Form::select('place', $places,null, ['id' => 'place', 'class' => 'form-control']) }}
+                            </td>
+                            <td>
+                                <script src="{{ asset('js/cal/jscal2.js') }}"></script>
+                                <script src="{{ asset('js/cal/lang/cn.js') }}"></script>
+                                <link rel="stylesheet" type="text/css" href="{{ asset('css/cal/jscal2.css') }}">
+                                <link rel="stylesheet" type="text/css" href="{{ asset('css/cal/border-radius.css') }}">
+                                <link rel="stylesheet" type="text/css" href="{{ asset('css/cal/steel/steel.css') }}">
+                                <input id="b_order_date" name="b_order_date" class="form-control" placeholder ="請選起始日" required="required" value="{{ date('Y-m-d') }}">
+                                <script>
+                                    Calendar.setup({
+                                        dateFormat : '%Y-%m-%d',
+                                        inputField : 'b_order_date',
+                                        trigger    : 'b_order_date',
+                                        onSelect   : function() { this.hide();}
+                                    });
+                                </script>
+                            </td>
+                            <td>
+                                <button class="btn btn-success" onclick="bbconfirm('order_tea','你確定新增嗎？有欄位沒填嗎？')">新增</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    {{ Form::close() }}
                 </div>
             </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>二、教職訂餐改變</h4>
+                </div>
+                <div class="panel-content">
+                    {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST','id'=>'cancel_tea','onsubmit'=>'return false;']) }}
+                    <input type="hidden" name="op" value="cancel_tea">
+                    <table class="table">
+                        <thead>
+                        <tr><th>教師</th><th>訂餐日</th><th>更改</th></th><th>動作</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                {{ Form::select('user_id', $users, null, ['id' => 'user_id', 'class' => 'form-control', 'placeholder' => '請選擇老師','required' => 'required'])}}
+                            </td>
+                            <td>
+                                <script src="{{ asset('js/cal/jscal2.js') }}"></script>
+                                <script src="{{ asset('js/cal/lang/cn.js') }}"></script>
+                                <link rel="stylesheet" type="text/css" href="{{ asset('css/cal/jscal2.css') }}">
+                                <link rel="stylesheet" type="text/css" href="{{ asset('css/cal/border-radius.css') }}">
+                                <link rel="stylesheet" type="text/css" href="{{ asset('css/cal/steel/steel.css') }}">
+                                <input id="c_order_date" name="c_order_date" class="form-control" placeholder ="請選起始日" required="required" value="{{ date('Y-m-d') }}">
+                                <script>
+                                    Calendar.setup({
+                                        dateFormat : '%Y-%m-%d',
+                                        inputField : 'c_order_date',
+                                        trigger    : 'c_order_date',
+                                        onSelect   : function() { this.hide();}
+                                    });
+                                </script>
+                            </td>
+                            <td>
+                                <?php
+                                    $selects = ['no_eat'=>'取消訂餐','eat'=>'又要訂餐']
+                                ?>
+                                {{ Form::select('enable', $selects, null, ['id' => 'enable', 'class' => 'form-control'])}}
+                            </td>
+                            <td>
+                                <button class="btn btn-success" onclick="bbconfirm('cancel_tea','你確定要取消該師訂餐嗎？')">執行</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    {{ Form::close() }}
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>三、教職更改葷素</h4>
+                </div>
+                <div class="panel-content">
+                    <table class="table">
+                        <thead>
+                        <tr><th>教師</th><th>學期</th><th>葷素</th><th>改葷素起啟日</th><th>動作</th></tr>
+                        </thead>
+
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>四、教職更改取餐地點</h4>
+                </div>
+                <div class="panel-content">
+                    <table class="table">
+                        <thead>
+                        <tr><th>教師</th><th>學期</th><th>地點</th><th>改葷素起啟日</th><th>動作</th></tr>
+                        </thead>
+
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 @endsection

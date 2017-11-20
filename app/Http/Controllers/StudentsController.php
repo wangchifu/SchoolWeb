@@ -315,7 +315,7 @@ class StudentsController extends Controller
             ksort($student_data);
         }
 
-        $users = User::all()->pluck('name', 'id')->toArray();
+        $users = User::orderBy('order_by')->pluck('name', 'id')->toArray();
 
         $data = [
             "yearClass"=>$yearClass,

@@ -7,6 +7,7 @@ use App\LunchOrder;
 use App\LunchOrderDate;
 use App\LunchSetup;
 use App\LunchTeaDate;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -58,6 +59,17 @@ class LunchController extends Controller
                 $tea_dates = $this->get_user_order_date($semester);
                 $tea_eat_styles = $this->get_user_eat_style($semester);
             }else{
+
+                //處理逾期不給訂
+                $first = LunchOrderDate::where('semester','=',$semester)->where('enable','=','1')->orderBy('id')->first();
+                if($first){
+                    $die_date = str_replace('-','',$first->order_date);
+                    if(date('Ymd') > $die_date){
+                        $words = "你已經超過訂餐期限，忘記訂餐請洽管理者！";
+                        return view('errors.errors',compact('words'));
+                    }
+                }
+
                 $tea_dates = $order_dates;
             }
         }
@@ -240,11 +252,128 @@ class LunchController extends Controller
         return redirect()->route('lunch.index');
     }
 
-    public function special()
+    public function special(Request $request)
     {
         $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
         if(empty($check)) return view('errors.not_admin');
-        return view('lunch.special');
+
+        //查目前學期
+        $y = date('Y') - 1911;
+        $array1 = array(8,9,10,11,12,1);
+        $array2 = array(2,3,4,5,6,7);
+        if(in_array(date('n'),$array1)){
+            if(date('n') == 1){
+                $this_semester = ($y-1)."1";
+            }else{
+                $this_semester = $y."1";
+            }
+        }else{
+            $this_semester = ($y-1)."2";
+        }
+
+        $semester = (empty($request->input('semester')))?$this_semester:$request->input('semester');
+
+        $semesters = LunchSetup::all()->pluck('semester', 'semester')->toArray();
+        $d = LunchSetup::where('semester','=',$semester)->first();
+        $factorys_array = explode(',',$d->factory);
+        $places_array = explode(',',$d->place);
+        foreach($factorys_array as $factory){
+            $factorys[$factory] = $factory;
+        }
+        foreach($places_array as $place){
+            $places[$place] = $place;
+        }
+
+        $users = User::orderBy('order_by')->pluck('name', 'id')->toArray();
+
+        $data = [
+            'users'=>$users,
+            'semester'=>$semester,
+            'semesters'=>$semesters,
+            'factorys'=>$factorys,
+            'places'=>$places,
+        ];
+
+
+
+        return view('lunch.special',$data);
+    }
+
+    public function do_special(Request $request)
+    {
+        switch ($request->input('op')){
+            case "order_tea":
+                if(empty(($request->input('user_id')))){
+                    $words = "你沒有選擇老師！";
+                    return view('errors.errors', compact('words'));
+                }
+
+
+                $check_order = LunchTeaDate::where('user_id','=',$request->input('user_id'))->where('order_date','=',$request->input('b_order_date'))->first();
+                if($check_order){
+                    $words = "這位教職員已經有訂餐記錄！請查明！";
+                    return view('errors.errors', compact('words'));
+                }
+
+                $order_dates = $this->get_order_dates($request->input('semester'));
+                $order_id_array = $this->get_order_id_array();
+                $b_order_date =  str_replace('-','',$request->input('b_order_date'));
+                foreach($order_dates as $k=>$v){
+                    $att['order_date'] = $k;
+                    if($v == 0){
+                        $att['enable'] = "no";
+                    }elseif($v == 1){
+                        $order_date = str_replace('-','',$k);
+                        if($order_date < $b_order_date) {
+                            $att['enable'] = "no_eat";
+                        }elseif($order_date >= $b_order_date){
+                            $att['enable'] = "eat";
+                        }
+                    }
+                    $att['semester'] = $request->input('semester');
+                    $att['lunch_order_id'] = $order_id_array[substr($k,0,7)];
+                    $att['user_id'] = $request->input('user_id');
+                    $att['place'] = $request->input('place');
+                    $att['factory'] = $request->input('factory');
+                    $att['eat_style'] = $request->input('eat_style');
+
+                    LunchTeaDate::create($att);
+                }
+                return redirect()->route('lunch.special');
+
+                break;
+            case "cancel_tea":
+                if(empty(($request->input('user_id')))){
+                    $words = "你沒有選擇老師！";
+                    return view('errors.errors', compact('words'));
+                }
+                    $tea_order_data = LunchTeaDate::where('user_id','=',$request->input('user_id'))->where('order_date','=',$request->input('c_order_date'))->first();
+                    if($tea_order_data){
+                        if($tea_order_data->enable == "no"){
+                            $words = $request->input('c_order_date') . "該日沒有供餐！";
+                            return view('errors.errors', compact('words'));
+                        }
+                        if($tea_order_data->enable == "no_eat" and $request->input('enable') == "no_eat"){
+                            $words = $request->input('c_order_date') . "該師該日早已取消訂餐！";
+                            return view('errors.errors', compact('words'));
+                        }
+                        if($tea_order_data->enable == "eat" and $request->input('enable') == "eat"){
+                            $words = $request->input('c_order_date') . "該師該日早已有訂餐！";
+                            return view('errors.errors', compact('words'));
+                        }
+
+                        $att['enable'] = $request->input('enable');
+
+                        $tea_order_data->update($att);
+                        return redirect()->route('lunch.special');
+
+                    }else{
+                        $words = "該師無此日的訂餐記錄！";
+                        return view('errors.errors', compact('words'));
+                    }
+                break;
+
+        }
     }
 
     public function stu()
