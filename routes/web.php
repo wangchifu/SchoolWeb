@@ -106,6 +106,8 @@ Route::post('lunch/do_special','LunchController@do_special')->name('lunch.do_spe
 
 Route::get('lunch/stu','LunchController@stu')->name('lunch.stu');
 
+Route::get('lunch/report','LunchController@report')->name('lunch.report');
+
 //管理介面
 Route::group(['middleware' => 'admin'],function(){
 //使用者管理

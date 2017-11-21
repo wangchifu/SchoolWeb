@@ -12,7 +12,7 @@
         <li><a href="">3.供餐確認表</a></li>
         <li><a href="">4.滿意度調查</a></li>
         <li><a href="{{ route('lunch.special') }}">5.特殊處理</a></li>
-        <li><a href="">6.報表輸出</a></li>
+        <li><a href="{{ route('lunch.report') }}">6.報表輸出</a></li>
         <li><a href="{{ route('lunch.setup') }}">7.系統管理</a></li>
     </ul>
     <div class="row">
@@ -111,7 +111,11 @@
                                 @if($user_has_order =="1")
                                 {{ $user_place }} (欲改地點請通知管理者)
                                 @else
-                                {{ Form::select('place', $place_array, null, ['id' => 'place', 'placeholder' => '請選擇用餐地點','required'=>'required']) }}
+                                    @if($has_class_tea)
+                                        {{ Form::text('place', $has_class_tea, ['id' => 'place', 'readonly'=>'readonly']) }}
+                                    @else
+                                        {{ Form::select('place', $place_array, null, ['id' => 'place', 'placeholder' => '請選擇用餐地點','required'=>'required']) }}
+                                    @endif
                                 @endif
                             </div>
                             <div class="form-group">
@@ -211,8 +215,8 @@
                                     @else
                                         @if($tea_dates[$v2] == "eat")
                                             <span id="span{{ $i }}" class="btn btn-primary btn-xs">已訂餐</span><br>
-                                            @if($tea_eat_styles[$v2]==1) 葷 @endif
-                                            @if($tea_eat_styles[$v2]==2) 素 @endif
+                                            @if($tea_eat_styles[$v2]==1) 葷 <img src="{{ asset('img/meat.png') }}" alt="葷">@endif
+                                            @if($tea_eat_styles[$v2]==2) 素 <img src="{{ asset('img/vegetarian.png') }}" alt="素">@endif
                                         @elseif($tea_dates[$v2] == "no_eat")
                                             <span id="span{{ $i }}" class="btn btn-danger btn-xs">已消取</span>
                                         @endif

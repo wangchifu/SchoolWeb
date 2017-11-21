@@ -77,6 +77,9 @@ class LunchController extends Controller
 
         $semesters = LunchSetup::orderBy('id')->pluck('semester', 'semester')->toArray();
 
+        //是不是導師
+        $has_class_tea = $this->has_class_tea();
+
         $data = [
             "semester"=>$semester,
             "semesters"=>$semesters,
@@ -89,6 +92,7 @@ class LunchController extends Controller
             "setups"=>$setups,
             "user_place"=>$user_place,
             "user_eat_style"=>$user_eat_style,
+            "has_class_tea"=>$has_class_tea,
         ];
         return view('lunch.index',$data);
     }
@@ -333,7 +337,11 @@ class LunchController extends Controller
                     $att['semester'] = $request->input('semester');
                     $att['lunch_order_id'] = $order_id_array[substr($k,0,7)];
                     $att['user_id'] = $request->input('user_id');
-                    $att['place'] = $request->input('place');
+                    if($request->input('place')=="班級教室"){
+                        $att['place'] = $request->input('classroom');
+                    }else{
+                        $att['place'] = $request->input('place');
+                    }
                     $att['factory'] = $request->input('factory');
                     $att['eat_style'] = $request->input('eat_style');
 
@@ -372,8 +380,42 @@ class LunchController extends Controller
                         return view('errors.errors', compact('words'));
                     }
                 break;
+            case "change_tea";
+                if(empty(($request->input('user_id')))){
+                    $words = "你沒有選擇老師！";
+                    return view('errors.errors', compact('words'));
+                }
+
+                $tea_order_data = LunchTeaDate::where('user_id','=',$request->input('user_id'))->where('semester','=',$request->input('semester'))->first();
+                if($tea_order_data){
+                    if(substr($request->input('change'),0,9) == 'eat_style'){
+                        $att['eat_style'] = substr($request->input('change'),-1);
+                    }else{
+                        $att['place'] = $request->input('change');
+                    }
+                    $g_order_date =  str_replace('-','',$request->input('g_order_date'));
+                    $order_dates = $this->get_order_dates($request->input('semester'));
+                    foreach($order_dates as $k=>$v){
+                        $order_date = str_replace('-','',$k);
+                        if($order_date >= $g_order_date){
+                            LunchTeaDate::where('user_id','=',$request->input('user_id'))->where('order_date','=',$k)->update($att);
+                        }
+                    }
+                    return redirect()->route('lunch.special');
+                }else{
+                    $words = "該師無訂餐記錄！";
+                    return view('errors.errors', compact('words'));
+                }
+
+                break;
 
         }
+    }
+
+
+    public function report()
+    {
+        return view('lunch.report');
     }
 
     public function stu()
@@ -592,6 +634,16 @@ class LunchController extends Controller
             ->where('enable','=','eat')
             ->count();
         return $count_tea_orders;
+    }
+    //是不是導師
+    public function has_class_tea()
+    {
+        $user_data = User::where('id','=',auth()->user()->id)->first();
+        if($user_data->group_id == "4" or $user_data->group_id2 == "4"){
+            return $user_data->year_class->name;
+        }else{
+            return "";
+        }
     }
 
 
