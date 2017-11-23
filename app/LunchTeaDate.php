@@ -16,4 +16,8 @@ class LunchTeaDate extends Model
         'factory',
         'eat_style',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

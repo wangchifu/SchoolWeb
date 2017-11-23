@@ -17,14 +17,25 @@
     </ul>
     <div class="row">
         <div class="col-md-12">
+            <div class="well">
+                {{ Form::open(['route' => 'lunch.report', 'method' => 'POST']) }}
+                請先選擇學期：{{ Form::select('semester', $semesters, $semester, ['id' => 'semester', 'class' => 'form-control', 'placeholder' => '請先選擇學期','onchange'=>'if(this.value != 0) { this.form.submit(); }']) }}
+                {{ Form::close() }}
+            </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4>教職相關</h4>
                 </div>
                 <div class="panel-content">
-                    <a class="btn btn-success" href="" target="_blank">教職逐日訂餐表</a>
-                    <a class="btn btn-success" href="" target="_blank">教職學期收費表</a>
-                    <a class="btn btn-success" href="" target="_blank">教職費用收據單</a>
+                    {{ Form::open(['route'=>'lunch.report_tea1','method'=>'POST','target'=>'_blank']) }}
+                    <input type="hidden" name="semester" value="{{ $semester }}">
+                    <button class="btn btn-success">教職逐日訂餐表</button>
+                    {{ Form::close() }}
+
+                    {{ Form::open(['route'=>'lunch.report_tea2','method'=>'POST','target'=>'_blank']) }}
+                    <input type="hidden" name="semester" value="{{ $semester }}">
+                    <button class="btn btn-success">教職學期收費表</button>
+                    {{ Form::close() }}
                 </div>
             </div>
 

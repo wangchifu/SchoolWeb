@@ -58,7 +58,7 @@
                                 {{ Form::select('place', $places2,null, ['id' => 'place', 'class' => 'form-control']) }}
                             </td>
                             <td>
-                                {{ Form::text('classroom', null, ['id' => 'classroom', 'class' => 'form-control', 'placeholder' => '如：五年3班']) }}
+                                {{ Form::text('classroom', null, ['id' => 'classroom', 'class' => 'form-control', 'placeholder' => '如：503']) }}
                             </td>
                             <td>
                                 <script src="{{ asset('js/cal/jscal2.js') }}"></script>

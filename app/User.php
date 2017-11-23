@@ -64,9 +64,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Answer::class);
     }
-
-    public function year_class()
-    {
-        return $this->hasOne(YearClass::class);
-    }
 }

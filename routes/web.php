@@ -106,7 +106,10 @@ Route::post('lunch/do_special','LunchController@do_special')->name('lunch.do_spe
 
 Route::get('lunch/stu','LunchController@stu')->name('lunch.stu');
 
-Route::get('lunch/report','LunchController@report')->name('lunch.report');
+Route::any('lunch/report','LunchController@report')->name('lunch.report');
+Route::any('lunch/report_tea1','LunchController@report_tea1')->name('lunch.report_tea1');
+Route::any('lunch/report_tea2','LunchController@report_tea2')->name('lunch.report_tea2');
+Route::post('lunch/report_tea2_print','LunchController@report_tea2_print')->name('lunch.report_tea2_print');
 
 //管理介面
 Route::group(['middleware' => 'admin'],function(){
