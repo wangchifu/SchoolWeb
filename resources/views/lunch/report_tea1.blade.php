@@ -3,6 +3,7 @@
 @section('page-title', '午餐系統')
 
 @section('content')
+<div class="container">
     <div class="page-header">
         <h1>{{ $semester }} 教職逐日訂餐表</h1>
     </div>
@@ -54,4 +55,5 @@
 
         </div>
     </div>
+</div>
 @endsection

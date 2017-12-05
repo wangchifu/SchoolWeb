@@ -20,12 +20,7 @@
 </head>
 <body>
 
-<div class="container">
-
     @yield('content')
-
-
-</div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="{{ asset('js/jquery.min.js') }}"></script>

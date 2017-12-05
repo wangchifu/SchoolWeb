@@ -104,12 +104,15 @@ Route::post('lunch/del_tea_date','LunchController@del_tea_date')->name('lunch.de
 Route::any('lunch/special','LunchController@special')->name('lunch.special');
 Route::post('lunch/do_special','LunchController@do_special')->name('lunch.do_special');
 
-Route::get('lunch/stu','LunchController@stu')->name('lunch.stu');
+Route::any('lunch/stu','LunchController@stu')->name('lunch.stu');
+Route::post('lunch/stu_store','LunchController@stu_store')->name('lunch.stu_store');
 
 Route::any('lunch/report','LunchController@report')->name('lunch.report');
 Route::any('lunch/report_tea1','LunchController@report_tea1')->name('lunch.report_tea1');
 Route::any('lunch/report_tea2','LunchController@report_tea2')->name('lunch.report_tea2');
 Route::post('lunch/report_tea2_print','LunchController@report_tea2_print')->name('lunch.report_tea2_print');
+Route::post('lunch/report_stu1','LunchController@report_stu1')->name('lunch.report_stu1');
+Route::post('lunch/report_stu2','LunchController@report_stu2')->name('lunch.report_stu2');
 
 //管理介面
 Route::group(['middleware' => 'admin'],function(){

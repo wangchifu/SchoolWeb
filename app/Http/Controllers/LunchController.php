@@ -6,7 +6,9 @@ use App\Fun;
 use App\LunchOrder;
 use App\LunchOrderDate;
 use App\LunchSetup;
+use App\LunchStuDate;
 use App\LunchTeaDate;
+use App\SemesterStudent;
 use App\User;
 use App\YearClass;
 use Carbon\Carbon;
@@ -470,6 +472,7 @@ class LunchController extends Controller
             }
         }
         //訂餐者資料
+        $user_datas = [];
         $order_datas = LunchTeaDate::where('lunch_order_id','=',$order_id)->get();
         foreach($order_datas as $order_data){
             $user_datas[$order_data->user->name][$order_data->order_date]['enable'] = $order_data->enable;
@@ -496,6 +499,7 @@ class LunchController extends Controller
         $order_datas = LunchTeaDate::where('semester','=',$request->input('semester'))->get();
         $i = 0;
         $last_user = "";
+        $user_datas = [];
         foreach($order_datas as $order_data){
             if($order_data->enable == "eat") {
                 if($last_user != $order_data->user->name) $i=0;
@@ -540,29 +544,412 @@ class LunchController extends Controller
 
     }
 
-    public function stu()
+    public function report_stu1(Request $request)
     {
-        if(auth()->user()->group_id =="4" or auth()->user()->group_id2 =="4"){
-            $is_tea = 1;
+        $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
+        if(empty($check)) return view('errors.not_admin');
+        $semester = $request->input('semester');
+
+        $order_dates = $this->get_order_dates($semester);
+        foreach($order_dates as $k=>$v){
+            if($v == 1) $select_date_menu[$k] = $k;
+        }
+        $select_date = (empty($request->input('select_date')))?current($select_date_menu):$request->input('select_date');
+
+
+        $class_orders_dates = LunchStuDate::where('semester','=',$request->input('semester'))->orderBy('class_id');
+
+
+
+        $class_orders = $class_orders_dates->where('order_date','=',$select_date)->get();
+
+        $last_class = "";
+
+        foreach($class_orders as $class_order){
+
+            $class_id = $class_order->class_id;
+            $order_date = $class_order->order_date;
+            $eat_style = $class_order->eat_style;
+            $p_id = $class_order->p_id;
+            $sex = $class_order->student->sex;
+
+            if($class_id != $last_class){
+                $g = 0;
+                $w = 0;
+                $n = 0;
+                $gb = 0;
+                $gg = 0;
+                $wb = 0;
+                $wg = 0;
+                $nb = 0;
+                $ng = 0;
+                $w201 = 0;
+                $w202 = 0;
+                $w203 = 0;
+                $w204 = 0;
+                $w205 = 0;
+                $w206 = 0;
+                $w207 = 0;
+                $w208 = 0;
+                $w209 = 0;
+                $w210 = 0;
+                $w201b =0;
+                $w201g =0;
+                $w202b =0;
+                $w202g =0;
+                $w203b =0;
+                $w203g =0;
+                $w204b =0;
+                $w204g =0;
+                $w205b =0;
+                $w205g =0;
+                $w206b =0;
+                $w206g =0;
+                $w207b =0;
+                $w207g =0;
+                $w208b =0;
+                $w208g =0;
+                $w209b =0;
+                $w209g =0;
+                $w210b =0;
+                $w210g =0;
+            }
+
+
+            if($p_id > 200 and $eat_style !=3){
+                $w++;
+                $order_data[$class_id][$order_date]['w'] = $w;
+                if($sex == 1){
+                    $wb++;
+                    $order_data[$class_id][$order_date]['wb'] = $wb;
+                }else{
+                    $wg++;
+                    $order_data[$class_id][$order_date]['wg'] = $wg;
+                }
+                if($p_id == 201) {
+                    $w201++;
+                    $order_data[$class_id][$order_date]['w201'] = $w201;
+                    if($sex == 1){
+                        $w201b++;
+                        $order_data[$class_id][$order_date]['w201b'] = $w201b;
+                    }else{
+                        $w201g++;
+                        $order_data[$class_id][$order_date]['w201g'] = $wg;
+                    }
+                }elseif($p_id == 202){
+                    $w202++;
+                    $order_data[$class_id][$order_date]['w202'] = $w202;
+                    if($sex == 1){
+                        $w202b++;
+                        $order_data[$class_id][$order_date]['w202b'] = $w202b;
+                    }else{
+                        $w202g++;
+                        $order_data[$class_id][$order_date]['w202g'] = $w202g;
+                    }
+                }elseif($p_id == 203){
+                    $w203++;
+                    $order_data[$class_id][$order_date]['w203'] = $w203;
+                    if($sex == 1){
+                        $w203b++;
+                        $order_data[$class_id][$order_date]['w203b'] = $w203b;
+                    }else{
+                        $w203g++;
+                        $order_data[$class_id][$order_date]['w203g'] = $w203g;
+                    }
+                }elseif($p_id == 204){
+                    $w204++;
+                    $order_data[$class_id][$order_date]['w204'] = $w204;
+                    if($sex == 1){
+                        $w204b++;
+                        $order_data[$class_id][$order_date]['w204b'] = $w204b;
+                    }else{
+                        $w204g++;
+                        $order_data[$class_id][$order_date]['w204g'] = $w204g;
+                    }
+                }elseif($p_id == 205){
+                    $w205++;
+                    $order_data[$class_id][$order_date]['w205'] = $w205;
+                    if($sex == 1){
+                        $w205b++;
+                        $order_data[$class_id][$order_date]['w205b'] = $w205b;
+                    }else{
+                        $w205g++;
+                        $order_data[$class_id][$order_date]['w205g'] = $w205g;
+                    }
+                }elseif($p_id == 206){
+                    $w206++;
+                    $order_data[$class_id][$order_date]['w206'] = $w206;
+                    if($sex == 1){
+                        $w206b++;
+                        $order_data[$class_id][$order_date]['w206b'] = $w206b;
+                    }else{
+                        $w206g++;
+                        $order_data[$class_id][$order_date]['w206g'] = $w206g;
+                    }
+                }elseif($p_id == 207){
+                    $w207++;
+                    $order_data[$class_id][$order_date]['w207'] = $w207;
+                    if($sex == 1){
+                        $w207b++;
+                        $order_data[$class_id][$order_date]['w207b'] = $w207b;
+                    }else{
+                        $w207g++;
+                        $order_data[$class_id][$order_date]['w207g'] = $w207g;
+                    }
+                }elseif($p_id == 208){
+                    $w208++;
+                    $order_data[$class_id][$order_date]['w208'] = $w208;
+                    if($sex == 1){
+                        $w208b++;
+                        $order_data[$class_id][$order_date]['w208b'] = $w208b;
+                    }else{
+                        $w208g++;
+                        $order_data[$class_id][$order_date]['w208g'] = $w208g;
+                    }
+                }elseif($p_id == 209){
+                    $w209++;
+                    $order_data[$class_id][$order_date]['w209'] = $w209;
+                    if($sex == 1){
+                        $w209b++;
+                        $order_data[$class_id][$order_date]['w209b'] = $w209b;
+                    }else{
+                        $w209g++;
+                        $order_data[$class_id][$order_date]['w209g'] = $w209g;
+                    }
+                }elseif($p_id == 210){
+                    $w210++;
+                    $order_data[$class_id][$order_date]['w210'] = $w210;
+                    if($sex == 1){
+                        $w210b++;
+                        $order_data[$class_id][$order_date]['w210b'] = $w210b;
+                    }else{
+                        $w210g++;
+                        $order_data[$class_id][$order_date]['w210g'] = $w210g;
+                    }
+                }
+
+            }elseif($p_id == 101 and $eat_style !=3){
+                $g++;
+                $order_data[$class_id][$order_date]['g'] = $g;
+                if($sex == 1){
+                    $gb++;
+                    $order_data[$class_id][$order_date]['gb'] = $gb;
+                }else{
+                    $gg++;
+                    $order_data[$class_id][$order_date]['gg'] = $gg;
+                }
+            }elseif($eat_style ==3){
+                $n++;
+                $order_data[$class_id][$order_date]['n'] = $n;
+                if($sex == 1){
+                    $nb++;
+                    $order_data[$class_id][$order_date]['nb'] = $nb;
+                }else{
+                    $ng++;
+                    $order_data[$class_id][$order_date]['ng'] = $ng;
+                }
+            }
+
+            $last_class = $class_id;
+
+        }
+
+        $data = [
+            'semester'=>$semester,
+            'select_date'=>$select_date,
+            'select_date_menu'=>$select_date_menu,
+            'order_data'=>$order_data,
+        ];
+        return view('lunch.report_stu1',$data);
+
+    }
+    public function report_stu2(Request $request)
+    {
+        $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
+        if(empty($check)) return view('errors.not_admin');
+        $semester = $request->input('semester');
+        $order_id_array = $this->get_order_id_array($semester);
+        $lunch_orders = array_flip($order_id_array);
+        $lunch_order_id = (empty($request->input('select_order_id')))?$order_id_array[substr(date('Y-m'),0,7)]:$request->input('select_order_id');
+
+
+        $order_dates = $this->get_order_dates($semester);
+        $i = 0;
+        foreach($order_dates as $k=>$v){
+            if($v==1 and substr($k,0,7) == $lunch_orders[$lunch_order_id]){
+                $this_order_dates[$i] = $k;
+                $i++;
+            }
+        }
+
+        $stu_order_datas = LunchStuDate::where('lunch_order_id','=',$lunch_order_id)->orderBy('class_id')->orderBy('order_date')->get();
+        $last_class = "";
+        $last_date = "";
+
+        foreach($stu_order_datas as $stu_order_data){
+            if($last_class != $stu_order_data->class_id or $last_date != $stu_order_data->order_date){
+                $g = 0;
+                $w = 0;
+            }
+            if($stu_order_data->p_id > 200 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat") {
+                $w++;
+                $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['w'] = $w;
+            }elseif($stu_order_data->p_id == 101 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat"){
+                $g++;
+                $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g'] = $g;
+            }
+            $last_class = $stu_order_data->class_id;
+            $last_date = $stu_order_data->order_date;
+        }
+
+
+
+        $data = [
+            'semester'=>$semester,
+            'lunch_orders'=>$lunch_orders,
+            'lunch_order_id'=>$lunch_order_id,
+            'this_order_dates'=>$this_order_dates,
+            'order_data'=>$order_data,
+        ];
+        return view('lunch.report_stu2',$data);
+    }
+
+    public function stu(Request $request)
+    {
+        $is_tea ="";
+        $is_admin = "";
+        $class_id = "";
+        $year_class_id = "";
+        $select_date_menu = [];
+
+        //查目前學期
+        $y = date('Y') - 1911;
+        $array1 = array(8,9,10,11,12,1);
+        $array2 = array(2,3,4,5,6,7);
+        if(in_array(date('n'),$array1)){
+            if(date('n') == 1){
+                $semester = ($y-1)."1";
+            }else{
+                $semester = $y."1";
+            }
         }else{
-            $is_tea = 0;
+            $semester = ($y-1)."2";
+        }
+
+
+        if(auth()->user()->group_id =="4" or auth()->user()->group_id2 =="4"){
+            $year_class_data = YearClass::where('semester','=',$semester)->where('user_id','=',auth()->user()->id)->first();
+            if($year_class_data) {
+                $is_tea = $year_class_data->name;
+                $year_class_id = $year_class_data->id;
+                $class_id = $year_class_data->year_class;
+            }
+        }else{
+            $is_tea = "0";
         }
 
         $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
         if(!empty($check)){
             $is_admin = 1;
+            if(empty($request->input('select_class'))){
+                $is_tea = "請選擇班級";
+                $year_class_id = "";
+            }else{
+                $year_class_data = YearClass::where('semester','=',$semester)->where('year_class','=',$request->input('select_class'))->first();
+                if($year_class_data) {
+                    $is_tea = $year_class_data->name;
+                    $year_class_id =  $year_class_data->id;
+                    $class_id = $year_class_data->year_class;
+                }else{
+                    die('查無班級資料');
+                }
+            }
         }else{
-            $is_admin = 0;
+            $is_admin = "0";
         }
 
-        if($is_tea == 0 and $is_admin == 0){
-            $words = $order_date." 你沒有權限來這裡！";
+        if($is_tea == "0" and $is_admin == "0"){
+            $words = " 你沒有權限來這裡！";
             return view('errors.errors',compact('words'));
         }
+        if($year_class_id){
+            $stu_datas = SemesterStudent::where('year_class_id', '=', $year_class_id)->where('at_school','=','1')->orderBy('num')->get();
+            foreach ($stu_datas as $stu) {
+                $stu_data[$stu->num]['name'] = $stu->student->name;
+                $stu_data[$stu->num]['sex'] = $stu->student->sex;
+                $stu_data[$stu->num]['id'] = $stu->student->id;
+            }
+        }else{
+            $stu_data=[];
+        }
 
 
+        //檢查某班有無訂餐了
+        $class_orders = LunchStuDate::where('semester','=',$semester)->where('class_id','=',$class_id)->get();
+        if(empty($class_orders->first())){
+            $has_order = "";
+            $order_data = [];
+            $select_date = "";
+        }else{
+            $has_order = "1";
+            foreach($class_orders as $class_order){
+                $order_data[$class_order->order_date][$class_order->student_id]['eat_style'] = $class_order->eat_style;
+                $order_data[$class_order->order_date][$class_order->student_id]['p_id'] = $class_order->p_id;
+                $order_data[$class_order->order_date][$class_order->student_id]['enable'] = $class_order->enable;
+            }
+            //$select_date = (empty($request->input('select_date')))?$class_orders->first()->order_date:$request->input('select_date');
+            $order_dates = $this->get_order_dates($semester);
+            foreach($order_dates as $k=>$v){
+                if($v == 1) $select_date_menu[$k] = $k;
+            }
+            $select_date = (empty($request->input('select_date')))?current($select_date_menu):$request->input('select_date');
+        }
 
-        return view('lunch.stu');
+        $data = [
+            'semester'=>$semester,
+            'is_tea'=>$is_tea,
+            'class_id'=>$class_id,
+            'is_admin'=>$is_admin,
+            'stu_data'=>$stu_data,
+            'has_order'=>$has_order,
+            'order_data'=>$order_data,
+            'select_date'=>$select_date,
+            'select_date_menu'=>$select_date_menu,
+        ];
+
+
+        return view('lunch.stu',$data);
+    }
+
+    public function stu_store(Request $request)
+    {
+        $semester = $request->input('semester');
+        $eat_style = $request->input('eat_style');
+        $p_id = $request->input('p_id');
+
+        //這個學期各餐期的id
+        $order_id_array = $this->get_order_id_array($semester);
+        $order_dates = $this->get_order_dates($semester);
+
+        $year_calss = YearClass::where('semester','=',$semester)->where('year_class','=',$request->input('class_id'))->first();
+
+        foreach($order_dates as $k=>$v) {
+            foreach ($year_calss->semester_students as $semester_student) {
+                $att['order_date'] = $k;
+                if($v == "0") $att['enable'] = "not";
+                if($v == "1") $att['enable'] = "eat";
+                $att['semester'] = $semester;
+                $att['lunch_order_id'] = $order_id_array[substr($k,0,7)];
+                $att['student_id'] = $semester_student->student_id;
+                $att['class_id'] = $request->input('class_id');
+                $att['p_id'] = $p_id[$semester_student->student_id];
+                $att['eat_style'] = $eat_style[$semester_student->student_id];
+                if($att['eat_style']=="3") $att['enable'] = "no_eat";
+
+                LunchStuDate::create($att);
+            }
+        }
+        return redirect()->route('lunch.stu');
     }
 
     /**
@@ -666,6 +1053,7 @@ class LunchController extends Controller
         return $user_eat_styles;
     }
 
+    //取某一學期的每一天的供餐與否
     public function get_order_dates($semester)
     {
         $order_dates=[];

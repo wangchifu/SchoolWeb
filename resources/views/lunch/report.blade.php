@@ -9,11 +9,12 @@
     <ul class="nav nav-tabs">
         <li><a href="{{ route('lunch.index') }}">1.教職員訂餐</a></li>
         <li><a href="{{ route('lunch.stu') }}">2.學生訂餐</a></li>
-        <li><a href="">3.供餐確認表</a></li>
-        <li><a href="">4.滿意度調查</a></li>
-        <li><a href="{{ route('lunch.special') }}">5.特殊處理</a></li>
-        <li class="active"><a href="{{ route('lunch.report') }}">6.報表輸出</a></li>
-        <li><a href="{{ route('lunch.setup') }}">7.系統管理</a></li>
+        <li><a href="">3.學生退餐</a></li>
+        <li><a href="">4.供餐確認表</a></li>
+        <li><a href="">5.滿意度調查</a></li>
+        <li><a href="{{ route('lunch.special') }}">6.特殊處理</a></li>
+        <li class="active"><a href="{{ route('lunch.report') }}">7.報表輸出</a></li>
+        <li><a href="{{ route('lunch.setup') }}">8.系統管理</a></li>
     </ul>
     <div class="row">
         <div class="col-md-12">
@@ -44,6 +45,15 @@
                     <h4>學生相關</h4>
                 </div>
                 <div class="panel-content">
+                    {{ Form::open(['route'=>'lunch.report_stu1','method'=>'POST','target'=>'_blank']) }}
+                    <input type="hidden" name="semester" value="{{ $semester }}">
+                    <button class="btn btn-success">學生身份統計表</button>
+                    {{ Form::close() }}
+
+                    {{ Form::open(['route'=>'lunch.report_stu2','method'=>'POST','target'=>'_blank']) }}
+                    <input type="hidden" name="semester" value="{{ $semester }}">
+                    <button class="btn btn-success">學生訂餐統計表</button>(依身份)
+                    {{ Form::close() }}
 
                 </div>
             </div>

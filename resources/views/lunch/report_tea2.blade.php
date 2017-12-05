@@ -3,6 +3,7 @@
 @section('page-title', '午餐系統')
 
 @section('content')
+<div class="container">
     <div class="page-header">
         <h1>{{ $semester }} 教職學期收費表</h1>
     </div>
@@ -24,11 +25,11 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <?php $i =0;?>
+                        <?php $i =0;$num=1;?>
                             @foreach($user_datas as $k => $v)
                                 <tr bgcolor='#FFFFFF' onmouseover="this.style.backgroundColor='#FFCDE5';" onMouseOut="this.style.backgroundColor='#FFFFFF';">
                                     <td>
-                                        {{ $k }}
+                                        {{ $num }}-{{ $k }}
                                     </td>
                                     <td>
                                         {{ $v }}
@@ -37,7 +38,7 @@
                                         {{ $v*$tea_money }}
                                     </td>
                                 </tr>
-                                <?php $i+=$v*$tea_money; ?>
+                                <?php $i+=$v*$tea_money; $num++;?>
                             @endforeach
                                 <tr>
                                     <td>
@@ -59,4 +60,5 @@
 
         </div>
     </div>
+</div>
 @endsection

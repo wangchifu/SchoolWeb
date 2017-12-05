@@ -11,8 +11,13 @@ class LunchStuDate extends Model
         'enable',
         'semester',
         'lunch_order_id',
-        'semester_student_id',
+        'student_id',
+        'class_id',
         'p_id',
         'eat_style',
     ];
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
 }
