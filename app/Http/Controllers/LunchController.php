@@ -13,6 +13,7 @@ use App\User;
 use App\YearClass;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 
 class LunchController extends Controller
 {
@@ -950,6 +951,149 @@ class LunchController extends Controller
             }
         }
         return redirect()->route('lunch.stu');
+    }
+
+    public function stu_cancel(Request $request)
+    {
+        if(Input::get('do') == "1"){
+            $student_id = Input::get('student_id');
+            $order_date = Input::get('order_date');
+
+            $stu_lunch_data = LunchStuDate::where('student_id','=',$student_id)->where('order_date','=',$order_date)->first();
+            $att['enable'] = Input::get('enable');
+            $stu_lunch_data->update($att);
+            $data = [
+                'class_id'=>Input::get('class_id'),
+                'lunch_order_id'=>Input::get('lunch_order_id'),
+            ];
+            return redirect()->route('lunch.stu_cancel',$data);
+        }
+
+        $is_tea ="";
+        $is_admin = "";
+        $class_id = "";
+        $year_class_id = "";
+
+        //查目前學期
+        $y = date('Y') - 1911;
+        $array1 = array(8,9,10,11,12,1);
+        $array2 = array(2,3,4,5,6,7);
+        if(in_array(date('n'),$array1)){
+            if(date('n') == 1){
+                $semester = ($y-1)."1";
+            }else{
+                $semester = $y."1";
+            }
+        }else{
+            $semester = ($y-1)."2";
+        }
+
+        $order_id_array = $this->get_order_id_array($semester);
+        $lunch_orders = array_flip($order_id_array);
+        $order_id = (empty($request->input('select_order_id')))?Input::get('lunch_order_id'):$request->input('select_order_id');
+        $lunch_order_id = (empty($order_id))?$order_id_array[substr(date('Y-m'),0,7)]:$order_id;
+
+
+        if(auth()->user()->group_id =="4" or auth()->user()->group_id2 =="4"){
+            $year_class_data = YearClass::where('semester','=',$semester)->where('user_id','=',auth()->user()->id)->first();
+            if($year_class_data) {
+                $is_tea = $year_class_data->name;
+                $year_class_id = $year_class_data->id;
+                $class_id = $year_class_data->year_class;
+            }
+        }else{
+            $is_tea = "0";
+        }
+
+        $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
+        if(!empty($check)){
+            $is_admin = 1;
+            if(empty($request->input('select_class')) and empty(Input::get('class_id'))){
+                $is_tea = "請選擇班級";
+                $year_class_id = "";
+            }else{
+                $select_class = (empty($request->input('select_class')))?Input::get('class_id'):$request->input('select_class');
+                $year_class_data = YearClass::where('semester','=',$semester)->where('year_class','=',$select_class)->first();
+                if($year_class_data) {
+                    $is_tea = $year_class_data->name;
+                    $year_class_id =  $year_class_data->id;
+                    $class_id = $year_class_data->year_class;
+                }else{
+                    die('查無班級資料');
+                }
+            }
+        }else{
+            $is_admin = "0";
+        }
+
+        if($is_tea == "0" and $is_admin == "0"){
+            $words = " 你沒有權限來這裡！";
+            return view('errors.errors',compact('words'));
+        }
+
+
+        if($year_class_id){
+            $stu_datas = SemesterStudent::where('year_class_id', '=', $year_class_id)->where('at_school','=','1')->orderBy('num')->get();
+            foreach ($stu_datas as $stu) {
+                $stu_data[$stu->num]['name'] = $stu->student->name;
+                $stu_data[$stu->num]['sex'] = $stu->student->sex;
+                $stu_data[$stu->num]['id'] = $stu->student->id;
+            }
+        }else{
+            $stu_data=[];
+        }
+
+
+        //檢查某班有無訂餐了
+        $class_orders = LunchStuDate::where('lunch_order_id','=',$lunch_order_id)->where('class_id','=',$class_id)->get();
+
+        if(empty($class_orders->first())){
+            $has_order = "";
+            $order_data = [];
+            $this_order_dates = [];
+
+        }else{
+            $has_order = "1";
+
+            //查該餐期供餐日期
+            $order_dates = $this->get_order_dates($semester);
+            $i = 0;
+            foreach($order_dates as $k=>$v){
+                if($v==1 and substr($k,0,7) == $lunch_orders[$lunch_order_id]){
+                    $this_order_dates[$i] = $k;
+                    $i++;
+                }
+            }
+
+
+            foreach($class_orders as $class_order){
+                $order_data[$class_order->student_id][$class_order->order_date]['eat_style'] = $class_order->eat_style;
+                $order_data[$class_order->student_id][$class_order->order_date]['enable'] = $class_order->enable;
+            }
+
+            $order_dates = $this->get_order_dates($semester);
+            foreach($order_dates as $k=>$v){
+                if($v == 1) $select_date_menu[$k] = $k;
+            }
+
+        }
+
+
+        $data = [
+            'semester'=>$semester,
+            'lunch_orders'=>$lunch_orders,
+            'lunch_order_id'=>$lunch_order_id,
+            'is_tea'=>$is_tea,
+            'class_id'=>$class_id,
+            'is_admin'=>$is_admin,
+            'stu_data'=>$stu_data,
+            'has_order'=>$has_order,
+            'order_data'=>$order_data,
+            'this_order_dates'=>$this_order_dates,
+        ];
+
+        return view('lunch.stu_cancel',$data);
+
     }
 
     /**

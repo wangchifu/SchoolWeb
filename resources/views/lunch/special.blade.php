@@ -4,12 +4,12 @@
 
 @section('content')
     <div class="page-header">
-        <h1>特殊處理</h1>
+        <h1><img src="{{ asset('/img/lunch/special.png') }}" alt="學生退餐" width="50">特殊處理</h1>
     </div>
     <ul class="nav nav-tabs">
         <li><a href="{{ route('lunch.index') }}">1.教職員訂餐</a></li>
         <li><a href="{{ route('lunch.stu') }}">2.學生訂餐</a></li>
-        <li><a href="">3.學生退餐</a></li>
+        <li><a href="{{ route('lunch.stu_cancel') }}">3.學生退餐</a></li>
         <li><a href="">4.供餐確認表</a></li>
         <li><a href="">5.滿意度調查</a></li>
         <li class="active"><a href="{{ route('lunch.special') }}">6.特殊處理</a></li>

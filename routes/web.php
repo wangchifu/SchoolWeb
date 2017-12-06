@@ -106,6 +106,7 @@ Route::post('lunch/do_special','LunchController@do_special')->name('lunch.do_spe
 
 Route::any('lunch/stu','LunchController@stu')->name('lunch.stu');
 Route::post('lunch/stu_store','LunchController@stu_store')->name('lunch.stu_store');
+Route::any('lunch/stu_cancel','LunchController@stu_cancel')->name('lunch.stu_cancel');
 
 Route::any('lunch/report','LunchController@report')->name('lunch.report');
 Route::any('lunch/report_tea1','LunchController@report_tea1')->name('lunch.report_tea1');
