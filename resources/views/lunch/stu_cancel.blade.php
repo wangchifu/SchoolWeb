@@ -56,6 +56,7 @@
                                     @foreach($this_order_dates as $k2=>$v2)
                                         <?php
                                         $cancel_data['do'] = "1";
+                                        $cancel_data['semester'] = $semester;
                                         $cancel_data['student_id'] = $v1['id'];
                                         $cancel_data['class_id'] = $class_id;
                                         $cancel_data['order_date'] = $v2;
@@ -75,6 +76,8 @@
                                                 <td><img src="{{ asset('/img/had_back.png') }}" alt="已退費"></td>
                                             @elseif($order_data[$v1['id']][$v2]['enable'] == "not")
                                                 <td><img src="{{ asset('/img/remove.png') }}" alt="當日未供餐"></td>
+                                            @elseif($order_data[$v1['id']][$v2]['enable'] == "no_eat")
+                                                <td><img src="{{ asset('/img/minus.png') }}" alt="沒有訂餐"></td>
                                             @endif
                                         @elseif($order_data[$v1['id']][$v2]['eat_style'] == 3 and $order_data[$v1['id']][$v2]['enable'] == "no_eat")
                                             <?php $stu_name= $v1['name']; ?>

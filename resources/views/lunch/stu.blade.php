@@ -172,7 +172,7 @@
                                                 $enable = "訂餐";
                                             }elseif($order_data[$select_date][$v['id']]['enable']=="not"){
                                                 $enable = "未供餐";
-                                            }elseif($order_data[$select_date][$v['id']]['enable']=="abs"){
+                                            }elseif($order_data[$select_date][$v['id']]['enable']=="back"){
                                                 $enable = "請假退費";
                                             }elseif($order_data[$select_date][$v['id']]['enable']=="out"){
                                                 $enable = "轉出已退費";

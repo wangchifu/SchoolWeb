@@ -17,7 +17,7 @@ class CreateLunchOrder extends Migration
             $table->increments('id');
             $table->string('name');
             $table->unsignedInteger('semester');
-            $table->unsignedInteger('enable')->nullable();
+            $table->unsignedInteger('enable')->nullable();//1啟用；0停用
             $table->timestamps();
         });
     }

@@ -412,6 +412,74 @@ class LunchController extends Controller
                 }
 
                 break;
+                case "change_stu1";
+                    if(empty(($request->input('select_class')))){
+                        $words = "你沒有填班級！";
+                        return view('errors.errors', compact('words'));
+                    }
+                    //取該班該日的資料
+                    $class_id = $request->input('select_class');
+                    $order_date = $request->input('stu1_order_date');
+                    $stu_data = LunchStuDate::where('class_id','=',$class_id)->where('order_date','=',$order_date)->where('enable','=','eat');
+                    $att['enable'] = "back";
+                    $stu_data->update($att);
+                    return redirect()->route('lunch.special');
+                break;
+                case "change_stu2";
+                    if(empty(($request->input('select_year')))){
+                        $words = "你沒有填學年！";
+                        return view('errors.errors', compact('words'));
+                    }
+                    //取該學年該日的資料
+                    $year_one = $request->input('select_year');
+                    $order_date = $request->input('stu2_order_date');
+                    $stu_data = LunchStuDate::where('class_id','like',$year_one.'%')->where('order_date','=',$order_date)->where('enable','=','eat');
+                    $att['enable'] = "back";
+                    $stu_data->update($att);
+                    return redirect()->route('lunch.special');
+                break;
+                case "change_stu2-2";
+                    if(empty(($request->input('select_year')))){
+                        $words = "你沒有填學年！";
+                        return view('errors.errors', compact('words'));
+                    }
+
+                    //取該學年該日的資料
+                    $year_one = $request->input('select_year');
+                    $order_date = $request->input('stu2-2_order_date');
+                    $stu_data = LunchStuDate::where('class_id','like',$year_one.'%')->where('order_date','=',$order_date);
+
+                    $att['enable'] = "no_eat";
+                    $stu_data->update($att);
+
+
+                    return redirect()->route('lunch.special');
+                break;
+                case "change_stu3";
+                        $order_date = $request->input('stu3_order_date');
+                        $stu_data = LunchStuDate::where('order_date','=',$order_date)->where('enable','=','eat');
+                        $att['enable'] = "back";
+                        $stu_data->update($att);
+
+                        //處理老師
+                        $tea_order_data = LunchTeaDate::where('order_date','=',$order_date)->first();
+                        $att2['enable'] = "no_eat";
+                        $tea_order_data->update($att2);
+
+                        return redirect()->route('lunch.special');
+                break;
+                case "change_studs";
+                    $studs_data = nl2br($request->input('studs_data'));
+                    $studs_data = explode('<br />',$studs_data);
+
+
+                    print_r($studs_data);
+                    //echo $request->input('studs_data');
+                    die();
+
+
+                    return redirect()->route('lunch.special');
+                break;
 
         }
     }
@@ -956,8 +1024,25 @@ class LunchController extends Controller
     public function stu_cancel(Request $request)
     {
         if(Input::get('do') == "1"){
+
             $student_id = Input::get('student_id');
             $order_date = Input::get('order_date');
+
+            //確認是否有逾期退餐
+            $setups = $this->get_setup();
+            $semester = $request->input('semester');
+
+            $dt = Carbon::now();
+            $die_date = $dt->addDays($setups[$semester]['die_line'])->toDateString();
+            $first_date = str_replace ("-","",$order_date);
+            $second_date = str_replace ("-","",$die_date);
+
+            if($first_date < $second_date){
+                $words = "({$order_date})已經逾期！請於請假日{$setups[$semester]['die_line']}天前請假！";
+                return view('errors.errors',compact('words'));
+            }
+
+
 
             $stu_lunch_data = LunchStuDate::where('student_id','=',$student_id)->where('order_date','=',$order_date)->first();
             $att['enable'] = Input::get('enable');
