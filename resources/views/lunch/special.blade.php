@@ -300,9 +300,60 @@
                 <div class="panel-content">
                     <table class="table">
                         <thead>
-                        <tr><th>教師</th><th>學期</th><th>地點</th><th>改葷素起啟日</th><th>動作</th></tr>
+                        <tr>
+                            <th>
+                                班級座號代碼
+                            </th>
+                            <th>
+                                學號
+                            </th>
+                            <th>
+                                姓名
+                            </th>
+                            <th>
+                                性別
+                            </th>
+                            <th>
+                                訂餐日
+                            </th>
+                            <th>
+                                動作
+                            </th>
+                        </tr>
                         </thead>
-
+                        <tr>
+                            {{ Form::open(['route' => ['admin.addStud'], 'method' => 'POST','id' => 'addStud','onsubmit'=>'return false;']) }}
+                            <input type="hidden" name="semester" value="{{ $semester }}">
+                            <input type="hidden" name="op" value="change_stu_in">
+                            <td>
+                                {{ Form::text('student_num',null, ['id' => 'num', 'class' => 'form-control',"maxlength"=>"5", 'placeholder' => '班級座號5碼']) }}
+                            </td>
+                            <td>
+                                {{ Form::text('sn',null, ['id' => 'sn', 'class' => 'form-control',"maxlength"=>"6", 'placeholder' => '學號6碼']) }}
+                            </td>
+                            <td>
+                                {{ Form::text('name',null, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '學生姓名']) }}
+                            </td>
+                            <td class="col-md-2">
+                                <?php $stud_sex = [1=>'男',2=>'女']; ?>
+                                {{ Form::select('sex', $stud_sex, 1, ['id' => 'sex', 'class' => 'form-control', 'placeholder' => '選擇','required'=>'required']) }}
+                            </td>
+                            <td>
+                                <input id="in_stud_order_date" name="in_stud_order_date" class="form-control" placeholder ="請選起始日" required="required" value="{{ date('Y-m-d') }}">
+                                <script>
+                                    Calendar.setup({
+                                        dateFormat : '%Y-%m-%d',
+                                        inputField : 'in_stud_order_date',
+                                        trigger    : 'in_stud_order_date',
+                                        onSelect   : function() { this.hide();}
+                                    });
+                                </script>
+                            </td>
+                            <td>
+                                <button class="btn btn-success" onclick="bbconfirm('addStud','確定要新增訂單嗎？')">執行</button>
+                            </td>
+                            {{ Form::close() }}
+                        </tr>
                     </table>
                 </div>
             </div>

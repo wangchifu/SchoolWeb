@@ -469,13 +469,42 @@ class LunchController extends Controller
                         return redirect()->route('lunch.special');
                 break;
                 case "change_studs";
-                    $studs_data = nl2br($request->input('studs_data'));
-                    $studs_data = explode('<br />',$studs_data);
+                    $ary_phase = array("\r\n","\r"," ","\n","/");
+
+                    $data = nl2br($request->input('studs_data'));
+                    $data = str_replace($ary_phase,"",$data);
+
+                    $studs_data = explode('<br>',$data);
 
 
-                    print_r($studs_data);
-                    //echo $request->input('studs_data');
-                    die();
+                    foreach($studs_data as $k=>$v){
+
+                        $order_data = explode(',',$v);
+
+                        $student_num = $order_data[0];
+                        $order_date = $order_data[1];
+                        $att['enable'] = "back";
+
+                        $class_data = YearClass::where('year_class','=',substr($student_num,0,3))->first();
+                        if(empty($class_data)){
+                            $words = "查無此班級：". $student_num;
+                            return view('errors.errors', compact('words'));
+                        }else{
+                            $year_class_id = $class_data->id;
+                        }
+                        $student_data = SemesterStudent::where('year_class_id','=',$year_class_id)->where('num','=',substr($student_num,3,2))->first();
+                        if(empty($student_data)){
+                            $words = "查無此學生：". $student_num;
+                            return view('errors.errors', compact('words'));
+                        }else{
+                            $student_id = $student_data->student_id;
+                            echo " 班級座號：".$student_num ."<br>姓名：". $student_data->student->name."<br>請假：". $order_date ."<br>已完成！<br><br>";
+
+                            LunchStuDate::where('student_id','=',$student_id)->where('order_date','=',$order_date)->update($att);
+
+                        }
+
+                    }
 
 
                     return redirect()->route('lunch.special');
