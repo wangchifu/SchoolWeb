@@ -64,15 +64,15 @@
                                         $name = $v1['name'];
                                         ?>
                                         @if($order_data[$v1['id']][$v2]['eat_style'] != 3)
-                                            <?php $cancel_data['enable'] = "back"; ?>
+                                            <?php $cancel_data['enable'] = "abs"; ?>
                                             @if($order_data[$v1['id']][$v2]['enable'] == "eat" and $order_data[$v1['id']][$v2]['eat_style'] == 1)
                                                 <td><a href="{{ route('lunch.stu_cancel',$cancel_data) }}" onclick="return confirm('是否取消 {{ $class_id }}班 {{ $name }} {{ $v2 }} 的訂餐？');"><img src="{{ asset('/img/meat.png') }}" alt="葷"></a></td>
                                             @elseif($order_data[$v1['id']][$v2]['enable'] == "eat" and $order_data[$v1['id']][$v2]['eat_style'] == 2)
                                                 <td><a href="{{ route('lunch.stu_cancel',$cancel_data) }}" onclick="return confirm('是否取消 {{ $class_id }}班 {{ $name }} {{ $v2 }} 的訂餐？');"><img src="{{ asset('/img/vegetarian.png') }}" alt="素"></a></td>
-                                            @elseif($order_data[$v1['id']][$v2]['enable'] == "back")
+                                            @elseif($order_data[$v1['id']][$v2]['enable'] == "abs")
                                             <?php $cancel_data['enable'] = "eat"; ?>
-                                                    <td><a href="{{ route('lunch.stu_cancel',$cancel_data) }}" onclick="return confirm('是否恢復 {{ $class_id }}班 {{ $name }} {{ $v2 }} 的訂餐？');"><img src="{{ asset('/img/back.png') }}" alt="退餐"></a></td>
-                                            @elseif($order_data[$v1['id']][$v2]['enable'] == "had_back")
+                                                    <td><a href="{{ route('lunch.stu_cancel',$cancel_data) }}" onclick="return confirm('是否恢復 {{ $class_id }}班 {{ $name }} {{ $v2 }} 的訂餐？');"><img src="{{ asset('/img/no_check.png') }}" alt="退餐"></a></td>
+                                            @elseif($order_data[$v1['id']][$v2]['enable'] == "out")
                                                 <td><img src="{{ asset('/img/had_back.png') }}" alt="已退費"></td>
                                             @elseif($order_data[$v1['id']][$v2]['enable'] == "not")
                                                 <td><img src="{{ asset('/img/remove.png') }}" alt="當日未供餐"></td>
@@ -93,12 +93,11 @@
                         </tbody>
                     </table>
                     圖例：<br>
-                    <img src="{{ asset('/img/remove.png') }}" alt="當日未供餐"> ：當日未供餐<br>
                     <img src="{{ asset('/img/minus.png') }}" alt="未訂餐"> ：學生未訂餐<br>
                     <img src="{{ asset('/img/meat.png') }}" alt="葷"> ：訂葷食<br>
                     <img src="{{ asset('/img/vegetarian.png') }}" alt="素"> ：訂素食<br>
-                    <img src="{{ asset('/img/back.png') }}" alt="退餐"> ：該日退餐，再按一下可以再訂餐<br>
-                    <img src="{{ asset('/img/had_back.png') }}" alt="已退費"> ：該生為轉出生，或突然不訂餐，先行退費了！<br>
+                    <img src="{{ asset('/img/no_check.png') }}" alt="退餐"> ：該日退餐，再按一下可以再訂餐<br>
+                    <img src="{{ asset('/img/had_back.png') }}" alt="已退費"> ：該日為轉出生先行退費了！<br>
 
                 </div>
             </div>

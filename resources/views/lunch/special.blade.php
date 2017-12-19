@@ -186,7 +186,7 @@
                 <div class="panel-content">
                     <table class="table">
                         <thead>
-                        <tr><th>項目</th><th>來源</th><th>訂餐日</th><th>動作</th></tr>
+                        <tr><th>項目</th><th>來源</th><th>退餐日</th><th>動作</th></tr>
                         </thead>
                         <tbody>
                         <tr>
@@ -364,8 +364,38 @@
                 <div class="panel-content">
                     <table class="table">
                         <thead>
-                        <tr><th>教師</th><th>學期</th><th>地點</th><th>改葷素起啟日</th><th>動作</th></tr>
+                        <tr><th>學號</th><th>學期</th><th>轉出 or 不訂</th><th>不訂餐開始日</th><th>動作</th></tr>
                         </thead>
+                        <tbody>
+                        <tr>
+                            {{ Form::open(['route' => 'lunch.do_special', 'method' => 'POST']) }}
+                            <input type="hidden" name="op" value="out_stud">
+                            <td>
+                                {{ Form::text('student_sn',null, ['id' => 'student_sn', 'class' => 'form-control', 'required' => 'required','maxlength'=>'6']) }}
+                            </td>
+                            <td>
+                                {{ Form::text('semester',$semester, ['id' => 'semester', 'class' => 'form-control', 'readonly' => 'readonly']) }}
+                            </td>
+                            <td>
+                                <input type="radio" name="type" value="out" checked>轉出 <input type="radio" name="type" value="no_eat">不訂
+                            </td>
+                            <td>
+                                <input id="out_stud_order_date" name="out_stud_order_date" class="form-control" placeholder ="請選起始日" required="required" value="{{ date('Y-m-d') }}">
+                                <script>
+                                    Calendar.setup({
+                                        dateFormat : '%Y-%m-%d',
+                                        inputField : 'out_stud_order_date',
+                                        trigger    : 'out_stud_order_date',
+                                        onSelect   : function() { this.hide();}
+                                    });
+                                </script>
+                            </td>
+                            <td>
+                                <button class="btn btn-success">執行</button>
+                            </td>
+                            {{ Form::close() }}
+                        </tr>
+                        </tbody>
 
                     </table>
                 </div>

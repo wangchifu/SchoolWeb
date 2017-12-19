@@ -107,6 +107,7 @@
                                     <td><span class="{{ $color }}">{{ $v['name'] }}</span></td>
                                     <td><img src="{{ asset('img/no_color.png') }}" name="quick_eat{{ $k }}"><img src="{{ asset('img/no_color.png') }}" name="quick_p{{ $k }}"></td>
                                 </tr>
+                                    <input type="hidden" name="student_num[{{ $v['id'] }}]" value="{{ $class_id.$k }}">
                                 @endforeach
                                 <input type="hidden" name="semester" value="{{ $semester }}">
                                 <input type="hidden" name="class_id" value="{{ $class_id }}">

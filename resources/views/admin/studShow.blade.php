@@ -54,15 +54,16 @@
                         <tbody>
                         <tr>
                             {{ Form::open(['route' => ['admin.addStud',$yearClass->id], 'method' => 'POST','id' => 'addStud','onsubmit'=>'return false;']) }}
+                            <input type="hidden" name="semester" value="{{$yearClass->semester}}">
                             <td class="col-md-2">
                                 {{ Form::text('year_class',$yearClass->year_class, ['id' => 'year_class', 'class' => 'form-control', 'readonly' => 'readonly']) }}
                                 <input type="hidden" name="year_class_id" value="{{ $yearClass->id }}">
                             </td>
                             <td class="col-md-2">
-                                {{ Form::text('num',null, ['id' => 'num', 'class' => 'form-control', 'placeholder' => '座號2碼']) }}
+                                {{ Form::text('num',null, ['id' => 'num', 'class' => 'form-control','maxlength'=>'2', 'placeholder' => '座號2碼']) }}
                             </td>
                             <td class="col-md-2">
-                                {{ Form::text('sn',null, ['id' => 'sn', 'class' => 'form-control', 'placeholder' => '學號6碼']) }}
+                                {{ Form::text('sn',null, ['id' => 'sn', 'class' => 'form-control','maxlength'=>'6', 'placeholder' => '學號6碼']) }}
                             </td>
                             <td class="col-md-2">
                                 {{ Form::text('name',null, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '學生姓名']) }}

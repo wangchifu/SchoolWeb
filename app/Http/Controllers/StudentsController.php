@@ -279,6 +279,7 @@ class StudentsController extends Controller
                     }
 
 
+                    $att3['semester'] = $value['學期'];
                     $att3['student_id'] = $id;
                     $att3['year_class_id'] = $yearclass->id;
                     $att3['num'] = sprintf("%02s", $value['座號']);
@@ -368,6 +369,7 @@ class StudentsController extends Controller
             $student =  Student::create($att1);
         }
         $att2['student_id'] = $student->id;
+        $att2['semester'] = $request->input('semester');
         $att2['year_class_id'] = $request->input('year_class_id');
         $att2['num'] = $request->input('num');
         $att2['at_school'] = "1";

@@ -1,10 +1,10 @@
-_<?php
+<?php
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSemesterStudentsTable extends Migration
+class CreateLunchStuOrders extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateSemesterStudentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('semester_students', function (Blueprint $table) {
+        Schema::create('lunch_stu_orders', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('semester');
             $table->unsignedInteger('student_id');
-            $table->unsignedInteger('year_class_id');
-            $table->string('num');
-            $table->unsignedInteger('at_school')->nullable();
+            $table->string('student_num');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateSemesterStudentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('semester_students');
+        Schema::dropIfExists('lunch_stu_orders');
     }
 }

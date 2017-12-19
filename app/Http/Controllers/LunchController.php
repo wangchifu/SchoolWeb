@@ -7,8 +7,10 @@ use App\LunchOrder;
 use App\LunchOrderDate;
 use App\LunchSetup;
 use App\LunchStuDate;
+use App\LunchStuOrder;
 use App\LunchTeaDate;
 use App\SemesterStudent;
+use App\Student;
 use App\User;
 use App\YearClass;
 use Carbon\Carbon;
@@ -421,7 +423,7 @@ class LunchController extends Controller
                     $class_id = $request->input('select_class');
                     $order_date = $request->input('stu1_order_date');
                     $stu_data = LunchStuDate::where('class_id','=',$class_id)->where('order_date','=',$order_date)->where('enable','=','eat');
-                    $att['enable'] = "back";
+                    $att['enable'] = "abs";
                     $stu_data->update($att);
                     return redirect()->route('lunch.special');
                 break;
@@ -434,7 +436,7 @@ class LunchController extends Controller
                     $year_one = $request->input('select_year');
                     $order_date = $request->input('stu2_order_date');
                     $stu_data = LunchStuDate::where('class_id','like',$year_one.'%')->where('order_date','=',$order_date)->where('enable','=','eat');
-                    $att['enable'] = "back";
+                    $att['enable'] = "abs";
                     $stu_data->update($att);
                     return redirect()->route('lunch.special');
                 break;
@@ -458,7 +460,7 @@ class LunchController extends Controller
                 case "change_stu3";
                         $order_date = $request->input('stu3_order_date');
                         $stu_data = LunchStuDate::where('order_date','=',$order_date)->where('enable','=','eat');
-                        $att['enable'] = "back";
+                        $att['enable'] = "abs";
                         $stu_data->update($att);
 
                         //處理老師
@@ -483,7 +485,7 @@ class LunchController extends Controller
 
                         $student_num = $order_data[0];
                         $order_date = $order_data[1];
-                        $att['enable'] = "back";
+                        $att['enable'] = "abs";
 
                         $class_data = YearClass::where('year_class','=',substr($student_num,0,3))->first();
                         if(empty($class_data)){
@@ -507,6 +509,46 @@ class LunchController extends Controller
                     }
 
 
+                    return redirect()->route('lunch.special');
+                break;
+                case "out_stud";
+                    $student = Student::where('sn','=',$request->input('student_sn'))->first();
+                    if(empty($student)) {
+                        $words = "查無此學號的學生：" . $request->input('student_sn');
+                        return view('errors.errors', compact('words'));
+                    }else{
+                        if($request->input('type')=="out"){
+                            $att1['at_school'] = "0";
+                            SemesterStudent::where('student_id','=',$student->id)
+                                ->where('semester','=',$request->input('semester'))
+                                ->first()
+                                ->update($att1);
+
+                            $att2['enable'] = "out";
+
+                            //之前的請假，改為轉出
+                            LunchStuDate::where('semester','=',$request->input('semester'))
+                                ->where('student_id','=',$student->id)
+                                ->where('enable','=','abs')
+                                ->where('order_date','<',$request->input('out_stud_order_date'))
+                                ->update($att2);
+
+                            //之後的訂餐，改為轉出
+                            LunchStuDate::where('semester','=',$request->input('semester'))
+                                ->where('student_id','=',$student->id)
+                                ->where('enable','=','eat')
+                                ->where('order_date','>=',$request->input('out_stud_order_date'))
+                                ->update($att2);
+
+                        }elseif($request->input('type')=="no_eat"){
+                            $att['enable'] = "abs";
+                            LunchStuDate::where('semester','=',$request->input('semester'))
+                                ->where('student_id','=',$student->id)
+                                ->where('enable','=','eat')
+                                ->where('order_date','>=',$request->input('out_stud_order_date'))
+                                ->update($att);
+                        }
+                    }
                     return redirect()->route('lunch.special');
                 break;
 
@@ -1024,6 +1066,7 @@ class LunchController extends Controller
         $semester = $request->input('semester');
         $eat_style = $request->input('eat_style');
         $p_id = $request->input('p_id');
+        $student_num = $request->input('student_num');
 
         //這個學期各餐期的id
         $order_id_array = $this->get_order_id_array($semester);
@@ -1043,10 +1086,17 @@ class LunchController extends Controller
                 $att['p_id'] = $p_id[$semester_student->student_id];
                 $att['eat_style'] = $eat_style[$semester_student->student_id];
                 if($att['eat_style']=="3") $att['enable'] = "no_eat";
-
                 LunchStuDate::create($att);
             }
         }
+        foreach($student_num as $k=>$v){
+            $att2['semester'] = $semester;
+            $att2['student_id'] = $k;
+            $att2['student_num'] = $v;
+            LunchStuOrder::create($att2);
+        }
+
+
         return redirect()->route('lunch.stu');
     }
 

@@ -102,7 +102,7 @@
                             學年學期
                         </td>
                         <td>
-                            {{ Form::text('semester', null, ['id' => 'semester', 'class' => 'form-control', 'placeholder' => '學年學期：1061','required'=>'required']) }}
+                            {{ Form::text('semester', null, ['id' => 'semester', 'class' => 'form-control', 'placeholder' => '學年學期：1061','maxlength'=>'4','required'=>'required']) }}
                         </td>
                     </tr>
                     <tr>
