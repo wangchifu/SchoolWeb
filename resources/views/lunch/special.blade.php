@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="page-header">
-        <h1><img src="{{ asset('/img/lunch/special.png') }}" alt="學生退餐" width="50">特殊處理</h1>
+        <h1><img src="{{ asset('/img/lunch/special.png') }}" alt="學生退餐" width="50">特殊處理<span class="text-danger">(不熟悉不得操作)</h1>
     </div>
     <ul class="nav nav-tabs">
         <li><a href="{{ route('lunch.index') }}">1.教職員訂餐</a></li>
@@ -78,7 +78,7 @@
                                 </script>
                             </td>
                             <td>
-                                <button class="btn btn-success" onclick="bbconfirm('order_tea','你確定新增嗎？有欄位沒填嗎？')">執行</button>
+                                <button class="btn btn-success" onclick="bbconfirm('order_tea','你確定新增嗎？有欄位沒填嗎？')">執行教職補訂</button>
                             </td>
                         </tr>
                         </tbody>
@@ -121,7 +121,7 @@
                                 {{ Form::select('enable', $enable_selects, null, ['id' => 'enable', 'class' => 'form-control'])}}
                             </td>
                             <td>
-                                <button class="btn btn-success" onclick="bbconfirm('cancel_tea','你確定要取消該師訂餐嗎？')">執行</button>
+                                <button class="btn btn-success" onclick="bbconfirm('cancel_tea','你確定要取消該師訂餐嗎？')">執行教職取消(重訂)餐</button>
                             </td>
                         </tr>
                         </tbody>
@@ -168,7 +168,7 @@
                                 </script>
                             </td>
                             <td>
-                                <button class="btn btn-success" onclick="bbconfirm('change_tea','你確定要更改該師訂餐資料嗎？')">執行</button>
+                                <button class="btn btn-success" onclick="bbconfirm('change_tea','你確定要更改該師訂餐資料嗎？')">執行教職更改葷素地點</button>
                             </td>
 
                         </tr>
@@ -210,7 +210,7 @@
                                 </script>
                             </td>
                             <td>
-                                <button class="btn btn-success" onclick="bbconfirm('change_stu1','你確定要更改該班級訂餐資料嗎？')">執行</button>
+                                <button class="btn btn-success" onclick="bbconfirm('change_stu1','你確定要更改該班級訂餐資料嗎？')">執行班級退餐退費</button>
                             </td>
                             {{ Form::close() }}
                         </tr>
@@ -235,7 +235,7 @@
                                 </script>
                             </td>
                             <td>
-                                <button class="btn btn-success" onclick="bbconfirm('change_stu2','你確定要更改該學年訂餐資料嗎？')">執行</button>
+                                <button class="btn btn-success" onclick="bbconfirm('change_stu2','你確定要更改該學年訂餐資料嗎？')">執行學年退餐退費</button>
                             </td>
                             {{ Form::close() }}
                         </tr>
@@ -260,7 +260,7 @@
                                 </script>
                             </td>
                             <td>
-                                <button class="btn btn-success" onclick="bbconfirm('change_stu2-2','你確定要更改該學年訂餐資料嗎？')">執行</button>
+                                <button class="btn btn-success" onclick="bbconfirm('change_stu2-2','你確定要更改該學年訂餐資料嗎？')">執行學年退餐不退費</button>
                             </td>
                             {{ Form::close() }}
                         </tr>
@@ -285,7 +285,7 @@
                                 </script>
                             </td>
                             <td>
-                                <button class="btn btn-success" onclick="bbconfirm('change_stu3','你確定要更改全校師生訂餐資料嗎？')">執行</button>
+                                <button class="btn btn-success" onclick="bbconfirm('change_stu3','你確定要更改全校師生訂餐資料嗎？')">執行全校師生扣餐</button>
                             </td>
                             {{ Form::close() }}
                         </tr>
@@ -302,7 +302,10 @@
                         <thead>
                         <tr>
                             <th>
-                                班級座號代碼
+                                班級座號
+                            </th>
+                            <th>
+                                學期
                             </th>
                             <th>
                                 學號
@@ -310,10 +313,19 @@
                             <th>
                                 姓名
                             </th>
-                            <th>
+                            <th class="col-md-1">
                                 性別
                             </th>
-                            <th>
+                            <th class="col-md-1">
+                                轉入<br>or<br>又訂
+                            </th>
+                            <th class="col-md-1">
+                                葷<br>or<br>素
+                            </th>
+                            <th class="col-md-2">
+                                學生身份
+                            </th>
+                            <th class="col-md-2">
                                 訂餐日
                             </th>
                             <th>
@@ -322,21 +334,47 @@
                         </tr>
                         </thead>
                         <tr>
-                            {{ Form::open(['route' => ['admin.addStud'], 'method' => 'POST','id' => 'addStud','onsubmit'=>'return false;']) }}
-                            <input type="hidden" name="semester" value="{{ $semester }}">
-                            <input type="hidden" name="op" value="change_stu_in">
+                            {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST']) }}
+                            <input type="hidden" name="op" value="in_stud">
                             <td>
-                                {{ Form::text('student_num',null, ['id' => 'num', 'class' => 'form-control',"maxlength"=>"5", 'placeholder' => '班級座號5碼']) }}
+                                {{ Form::text('student_num',null, ['id' => 'num', 'class' => 'form-control',"maxlength"=>"5", 'placeholder' => '班級座號5碼', 'required' => 'required']) }}
                             </td>
                             <td>
-                                {{ Form::text('sn',null, ['id' => 'sn', 'class' => 'form-control',"maxlength"=>"6", 'placeholder' => '學號6碼']) }}
+                                {{ Form::text('semester',$semester, ['id' => 'semester', 'class' => 'form-control', 'readonly' => 'readonly']) }}
                             </td>
                             <td>
-                                {{ Form::text('name',null, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '學生姓名']) }}
+                                {{ Form::text('sn',null, ['id' => 'sn', 'class' => 'form-control',"maxlength"=>"6", 'placeholder' => '學號6碼', 'required' => 'required']) }}
                             </td>
-                            <td class="col-md-2">
+                            <td>
+                                {{ Form::text('name',null, ['id' => 'name', 'class' => 'form-control', 'placeholder' => '學生姓名', 'required' => 'required']) }}
+                            </td>
+                            <td>
                                 <?php $stud_sex = [1=>'男',2=>'女']; ?>
-                                {{ Form::select('sex', $stud_sex, 1, ['id' => 'sex', 'class' => 'form-control', 'placeholder' => '選擇','required'=>'required']) }}
+                                {{ Form::select('sex', $stud_sex, null, ['id' => 'sex', 'class' => 'form-control','required'=>'required']) }}
+                            </td>
+                            <td>
+                                <input type="radio" name="type" value="in" checked>轉入<br><input type="radio" name="type" value="eat">又訂
+                            </td>
+                            <td>
+                                <input type="radio" name="eat_style" value="1" checked><span class="btn btn-danger btn-xs">葷食</span><br><input type="radio" name="eat_style" value="2"><span class="btn btn-success btn-xs">素食</span><br><input type="radio" name="eat_style" value="3"><span class="btn btn-default btn-xs">不訂</span>
+                            </td>
+                            <?php
+                            $selects = [
+                                '101'=>"100-----一般生",
+                                '201'=>"201-----弱勢生-----低收入戶",
+                                '202'=>"202-----弱勢生-----中低收入戶",
+                                '203'=>"203-----弱勢生-----家庭突發因素",
+                                '204'=>"204-----弱勢生-----父母一方失業",
+                                '205'=>"205-----弱勢生-----單親家庭",
+                                '206'=>"206-----弱勢生-----隔代教養",
+                                '207'=>"207-----弱勢生-----特殊境遇",
+                                '208'=>"208-----弱勢生-----身心障礙學生",
+                                '209'=>"209-----弱勢生-----新住民子女",
+                                '210'=>"210-----弱勢生-----原住民子女",
+                            ];
+                            ?>
+                            <td>
+                                {{ Form::select('p_id', $selects, null, ['id' => 'p_id', 'class' => 'form-control']) }}
                             </td>
                             <td>
                                 <input id="in_stud_order_date" name="in_stud_order_date" class="form-control" placeholder ="請選起始日" required="required" value="{{ date('Y-m-d') }}">
@@ -350,7 +388,7 @@
                                 </script>
                             </td>
                             <td>
-                                <button class="btn btn-success" onclick="bbconfirm('addStud','確定要新增訂單嗎？')">執行</button>
+                                <button class="btn btn-success" onclick="if(confirm('您確定送出嗎?')) return true;else return false">執行轉入生</button>
                             </td>
                             {{ Form::close() }}
                         </tr>
@@ -364,14 +402,14 @@
                 <div class="panel-content">
                     <table class="table">
                         <thead>
-                        <tr><th>學號</th><th>學期</th><th>轉出 or 不訂</th><th>不訂餐開始日</th><th>動作</th></tr>
+                        <tr><th>班級座號代碼</th><th>學期</th><th>轉出 or 不訂</th><th>不訂餐開始日</th><th>動作</th></tr>
                         </thead>
                         <tbody>
                         <tr>
                             {{ Form::open(['route' => 'lunch.do_special', 'method' => 'POST']) }}
                             <input type="hidden" name="op" value="out_stud">
                             <td>
-                                {{ Form::text('student_sn',null, ['id' => 'student_sn', 'class' => 'form-control', 'required' => 'required','maxlength'=>'6']) }}
+                                {{ Form::text('student_num',null, ['id' => 'student_num', 'class' => 'form-control', 'required' => 'required','maxlength'=>'5', 'placeholder' => '班級座號5碼']) }}
                             </td>
                             <td>
                                 {{ Form::text('semester',$semester, ['id' => 'semester', 'class' => 'form-control', 'readonly' => 'readonly']) }}
@@ -391,7 +429,7 @@
                                 </script>
                             </td>
                             <td>
-                                <button class="btn btn-success">執行</button>
+                                <button class="btn btn-success" onclick="if(confirm('您確定送出嗎?')) return true;else return false">執行轉出生</button>
                             </td>
                             {{ Form::close() }}
                         </tr>
@@ -420,7 +458,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <button class="btn btn-success" onclick="bbconfirm('change_studs','你確定要更改這些學生的訂餐資料嗎？')">執行</button>
+                                <button class="btn btn-success" onclick="bbconfirm('change_studs','你確定要更改這些學生的訂餐資料嗎？')">執行多筆</button>
                             </td>
                         </tr>
                         </tbody>

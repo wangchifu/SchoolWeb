@@ -20,4 +20,8 @@ class LunchTeaDate extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function lunch_tea_date()
+    {
+        return $this->belongsTo('App\LunchTeaDate')->withDefault();
+    }
 }

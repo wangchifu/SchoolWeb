@@ -126,7 +126,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($stu_data as $k=>$v)
+                            @foreach($stu_data2 as $k=>$v)
                                 <tr>
                                     @if($v['sex']==1)
                                         <?php $color="text-primary";$icon="boy.gif"; ?>

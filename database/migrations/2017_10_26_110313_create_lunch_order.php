@@ -15,7 +15,7 @@ class CreateLunchOrder extends Migration
     {
         Schema::create('lunch_orders', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('name')->unique();
             $table->unsignedInteger('semester');
             $table->unsignedInteger('enable')->nullable();//1啟用；0停用
             $table->timestamps();

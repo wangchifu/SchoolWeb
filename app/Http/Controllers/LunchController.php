@@ -23,6 +23,7 @@ class LunchController extends Controller
     {
         $this->middleware('auth');
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -31,12 +32,12 @@ class LunchController extends Controller
     public function index(Request $request)
     {
 
-        $semester = ($request->input('semester'))?$request->input('semester'):"";
+        $semester = ($request->input('semester')) ? $request->input('semester') : "";
         $semester_dates = $this->get_semester_dates($semester);
         $order_dates = $this->get_order_dates($semester);
         $user_has_order = "0";
         $user_place = "";
-        $user_eat_style="";
+        $user_eat_style = "";
         $tea_dates = [];
         $tea_eat_styles = [];
         $tea_count_semesters = [];
@@ -45,35 +46,33 @@ class LunchController extends Controller
         //查該使用者屆年費用
         $tea_semesters = LunchSetup::orderBy('id')->get();
         $setups = $this->get_setup();
-        foreach($tea_semesters as $tea_semester){
-            $count_tea_orders = $this->get_tea_orders(auth()->user()->id,$tea_semester->semester);
+        foreach ($tea_semesters as $tea_semester) {
+            $count_tea_orders = $this->get_tea_orders(auth()->user()->id, $tea_semester->semester);
             $tea_count_semesters[$tea_semester->semester] = $count_tea_orders;
         }
 
 
-
-
-        if($semester) {
-            $tea_order = LunchTeaDate::where('user_id','=',auth()->user()->id)->where('semester','=',$semester)->first();
-            if(!empty($tea_order)) {
+        if ($semester) {
+            $tea_order = LunchTeaDate::where('user_id', '=', auth()->user()->id)->where('semester', '=', $semester)->first();
+            if (!empty($tea_order)) {
                 $user_has_order = ($tea_order->id) ? "1" : "0";
                 $user_place = $tea_order->place;
                 $user_eat_style = $tea_order->eat_style;
             }
 
             //訂過餐了
-            if($user_has_order == "1"){
+            if ($user_has_order == "1") {
                 $tea_dates = $this->get_user_order_date($semester);
                 $tea_eat_styles = $this->get_user_eat_style($semester);
-            }else{
+            } else {
 
                 //處理逾期不給訂
-                $first = LunchOrderDate::where('semester','=',$semester)->where('enable','=','1')->orderBy('id')->first();
-                if($first){
-                    $die_date = str_replace('-','',$first->order_date);
-                    if(date('Ymd') > $die_date){
+                $first = LunchOrderDate::where('semester', '=', $semester)->where('enable', '=', '1')->orderBy('id')->first();
+                if ($first) {
+                    $die_date = str_replace('-', '', $first->order_date);
+                    if (date('Ymd') > $die_date) {
                         $words = "你已經超過訂餐期限，忘記訂餐請洽管理者！";
-                        return view('errors.errors',compact('words'));
+                        return view('errors.errors', compact('words'));
                     }
                 }
 
@@ -87,38 +86,39 @@ class LunchController extends Controller
         $semesters = LunchSetup::orderBy('id')->pluck('semester', 'semester')->toArray();
 
         $data = [
-            "semester"=>$semester,
-            "semesters"=>$semesters,
-            "semester_dates"=>$semester_dates,
-            "order_dates"=>$order_dates,
-            "tea_dates"=>$tea_dates,
-            "tea_eat_styles"=>$tea_eat_styles,
-            "user_has_order"=>$user_has_order,
-            "tea_count_semesters"=>$tea_count_semesters,
-            "setups"=>$setups,
-            "user_place"=>$user_place,
-            "user_eat_style"=>$user_eat_style,
-            "has_class_tea"=>$has_class_tea,
+            "semester" => $semester,
+            "semesters" => $semesters,
+            "semester_dates" => $semester_dates,
+            "order_dates" => $order_dates,
+            "tea_dates" => $tea_dates,
+            "tea_eat_styles" => $tea_eat_styles,
+            "user_has_order" => $user_has_order,
+            "tea_count_semesters" => $tea_count_semesters,
+            "setups" => $setups,
+            "user_place" => $user_place,
+            "user_eat_style" => $user_eat_style,
+            "has_class_tea" => $has_class_tea,
         ];
-        return view('lunch.index',$data);
+        return view('lunch.index', $data);
     }
+
     public function setup()
     {
-        $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
-        if(empty($check)) return view('errors.not_admin');
+        $check = Fun::where('type', '=', '3')->where('username', '=', auth()->user()->username)->first();
+        if (empty($check)) return view('errors.not_admin');
         $lunch_setups = LunchSetup::orderBy('id')->get();
-        foreach($lunch_setups as $lunch_setup){
-            $has_order[$lunch_setup->semester] = LunchOrder::where('semester','=',$lunch_setup->semester)->first();
+        foreach ($lunch_setups as $lunch_setup) {
+            $has_order[$lunch_setup->semester] = LunchOrder::where('semester', '=', $lunch_setup->semester)->first();
         }
 
-        return view('lunch.setup',compact('lunch_setups','has_order'));
+        return view('lunch.setup', compact('lunch_setups', 'has_order'));
     }
 
     public function show_order($show_semester)
     {
         $lunch_setups = LunchSetup::orderBy('id')->get();
-        foreach($lunch_setups as $lunch_setup){
-            $has_order[$lunch_setup->semester] = LunchOrder::where('semester','=',$lunch_setup->semester)->first();
+        foreach ($lunch_setups as $lunch_setup) {
+            $has_order[$lunch_setup->semester] = LunchOrder::where('semester', '=', $lunch_setup->semester)->first();
         }
 
         $order_dates = $this->get_order_dates($show_semester);
@@ -126,13 +126,13 @@ class LunchController extends Controller
         $semester_dates = $this->get_semester_dates($show_semester);
 
         $data = [
-            'lunch_setups'=>$lunch_setups,
-            'has_order'=>$has_order,
-            'show_semester'=>$show_semester,
-            'semester_dates'=>$semester_dates,
-            'order_dates'=>$order_dates,
+            'lunch_setups' => $lunch_setups,
+            'has_order' => $has_order,
+            'show_semester' => $show_semester,
+            'semester_dates' => $semester_dates,
+            'order_dates' => $order_dates,
         ];
-        return view('lunch.setup',$data);
+        return view('lunch.setup', $data);
     }
 
     public function store_setup(Request $request)
@@ -140,30 +140,35 @@ class LunchController extends Controller
         LunchSetup::create($request->all());
         return redirect()->route('lunch.setup');
     }
-    public function update_setup(LunchSetup $lunch_setup,Request $request)
+
+    public function update_setup(LunchSetup $lunch_setup, Request $request)
     {
         $lunch_setup->update($request->all());
         return redirect()->route('lunch.setup');
     }
+
     public function delete_setup(LunchSetup $lunch_setup)
     {
         $semester = $lunch_setup->semester;
         $lunch_setup->delete();
-        LunchOrder::where('semester','=',$semester)->delete();
-        LunchOrderDate::where('semester','=',$semester)->delete();
-        LunchTeaDate::where('semester','=',$semester)->delete();
+        LunchOrder::where('semester', '=', $semester)->delete();
+        LunchOrderDate::where('semester', '=', $semester)->delete();
+        LunchTeaDate::where('semester', '=', $semester)->delete();
+        LunchStuDate::where('semester', '=', $semester)->delete();
+        LunchStuOrder::where('semester', '=', $semester)->delete();
         return redirect()->route('lunch.setup');
     }
+
     public function create_order($semester)
     {
         $semester_dates = $this->get_semester_dates($semester);
 
         $data = [
             "semester" => $semester,
-            "semester_dates"=>$semester_dates,
+            "semester_dates" => $semester_dates,
         ];
 
-        return view('lunch.setup',$data);
+        return view('lunch.setup', $data);
     }
 
     public function store_order(Request $request)
@@ -172,19 +177,19 @@ class LunchController extends Controller
         $semester_dates = $this->get_semester_dates($request->input('semester'));
 
         $last_name = "";
-        foreach($semester_dates as $k1=>$v1){
-            foreach($v1 as $k2=>$v2){
-                $att['name'] = substr($v2,0,7);
-                if($att['name'] != $last_name){
+        foreach ($semester_dates as $k1 => $v1) {
+            foreach ($v1 as $k2 => $v2) {
+                $att['name'] = substr($v2, 0, 7);
+                if ($att['name'] != $last_name) {
                     $att['semester'] = $request->input('semester');
                     $att['enable'] = 1;
                     $lunch_order = LunchOrder::create($att);
                 }
                 $last_name = $att['name'];
                 $att2['order_date'] = $v2;
-                if(!empty($order_date[$v2])){
+                if (!empty($order_date[$v2])) {
                     $att2['enable'] = "1";
-                }else{
+                } else {
                     $att2['enable'] = "0";
                 }
                 $att2['semester'] = $request->input('semester');
@@ -208,16 +213,16 @@ class LunchController extends Controller
 
         $order_id_array = $this->get_order_id_array($request->input('semester'));
 
-        foreach($order_dates as $k=>$v){
+        foreach ($order_dates as $k => $v) {
             $att['order_date'] = $k;
-            $att['lunch_order_id'] = $order_id_array[substr($k,0,7)];
-            if($v==1){
-                if(!empty($tea_order_date[$k])) {
+            $att['lunch_order_id'] = $order_id_array[substr($k, 0, 7)];
+            if ($v == 1) {
+                if (!empty($tea_order_date[$k])) {
                     $att['enable'] = "eat";
-                }else{
+                } else {
                     $att['enable'] = "no_eat";
                 }
-            }else{
+            } else {
                 $att['enable'] = "no";
             }
             LunchTeaDate::create($att);
@@ -225,6 +230,7 @@ class LunchController extends Controller
         }
         return redirect()->route('lunch.index');
     }
+
     public function del_tea_date(Request $request)
     {
         $setups = $this->get_setup();
@@ -233,119 +239,126 @@ class LunchController extends Controller
 
         $dt = Carbon::now();
         $die_date = $dt->addDays($setups[$semester]['die_line'])->toDateString();
-        $first_date = str_replace ("-","",$order_date);
-        $second_date = str_replace ("-","",$die_date);
+        $first_date = str_replace("-", "", $order_date);
+        $second_date = str_replace("-", "", $die_date);
 
-        if($first_date < $second_date){
+        if ($first_date < $second_date) {
             $words = "當日已經無法做變更！";
-            return view('errors.errors',compact('words'));
+            return view('errors.errors', compact('words'));
         }
 
-        $tea_date = LunchTeaDate::where('order_date','=',$order_date)->first();
-        if(!empty($tea_date)){
-            if($tea_date->enable == "no_eat"){
-                $words = $order_date." 你當天本來就取消訂餐了！";
-                return view('errors.errors',compact('words'));
+        $tea_date = LunchTeaDate::where('order_date', '=', $order_date)->first();
+        if (!empty($tea_date)) {
+            if ($tea_date->enable == "no_eat") {
+                $words = $order_date . " 你當天本來就取消訂餐了！";
+                return view('errors.errors', compact('words'));
             }
-            if($tea_date->enable == "no"){
-                $words = $order_date." 當天沒有供餐！";
-                return view('errors.errors',compact('words'));
+            if ($tea_date->enable == "no") {
+                $words = $order_date . " 當天沒有供餐！";
+                return view('errors.errors', compact('words'));
             }
-        }else{
-            $words = $order_date." 這天沒有供餐資料！";
-            return view('errors.errors',compact('words'));
+        } else {
+            $words = $order_date . " 這天沒有供餐資料！";
+            return view('errors.errors', compact('words'));
         }
 
 
         $att['enable'] = "no_eat";
-        LunchTeaDate::where('order_date','=',$order_date)->update($att);
+        LunchTeaDate::where('order_date', '=', $order_date)->update($att);
         return redirect()->route('lunch.index');
     }
 
     public function special(Request $request)
     {
-        $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
-        if(empty($check)) return view('errors.not_admin');
+        $check = Fun::where('type', '=', '3')->where('username', '=', auth()->user()->username)->first();
+        if (empty($check)) return view('errors.not_admin');
 
         //查目前學期
         $y = date('Y') - 1911;
-        $array1 = array(8,9,10,11,12,1);
-        $array2 = array(2,3,4,5,6,7);
-        if(in_array(date('n'),$array1)){
-            if(date('n') == 1){
-                $this_semester = ($y-1)."1";
-            }else{
-                $this_semester = $y."1";
+        $array1 = array(8, 9, 10, 11, 12, 1);
+        $array2 = array(2, 3, 4, 5, 6, 7);
+        if (in_array(date('n'), $array1)) {
+            if (date('n') == 1) {
+                $this_semester = ($y - 1) . "1";
+            } else {
+                $this_semester = $y . "1";
             }
-        }else{
-            $this_semester = ($y-1)."2";
+        } else {
+            $this_semester = ($y - 1) . "2";
         }
 
-        $semester = (empty($request->input('semester')))?$this_semester:$request->input('semester');
+        $semester = (empty($request->input('semester'))) ? $this_semester : $request->input('semester');
+
+        //查新學期設好了沒
+        $check_new_semester = LunchOrderDate::where('semester','=',$semester)->first();
+        if(empty($check_new_semester)){
+            $words = "新學期尚未設定好！";
+            return view('errors.errors',compact('words'));
+        }
+
 
         $semesters = LunchSetup::all()->pluck('semester', 'semester')->toArray();
-        $d = LunchSetup::where('semester','=',$semester)->first();
-        $factorys_array = explode(',',$d->factory);
-        $places_array = explode(',',$d->place);
-        foreach($factorys_array as $factory){
+        $d = LunchSetup::where('semester', '=', $semester)->first();
+        $factorys_array = explode(',', $d->factory);
+        $places_array = explode(',', $d->place);
+        foreach ($factorys_array as $factory) {
             $factorys[$factory] = $factory;
         }
-        foreach($places_array as $place){
+        foreach ($places_array as $place) {
             $places[$place] = $place;
         }
 
         $users = User::orderBy('order_by')->pluck('name', 'id')->toArray();
 
         $data = [
-            'users'=>$users,
-            'semester'=>$semester,
-            'semesters'=>$semesters,
-            'factorys'=>$factorys,
-            'places'=>$places,
+            'users' => $users,
+            'semester' => $semester,
+            'semesters' => $semesters,
+            'factorys' => $factorys,
+            'places' => $places,
         ];
 
 
-
-        return view('lunch.special',$data);
+        return view('lunch.special', $data);
     }
 
     public function do_special(Request $request)
     {
-        switch ($request->input('op')){
+        switch ($request->input('op')) {
             case "order_tea":
-                if(empty(($request->input('user_id')))){
+                if (empty(($request->input('user_id')))) {
                     $words = "你沒有選擇老師！";
                     return view('errors.errors', compact('words'));
                 }
 
 
-                $check_order = LunchTeaDate::where('user_id','=',$request->input('user_id'))->where('order_date','=',$request->input('b_order_date'))->first();
-                if($check_order){
+                $check_order = LunchTeaDate::where('user_id', '=', $request->input('user_id'))->where('order_date', '=', $request->input('b_order_date'))->first();
+                if ($check_order) {
                     $words = "這位教職員已經有訂餐記錄！請查明！";
                     return view('errors.errors', compact('words'));
                 }
 
                 $order_dates = $this->get_order_dates($request->input('semester'));
                 $order_id_array = $this->get_order_id_array($request->input('semester'));
-                $b_order_date =  str_replace('-','',$request->input('b_order_date'));
-                foreach($order_dates as $k=>$v){
+                $b_order_date = str_replace('-', '', $request->input('b_order_date'));
+                foreach ($order_dates as $k => $v) {
                     $att['order_date'] = $k;
-                    if($v == 0){
+                    if ($v == 0) {
                         $att['enable'] = "no";
-                    }elseif($v == 1){
-                        $order_date = str_replace('-','',$k);
-                        if($order_date < $b_order_date) {
+                    } elseif ($v == 1) {
+                        $order_date = str_replace('-', '', $k);
+                        if ($order_date < $b_order_date) {
                             $att['enable'] = "no_eat";
-                        }elseif($order_date >= $b_order_date){
+                        } elseif ($order_date >= $b_order_date) {
                             $att['enable'] = "eat";
                         }
                     }
                     $att['semester'] = $request->input('semester');
-                    $att['lunch_order_id'] = $order_id_array[substr($k,0,7)];
+                    $att['lunch_order_id'] = $order_id_array[substr($k, 0, 7)];
                     $att['user_id'] = $request->input('user_id');
-                    if($request->input('place')=="班級教室"){
+                    if ($request->input('place') == "班級教室") {
                         $att['place'] = $request->input('classroom');
-                    }else{
+                    } else {
                         $att['place'] = $request->input('place');
                     }
                     $att['factory'] = $request->input('factory');
@@ -357,199 +370,343 @@ class LunchController extends Controller
 
                 break;
             case "cancel_tea":
-                if(empty(($request->input('user_id')))){
+                if (empty(($request->input('user_id')))) {
                     $words = "你沒有選擇老師！";
                     return view('errors.errors', compact('words'));
                 }
-                    $tea_order_data = LunchTeaDate::where('user_id','=',$request->input('user_id'))->where('order_date','=',$request->input('c_order_date'))->first();
-                    if($tea_order_data){
-                        if($tea_order_data->enable == "no"){
-                            $words = $request->input('c_order_date') . "該日沒有供餐！";
-                            return view('errors.errors', compact('words'));
-                        }
-                        if($tea_order_data->enable == "no_eat" and $request->input('enable') == "no_eat"){
-                            $words = $request->input('c_order_date') . "該師該日早已取消訂餐！";
-                            return view('errors.errors', compact('words'));
-                        }
-                        if($tea_order_data->enable == "eat" and $request->input('enable') == "eat"){
-                            $words = $request->input('c_order_date') . "該師該日早已有訂餐！";
-                            return view('errors.errors', compact('words'));
-                        }
-
-                        $att['enable'] = $request->input('enable');
-
-                        $tea_order_data->update($att);
-                        return redirect()->route('lunch.special');
-
-                    }else{
-                        $words = "該師無此日的訂餐記錄！";
+                $tea_order_data = LunchTeaDate::where('user_id', '=', $request->input('user_id'))->where('order_date', '=', $request->input('c_order_date'))->first();
+                if ($tea_order_data) {
+                    if ($tea_order_data->enable == "no") {
+                        $words = $request->input('c_order_date') . "該日沒有供餐！";
                         return view('errors.errors', compact('words'));
                     }
+                    if ($tea_order_data->enable == "no_eat" and $request->input('enable') == "no_eat") {
+                        $words = $request->input('c_order_date') . "該師該日早已取消訂餐！";
+                        return view('errors.errors', compact('words'));
+                    }
+                    if ($tea_order_data->enable == "eat" and $request->input('enable') == "eat") {
+                        $words = $request->input('c_order_date') . "該師該日早已有訂餐！";
+                        return view('errors.errors', compact('words'));
+                    }
+
+                    $att['enable'] = $request->input('enable');
+
+                    $tea_order_data->update($att);
+                    return redirect()->route('lunch.special');
+
+                } else {
+                    $words = "該師無此日的訂餐記錄！";
+                    return view('errors.errors', compact('words'));
+                }
                 break;
             case "change_tea";
-                if(empty(($request->input('user_id')))){
+                if (empty(($request->input('user_id')))) {
                     $words = "你沒有選擇老師！";
                     return view('errors.errors', compact('words'));
                 }
 
-                $tea_order_data = LunchTeaDate::where('user_id','=',$request->input('user_id'))->where('semester','=',$request->input('semester'))->first();
-                if($tea_order_data){
-                    if(substr($request->input('change'),0,9) == 'eat_style'){
-                        $att['eat_style'] = substr($request->input('change'),-1);
-                    }else{
+                $tea_order_data = LunchTeaDate::where('user_id', '=', $request->input('user_id'))->where('semester', '=', $request->input('semester'))->first();
+                if ($tea_order_data) {
+                    if (substr($request->input('change'), 0, 9) == 'eat_style') {
+                        $att['eat_style'] = substr($request->input('change'), -1);
+                    } else {
                         $att['place'] = $request->input('change');
                     }
-                    $g_order_date =  str_replace('-','',$request->input('g_order_date'));
+                    $g_order_date = str_replace('-', '', $request->input('g_order_date'));
                     $order_dates = $this->get_order_dates($request->input('semester'));
-                    foreach($order_dates as $k=>$v){
-                        $order_date = str_replace('-','',$k);
-                        if($order_date >= $g_order_date){
-                            LunchTeaDate::where('user_id','=',$request->input('user_id'))->where('order_date','=',$k)->update($att);
+                    foreach ($order_dates as $k => $v) {
+                        $order_date = str_replace('-', '', $k);
+                        if ($order_date >= $g_order_date) {
+                            LunchTeaDate::where('user_id', '=', $request->input('user_id'))->where('order_date', '=', $k)->update($att);
                         }
                     }
                     return redirect()->route('lunch.special');
-                }else{
+                } else {
                     $words = "該師無訂餐記錄！";
                     return view('errors.errors', compact('words'));
                 }
 
                 break;
-                case "change_stu1";
-                    if(empty(($request->input('select_class')))){
-                        $words = "你沒有填班級！";
-                        return view('errors.errors', compact('words'));
-                    }
-                    //取該班該日的資料
-                    $class_id = $request->input('select_class');
-                    $order_date = $request->input('stu1_order_date');
-                    $stu_data = LunchStuDate::where('class_id','=',$class_id)->where('order_date','=',$order_date)->where('enable','=','eat');
+            case "change_stu1";
+                if (empty(($request->input('select_class')))) {
+                    $words = "你沒有填班級！";
+                    return view('errors.errors', compact('words'));
+                }
+                //取該班該日的資料
+                $class_id = $request->input('select_class');
+                $order_date = $request->input('stu1_order_date');
+                $stu_data = LunchStuDate::where('class_id', '=', $class_id)->where('order_date', '=', $order_date)->where('enable', '=', 'eat');
+                $att['enable'] = "abs";
+                $stu_data->update($att);
+                return redirect()->route('lunch.special');
+                break;
+            case "change_stu2";
+                if (empty(($request->input('select_year')))) {
+                    $words = "你沒有填學年！";
+                    return view('errors.errors', compact('words'));
+                }
+                //取該學年該日的資料
+                $year_one = $request->input('select_year');
+                $order_date = $request->input('stu2_order_date');
+                $stu_data = LunchStuDate::where('class_id', 'like', $year_one . '%')->where('order_date', '=', $order_date)->where('enable', '=', 'eat');
+                $att['enable'] = "abs";
+                $stu_data->update($att);
+                return redirect()->route('lunch.special');
+                break;
+            case "change_stu2-2";
+                if (empty(($request->input('select_year')))) {
+                    $words = "你沒有填學年！";
+                    return view('errors.errors', compact('words'));
+                }
+
+                //取該學年該日的資料
+                $year_one = $request->input('select_year');
+                $order_date = $request->input('stu2-2_order_date');
+                $stu_data = LunchStuDate::where('class_id', 'like', $year_one . '%')->where('order_date', '=', $order_date);
+
+                $att['enable'] = "no_eat";
+                $stu_data->update($att);
+
+
+                return redirect()->route('lunch.special');
+                break;
+            case "change_stu3";
+                $order_date = $request->input('stu3_order_date');
+                $stu_data = LunchStuDate::where('order_date', '=', $order_date)->where('enable', '=', 'eat');
+                $att['enable'] = "abs";
+                $stu_data->update($att);
+
+                //處理老師
+                $tea_order_data = LunchTeaDate::where('order_date', '=', $order_date)->first();
+                $att2['enable'] = "no_eat";
+                if (!empty($tea_order_data)) {
+                    $tea_order_data->update($att2);
+                }
+
+                return redirect()->route('lunch.special');
+                break;
+            case "change_studs";
+                $ary_phase = array("\r\n", "\r", " ", "\n", "/");
+
+                $data = nl2br($request->input('studs_data'));
+                $data = str_replace($ary_phase, "", $data);
+
+                $studs_data = explode('<br>', $data);
+
+
+                foreach ($studs_data as $k => $v) {
+
+                    $order_data = explode(',', $v);
+
+                    $student_num = $order_data[0];
+                    $order_date = $order_data[1];
                     $att['enable'] = "abs";
-                    $stu_data->update($att);
-                    return redirect()->route('lunch.special');
-                break;
-                case "change_stu2";
-                    if(empty(($request->input('select_year')))){
-                        $words = "你沒有填學年！";
+
+                    $class_data = YearClass::where('year_class', '=', substr($student_num, 0, 3))->first();
+                    if (empty($class_data)) {
+                        $words = "查無此班級：" . $student_num;
                         return view('errors.errors', compact('words'));
+                    } else {
+                        $year_class_id = $class_data->id;
                     }
-                    //取該學年該日的資料
-                    $year_one = $request->input('select_year');
-                    $order_date = $request->input('stu2_order_date');
-                    $stu_data = LunchStuDate::where('class_id','like',$year_one.'%')->where('order_date','=',$order_date)->where('enable','=','eat');
-                    $att['enable'] = "abs";
-                    $stu_data->update($att);
-                    return redirect()->route('lunch.special');
-                break;
-                case "change_stu2-2";
-                    if(empty(($request->input('select_year')))){
-                        $words = "你沒有填學年！";
+                    $student_data = SemesterStudent::where('year_class_id', '=', $year_class_id)->where('num', '=', substr($student_num, 3, 2))->first();
+                    if (empty($student_data)) {
+                        $words = "查無此學生：" . $student_num;
                         return view('errors.errors', compact('words'));
+                    } else {
+                        $student_id = $student_data->student_id;
+                        echo " 班級座號：" . $student_num . "<br>姓名：" . $student_data->student->name . "<br>請假：" . $order_date . "<br>已完成！<br><br>";
+
+                        LunchStuDate::where('student_id', '=', $student_id)->where('order_date', '=', $order_date)->update($att);
+
                     }
 
-                    //取該學年該日的資料
-                    $year_one = $request->input('select_year');
-                    $order_date = $request->input('stu2-2_order_date');
-                    $stu_data = LunchStuDate::where('class_id','like',$year_one.'%')->where('order_date','=',$order_date);
-
-                    $att['enable'] = "no_eat";
-                    $stu_data->update($att);
+                }
 
 
-                    return redirect()->route('lunch.special');
+                return redirect()->route('lunch.special');
                 break;
-                case "change_stu3";
-                        $order_date = $request->input('stu3_order_date');
-                        $stu_data = LunchStuDate::where('order_date','=',$order_date)->where('enable','=','eat');
+            case "out_stud";
+                $year_class_data = YearClass::where('semester', '=', $request->input('semester'))
+                    ->where('year_class', '=', substr($request->input('student_num'), 0, 3))
+                    ->first();
+                if (empty($year_class_data)) {
+                    $words = "查無此學生：" . $request->input('student_num');
+                    return view('errors.errors', compact('words'));
+                }
+                $semester_student = SemesterStudent::where('year_class_id', '=', $year_class_data->id)
+                    ->where('num', '=', substr($request->input('student_num'), 3, 2))
+                    ->first();
+                if (empty($semester_student)) {
+                    $words = "查無此學生：" . $request->input('student_num');
+                    return view('errors.errors', compact('words'));
+                }
+                $student = Student::where('id', '=', $semester_student->student_id)->first();
+                if (empty($student)) {
+                    $words = "查無此學生：" . $request->input('student_num');
+                    return view('errors.errors', compact('words'));
+                } else {
+                    if ($request->input('type') == "out") {
+                        $att1['at_school'] = "0";
+                        SemesterStudent::where('student_id', '=', $student->id)
+                            ->where('semester', '=', $request->input('semester'))
+                            ->first()
+                            ->update($att1);
+
+                        $att2['enable'] = "out";
+
+                        //全學期的請假，改為轉出
+                        LunchStuDate::where('semester', '=', $request->input('semester'))
+                            ->where('student_id', '=', $student->id)
+                            ->where('enable', '=', 'abs')
+                            ->update($att2);
+
+                        //之後的訂餐，改為轉出
+                        LunchStuDate::where('semester', '=', $request->input('semester'))
+                            ->where('student_id', '=', $student->id)
+                            ->where('enable', '=', 'eat')
+                            ->where('order_date', '>=', $request->input('out_stud_order_date'))
+                            ->update($att2);
+
+                    } elseif ($request->input('type') == "no_eat") {
                         $att['enable'] = "abs";
-                        $stu_data->update($att);
-
-                        //處理老師
-                        $tea_order_data = LunchTeaDate::where('order_date','=',$order_date)->first();
-                        $att2['enable'] = "no_eat";
-                        $tea_order_data->update($att2);
-
-                        return redirect()->route('lunch.special');
-                break;
-                case "change_studs";
-                    $ary_phase = array("\r\n","\r"," ","\n","/");
-
-                    $data = nl2br($request->input('studs_data'));
-                    $data = str_replace($ary_phase,"",$data);
-
-                    $studs_data = explode('<br>',$data);
-
-
-                    foreach($studs_data as $k=>$v){
-
-                        $order_data = explode(',',$v);
-
-                        $student_num = $order_data[0];
-                        $order_date = $order_data[1];
-                        $att['enable'] = "abs";
-
-                        $class_data = YearClass::where('year_class','=',substr($student_num,0,3))->first();
-                        if(empty($class_data)){
-                            $words = "查無此班級：". $student_num;
-                            return view('errors.errors', compact('words'));
-                        }else{
-                            $year_class_id = $class_data->id;
-                        }
-                        $student_data = SemesterStudent::where('year_class_id','=',$year_class_id)->where('num','=',substr($student_num,3,2))->first();
-                        if(empty($student_data)){
-                            $words = "查無此學生：". $student_num;
-                            return view('errors.errors', compact('words'));
-                        }else{
-                            $student_id = $student_data->student_id;
-                            echo " 班級座號：".$student_num ."<br>姓名：". $student_data->student->name."<br>請假：". $order_date ."<br>已完成！<br><br>";
-
-                            LunchStuDate::where('student_id','=',$student_id)->where('order_date','=',$order_date)->update($att);
-
-                        }
-
+                        LunchStuDate::where('semester', '=', $request->input('semester'))
+                            ->where('student_id', '=', $student->id)
+                            ->where('enable', '=', 'eat')
+                            ->where('order_date', '>=', $request->input('out_stud_order_date'))
+                            ->update($att);
                     }
-
-
-                    return redirect()->route('lunch.special');
+                }
+                return redirect()->route('lunch.special');
                 break;
-                case "out_stud";
-                    $student = Student::where('sn','=',$request->input('student_sn'))->first();
-                    if(empty($student)) {
-                        $words = "查無此學號的學生：" . $request->input('student_sn');
+            case "in_stud";
+                if ($request->input('type') == "in") {
+                    //填的班級對嗎
+                    $year_class_data = YearClass::where('semester', '=', $request->input('semester'))
+                        ->where('year_class', '=', substr($request->input('student_num'), 0, 3))
+                        ->first();
+                    if (empty($year_class_data)) {
+                        $words = "查無此班級：" . $request->input('student_num');
                         return view('errors.errors', compact('words'));
-                    }else{
-                        if($request->input('type')=="out"){
-                            $att1['at_school'] = "0";
-                            SemesterStudent::where('student_id','=',$student->id)
-                                ->where('semester','=',$request->input('semester'))
-                                ->first()
-                                ->update($att1);
-
-                            $att2['enable'] = "out";
-
-                            //之前的請假，改為轉出
-                            LunchStuDate::where('semester','=',$request->input('semester'))
-                                ->where('student_id','=',$student->id)
-                                ->where('enable','=','abs')
-                                ->where('order_date','<',$request->input('out_stud_order_date'))
-                                ->update($att2);
-
-                            //之後的訂餐，改為轉出
-                            LunchStuDate::where('semester','=',$request->input('semester'))
-                                ->where('student_id','=',$student->id)
-                                ->where('enable','=','eat')
-                                ->where('order_date','>=',$request->input('out_stud_order_date'))
-                                ->update($att2);
-
-                        }elseif($request->input('type')=="no_eat"){
-                            $att['enable'] = "abs";
-                            LunchStuDate::where('semester','=',$request->input('semester'))
-                                ->where('student_id','=',$student->id)
-                                ->where('enable','=','eat')
-                                ->where('order_date','>=',$request->input('out_stud_order_date'))
-                                ->update($att);
-                        }
                     }
-                    return redirect()->route('lunch.special');
+                    //查有學生資料嗎
+                    $student = Student::where('sn', '=', $request->input('sn'))
+                        ->first();
+                    if (!empty($student)) {
+                        //有無學期資料了
+                        $semester_student = SemesterStudent::where('semester', '=', $request->input('semester'))
+                            ->where('student_id', '=', $student->id)
+                            ->first();
+                        //若無，就新增學期資料
+                        if (empty($semester_student)) {
+                            $att3['semester'] = $request->input('semester');
+                            $att3['student_id'] = $student->id;
+                            $att3['year_class_id'] = $year_class_data->id;
+                            $att3['num'] = substr($request->input('student_num'), 3, 2);
+                            $att3['at_school'] = "1";
+                            SemesterStudent::create($att3);
+                        } else {
+                            if ($semester_student->year_class->year_class . $semester_student->num <> $request->input('student_num')) {
+                                $words = "此學生班級座號和你填的不一致：你填的：" . $request->input('student_num') . "但系統內為：" . $semester_student->year_class->year_class . $semester_student->num;
+                                return view('errors.errors', compact('words'));
+                            }
+
+                        }
+
+                        $student_id = $student->id;
+
+                    } else {
+                        //沒學生資料，就增加
+                        $att['sn'] = $request->input('sn');
+                        $att['name'] = $request->input('name');
+                        $att['sex'] = $request->input('sex');
+                        //新增學生
+                        $add_student = Student::create($att);
+
+                        //新增此學期資料
+                        $att2['semester'] = $request->input('semester');
+                        $att2['student_id'] = $add_student->id;
+                        $att2['year_class_id'] = $year_class_data->id;
+                        $att2['num'] = substr($request->input('student_num'), 3, 2);
+                        $att2['at_school'] = "1";
+                        SemesterStudent::create($att2);
+                        $student_id = $add_student->id;
+
+                    }
+
+                    //新增訂餐資料
+                    $semester = $request->input('semester');
+                    $order_dates = $this->get_order_dates($semester);
+                    $order_id_array = $this->get_order_id_array($semester);
+
+                    $att5['semester'] = $semester;
+                    $att5['student_id'] = $student_id;
+                    $att5['student_num'] = $request->input('student_num');
+                    $att5['eat_style'] = $request->input('eat_style');
+                    $att5['p_id'] = $request->input('p_id');
+                    LunchStuOrder::create($att5);
+
+                    //日期訂餐
+                    foreach ($order_dates as $k => $v) {
+                        $att4['order_date'] = $k;
+                        $att4['semester'] = $semester;
+                        $att4['lunch_order_id'] = $order_id_array[substr($k, 0, 7)];
+                        $att4['student_id'] = $student_id;
+                        $att4['class_id'] = substr($request->input('student_num'), 0, 3);
+                        $att4['p_id'] = $request->input('p_id');
+                        $att4['eat_style'] = $request->input('eat_style');
+                        if (str_replace('-', '', $k) < str_replace('-', '', $request->input('in_stud_order_date'))) {
+                            if ($v == "0") $att4['enable'] = "not";
+                            if ($v == "1") $att4['enable'] = "no_eat";
+                        } else {
+                            if ($v == "0") $att4['enable'] = "not";
+                            if ($v == "1") $att4['enable'] = "eat";
+                            if ($att4['eat_style'] == "3" and $v == "1") $att4['enable'] = "no_eat";
+                        }
+
+                        LunchStuDate::create($att4);
+                    }
+
+
+                } elseif ($request->input('type') == "eat") {
+                    $year_class_data = YearClass::where('semester', '=', $request->input('semester'))
+                        ->where('year_class', '=', substr($request->input('student_num'), 0, 3))
+                        ->first();
+                    if (empty($year_class_data)) {
+                        $words = "查無此學生：" . $request->input('student_num');
+                        return view('errors.errors', compact('words'));
+                    }
+                    $semester_student = SemesterStudent::where('year_class_id', '=', $year_class_data->id)
+                        ->where('num', '=', substr($request->input('student_num'), 3, 2))
+                        ->first();
+                    if (empty($semester_student)) {
+                        $words = "查無此學生：" . $request->input('student_num');
+                        return view('errors.errors', compact('words'));
+                    }
+                    $student = Student::where('id', '=', $semester_student->student_id)->first();
+                    if (empty($student)) {
+                        $words = "查無此學生：" . $request->input('student_num');
+                        return view('errors.errors', compact('words'));
+                    } else {
+                        $att['enable'] = "eat";
+                        $att['eat_style'] = $request->input('eat_style');
+                        $att['p_id'] = $request->input('p_id');
+                        //更改訂餐
+                        LunchStuDate::where('semester', '=', $request->input('semester'))
+                            ->where('student_id', '=', $student->id)
+                            ->where('enable', '=', 'no_eat')
+                            ->where('order_date', '>=', $request->input('in_stud_order_date'))
+                            ->update($att);
+                        //把未供餐的順便改一下eat_style,p_id
+                        $att['enable'] = "not";
+                        LunchStuDate::where('semester', '=', $request->input('semester'))
+                            ->where('student_id', '=', $student->id)
+                            ->where('enable', '=', 'not')
+                            ->where('order_date', '>=', $request->input('in_stud_order_date'))
+                            ->update($att);
+                    }
+                }
+                return redirect()->route('lunch.special');
                 break;
 
         }
@@ -558,45 +715,45 @@ class LunchController extends Controller
 
     public function report(Request $request)
     {
-        $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
-        if(empty($check)) return view('errors.not_admin');
+        $check = Fun::where('type', '=', '3')->where('username', '=', auth()->user()->username)->first();
+        if (empty($check)) return view('errors.not_admin');
 
         //查目前學期
         $y = date('Y') - 1911;
-        $array1 = array(8,9,10,11,12,1);
-        $array2 = array(2,3,4,5,6,7);
-        if(in_array(date('n'),$array1)){
-            if(date('n') == 1){
-                $this_semester = ($y-1)."1";
-            }else{
-                $this_semester = $y."1";
+        $array1 = array(8, 9, 10, 11, 12, 1);
+        $array2 = array(2, 3, 4, 5, 6, 7);
+        if (in_array(date('n'), $array1)) {
+            if (date('n') == 1) {
+                $this_semester = ($y - 1) . "1";
+            } else {
+                $this_semester = $y . "1";
             }
-        }else{
-            $this_semester = ($y-1)."2";
+        } else {
+            $this_semester = ($y - 1) . "2";
         }
 
-        $semester = (empty($request->input('semester')))?$this_semester:$request->input('semester');
+        $semester = (empty($request->input('semester'))) ? $this_semester : $request->input('semester');
 
         $semesters = LunchSetup::all()->pluck('semester', 'semester')->toArray();
 
-        $data =[
-            'semester'=>$semester,
-            'semesters'=>$semesters
+        $data = [
+            'semester' => $semester,
+            'semesters' => $semesters
         ];
 
-        return view('lunch.report',$data);
+        return view('lunch.report', $data);
     }
 
     public function report_tea1(Request $request)
     {
-        $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
-        if(empty($check)) return view('errors.not_admin');
+        $check = Fun::where('type', '=', '3')->where('username', '=', auth()->user()->username)->first();
+        if (empty($check)) return view('errors.not_admin');
 
         $orders = $this->get_order_id_array($request->input('semester'));
         $this_mon = date('Y-m');
         $this_order_id = $orders[$this_mon];
         //選取的月份id
-        $order_id = (empty($request->input('order_id')))?$this_order_id:$request->input('order_id');
+        $order_id = (empty($request->input('order_id'))) ? $this_order_id : $request->input('order_id');
 
         $orders = array_flip($orders);
         //選取的月份
@@ -605,44 +762,48 @@ class LunchController extends Controller
         $o_order_dates = $this->get_order_dates($request->input('semester'));
         $i = 0;
         //訂餐日期array
-        foreach($o_order_dates as $k=>$v){
-            if(substr($k,0,7) == $mon and $v == 1){
+        foreach ($o_order_dates as $k => $v) {
+            if (substr($k, 0, 7) == $mon and $v == 1) {
                 $order_dates[$i] = $k;
                 $i++;
             }
         }
         //訂餐者資料
         $user_datas = [];
-        $order_datas = LunchTeaDate::where('lunch_order_id','=',$order_id)->get();
-        foreach($order_datas as $order_data){
+        $order_datas = LunchTeaDate::where('lunch_order_id', '=', $order_id)
+            ->orderBy('place','DESC')
+            ->get();
+        foreach ($order_datas as $order_data) {
             $user_datas[$order_data->user->name][$order_data->order_date]['enable'] = $order_data->enable;
             $user_datas[$order_data->user->name][$order_data->order_date]['eat_style'] = $order_data->eat_style;
             $user_datas[$order_data->user->name][$order_data->order_date]['place'] = $order_data->place;
         }
 
         $data = [
-            'this_order_id'=>$this_order_id,
-            'mon'=>$mon,
-            'orders'=>$orders,
-            'semester'=>$request->input('semester'),
-            'order_dates'=>$order_dates,
-            'user_datas'=>$user_datas,
+            'this_order_id' => $this_order_id,
+            'mon' => $mon,
+            'orders' => $orders,
+            'semester' => $request->input('semester'),
+            'order_dates' => $order_dates,
+            'user_datas' => $user_datas,
         ];
-        return view('lunch.report_tea1',$data);
+        return view('lunch.report_tea1', $data);
     }
 
     public function report_tea2(Request $request)
     {
-        $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
-        if(empty($check)) return view('errors.not_admin');
+        $check = Fun::where('type', '=', '3')->where('username', '=', auth()->user()->username)->first();
+        if (empty($check)) return view('errors.not_admin');
 
-        $order_datas = LunchTeaDate::where('semester','=',$request->input('semester'))->get();
+        $order_datas = LunchTeaDate::where('semester', '=', $request->input('semester'))
+            ->orderBy('place','DESC')
+            ->get();
         $i = 0;
         $last_user = "";
         $user_datas = [];
-        foreach($order_datas as $order_data){
-            if($order_data->enable == "eat") {
-                if($last_user != $order_data->user->name) $i=0;
+        foreach ($order_datas as $order_data) {
+            if ($order_data->enable == "eat") {
+                if ($last_user != $order_data->user->name) $i = 0;
                 $i++;
                 $user_datas[$order_data->user->name] = $i;
                 $last_user = $order_data->user->name;
@@ -651,61 +812,60 @@ class LunchController extends Controller
         $setups = $this->get_setup();
 
         $data = [
-            'semester'=>$request->input('semester'),
-            'user_datas'=>$user_datas,
-            'tea_money'=>$setups[$request->input('semester')]['tea_money'],
+            'semester' => $request->input('semester'),
+            'user_datas' => $user_datas,
+            'tea_money' => $setups[$request->input('semester')]['tea_money'],
         ];
-        return view('lunch.report_tea2',$data);
+        return view('lunch.report_tea2', $data);
     }
 
     public function report_tea2_print(Request $request)
     {
-        $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
-        if(empty($check)) return view('errors.not_admin');
-        $order_datas = LunchTeaDate::where('semester','=',$request->input('semester'))->get();
+        $check = Fun::where('type', '=', '3')->where('username', '=', auth()->user()->username)->first();
+        if (empty($check)) return view('errors.not_admin');
+        $order_datas = LunchTeaDate::where('semester', '=', $request->input('semester'))->get();
         $i = 0;
         $last_user = "";
         $last_mon = "";
-        foreach($order_datas as $order_data){
-            if($order_data->enable == "eat") {
-                if($last_user != $order_data->user->name or $last_mon != substr($order_data->order_date,0,7)) $i=0;
+        foreach ($order_datas as $order_data) {
+            if ($order_data->enable == "eat") {
+                if ($last_user != $order_data->user->name or $last_mon != substr($order_data->order_date, 0, 7)) $i = 0;
                 $i++;
-                $user_datas[$order_data->user->name][substr($order_data->order_date,0,7)] = $i;
+                $user_datas[$order_data->user->name][substr($order_data->order_date, 0, 7)] = $i;
                 $last_user = $order_data->user->name;
-                $last_mon = substr($order_data->order_date,0,7);
+                $last_mon = substr($order_data->order_date, 0, 7);
             }
         }
         $setups = $this->get_setup();
         $data = [
-            'user_datas'=>$user_datas,
-            'tea_money'=>$setups[$request->input('semester')]['tea_money'],
+            'user_datas' => $user_datas,
+            'tea_money' => $setups[$request->input('semester')]['tea_money'],
         ];
-        return view('lunch.report_tea2_print',$data);
+        return view('lunch.report_tea2_print', $data);
 
     }
 
     public function report_stu1(Request $request)
     {
-        $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
-        if(empty($check)) return view('errors.not_admin');
+        $check = Fun::where('type', '=', '3')->where('username', '=', auth()->user()->username)->first();
+        if (empty($check)) return view('errors.not_admin');
         $semester = $request->input('semester');
 
         $order_dates = $this->get_order_dates($semester);
-        foreach($order_dates as $k=>$v){
-            if($v == 1) $select_date_menu[$k] = $k;
+        foreach ($order_dates as $k => $v) {
+            if ($v == 1) $select_date_menu[$k] = $k;
         }
-        $select_date = (empty($request->input('select_date')))?current($select_date_menu):$request->input('select_date');
+        $select_date = (empty($request->input('select_date'))) ? current($select_date_menu) : $request->input('select_date');
 
 
-        $class_orders_dates = LunchStuDate::where('semester','=',$request->input('semester'))->orderBy('class_id');
+        $class_orders_dates = LunchStuDate::where('semester', '=', $request->input('semester'))->orderBy('class_id');
 
 
-
-        $class_orders = $class_orders_dates->where('order_date','=',$select_date)->get();
+        $class_orders = $class_orders_dates->where('order_date', '=', $select_date)->get();
 
         $last_class = "";
 
-        foreach($class_orders as $class_order){
+        foreach ($class_orders as $class_order) {
 
             $class_id = $class_order->class_id;
             $order_date = $class_order->order_date;
@@ -713,7 +873,7 @@ class LunchController extends Controller
             $p_id = $class_order->p_id;
             $sex = $class_order->student->sex;
 
-            if($class_id != $last_class){
+            if ($class_id != $last_class) {
                 $g = 0;
                 $w = 0;
                 $n = 0;
@@ -733,158 +893,158 @@ class LunchController extends Controller
                 $w208 = 0;
                 $w209 = 0;
                 $w210 = 0;
-                $w201b =0;
-                $w201g =0;
-                $w202b =0;
-                $w202g =0;
-                $w203b =0;
-                $w203g =0;
-                $w204b =0;
-                $w204g =0;
-                $w205b =0;
-                $w205g =0;
-                $w206b =0;
-                $w206g =0;
-                $w207b =0;
-                $w207g =0;
-                $w208b =0;
-                $w208g =0;
-                $w209b =0;
-                $w209g =0;
-                $w210b =0;
-                $w210g =0;
+                $w201b = 0;
+                $w201g = 0;
+                $w202b = 0;
+                $w202g = 0;
+                $w203b = 0;
+                $w203g = 0;
+                $w204b = 0;
+                $w204g = 0;
+                $w205b = 0;
+                $w205g = 0;
+                $w206b = 0;
+                $w206g = 0;
+                $w207b = 0;
+                $w207g = 0;
+                $w208b = 0;
+                $w208g = 0;
+                $w209b = 0;
+                $w209g = 0;
+                $w210b = 0;
+                $w210g = 0;
             }
 
 
-            if($p_id > 200 and $eat_style !=3){
+            if ($p_id > 200 and $eat_style != 3) {
                 $w++;
                 $order_data[$class_id][$order_date]['w'] = $w;
-                if($sex == 1){
+                if ($sex == 1) {
                     $wb++;
                     $order_data[$class_id][$order_date]['wb'] = $wb;
-                }else{
+                } else {
                     $wg++;
                     $order_data[$class_id][$order_date]['wg'] = $wg;
                 }
-                if($p_id == 201) {
+                if ($p_id == 201) {
                     $w201++;
                     $order_data[$class_id][$order_date]['w201'] = $w201;
-                    if($sex == 1){
+                    if ($sex == 1) {
                         $w201b++;
                         $order_data[$class_id][$order_date]['w201b'] = $w201b;
-                    }else{
+                    } else {
                         $w201g++;
                         $order_data[$class_id][$order_date]['w201g'] = $wg;
                     }
-                }elseif($p_id == 202){
+                } elseif ($p_id == 202) {
                     $w202++;
                     $order_data[$class_id][$order_date]['w202'] = $w202;
-                    if($sex == 1){
+                    if ($sex == 1) {
                         $w202b++;
                         $order_data[$class_id][$order_date]['w202b'] = $w202b;
-                    }else{
+                    } else {
                         $w202g++;
                         $order_data[$class_id][$order_date]['w202g'] = $w202g;
                     }
-                }elseif($p_id == 203){
+                } elseif ($p_id == 203) {
                     $w203++;
                     $order_data[$class_id][$order_date]['w203'] = $w203;
-                    if($sex == 1){
+                    if ($sex == 1) {
                         $w203b++;
                         $order_data[$class_id][$order_date]['w203b'] = $w203b;
-                    }else{
+                    } else {
                         $w203g++;
                         $order_data[$class_id][$order_date]['w203g'] = $w203g;
                     }
-                }elseif($p_id == 204){
+                } elseif ($p_id == 204) {
                     $w204++;
                     $order_data[$class_id][$order_date]['w204'] = $w204;
-                    if($sex == 1){
+                    if ($sex == 1) {
                         $w204b++;
                         $order_data[$class_id][$order_date]['w204b'] = $w204b;
-                    }else{
+                    } else {
                         $w204g++;
                         $order_data[$class_id][$order_date]['w204g'] = $w204g;
                     }
-                }elseif($p_id == 205){
+                } elseif ($p_id == 205) {
                     $w205++;
                     $order_data[$class_id][$order_date]['w205'] = $w205;
-                    if($sex == 1){
+                    if ($sex == 1) {
                         $w205b++;
                         $order_data[$class_id][$order_date]['w205b'] = $w205b;
-                    }else{
+                    } else {
                         $w205g++;
                         $order_data[$class_id][$order_date]['w205g'] = $w205g;
                     }
-                }elseif($p_id == 206){
+                } elseif ($p_id == 206) {
                     $w206++;
                     $order_data[$class_id][$order_date]['w206'] = $w206;
-                    if($sex == 1){
+                    if ($sex == 1) {
                         $w206b++;
                         $order_data[$class_id][$order_date]['w206b'] = $w206b;
-                    }else{
+                    } else {
                         $w206g++;
                         $order_data[$class_id][$order_date]['w206g'] = $w206g;
                     }
-                }elseif($p_id == 207){
+                } elseif ($p_id == 207) {
                     $w207++;
                     $order_data[$class_id][$order_date]['w207'] = $w207;
-                    if($sex == 1){
+                    if ($sex == 1) {
                         $w207b++;
                         $order_data[$class_id][$order_date]['w207b'] = $w207b;
-                    }else{
+                    } else {
                         $w207g++;
                         $order_data[$class_id][$order_date]['w207g'] = $w207g;
                     }
-                }elseif($p_id == 208){
+                } elseif ($p_id == 208) {
                     $w208++;
                     $order_data[$class_id][$order_date]['w208'] = $w208;
-                    if($sex == 1){
+                    if ($sex == 1) {
                         $w208b++;
                         $order_data[$class_id][$order_date]['w208b'] = $w208b;
-                    }else{
+                    } else {
                         $w208g++;
                         $order_data[$class_id][$order_date]['w208g'] = $w208g;
                     }
-                }elseif($p_id == 209){
+                } elseif ($p_id == 209) {
                     $w209++;
                     $order_data[$class_id][$order_date]['w209'] = $w209;
-                    if($sex == 1){
+                    if ($sex == 1) {
                         $w209b++;
                         $order_data[$class_id][$order_date]['w209b'] = $w209b;
-                    }else{
+                    } else {
                         $w209g++;
                         $order_data[$class_id][$order_date]['w209g'] = $w209g;
                     }
-                }elseif($p_id == 210){
+                } elseif ($p_id == 210) {
                     $w210++;
                     $order_data[$class_id][$order_date]['w210'] = $w210;
-                    if($sex == 1){
+                    if ($sex == 1) {
                         $w210b++;
                         $order_data[$class_id][$order_date]['w210b'] = $w210b;
-                    }else{
+                    } else {
                         $w210g++;
                         $order_data[$class_id][$order_date]['w210g'] = $w210g;
                     }
                 }
 
-            }elseif($p_id == 101 and $eat_style !=3){
+            } elseif ($p_id == 101 and $eat_style != 3) {
                 $g++;
                 $order_data[$class_id][$order_date]['g'] = $g;
-                if($sex == 1){
+                if ($sex == 1) {
                     $gb++;
                     $order_data[$class_id][$order_date]['gb'] = $gb;
-                }else{
+                } else {
                     $gg++;
                     $order_data[$class_id][$order_date]['gg'] = $gg;
                 }
-            }elseif($eat_style ==3){
+            } elseif ($eat_style == 3) {
                 $n++;
                 $order_data[$class_id][$order_date]['n'] = $n;
-                if($sex == 1){
+                if ($sex == 1) {
                     $nb++;
                     $order_data[$class_id][$order_date]['nb'] = $nb;
-                }else{
+                } else {
                     $ng++;
                     $order_data[$class_id][$order_date]['ng'] = $ng;
                 }
@@ -895,46 +1055,49 @@ class LunchController extends Controller
         }
 
         $data = [
-            'semester'=>$semester,
-            'select_date'=>$select_date,
-            'select_date_menu'=>$select_date_menu,
-            'order_data'=>$order_data,
+            'semester' => $semester,
+            'select_date' => $select_date,
+            'select_date_menu' => $select_date_menu,
+            'order_data' => $order_data,
         ];
-        return view('lunch.report_stu1',$data);
+        return view('lunch.report_stu1', $data);
 
     }
+
     public function report_stu2(Request $request)
     {
-        $check = Fun::where('type','=','3')->where('username','=',auth()->user()->username)->first();
-        if(empty($check)) return view('errors.not_admin');
+        $check = Fun::where('type', '=', '3')->where('username', '=', auth()->user()->username)->first();
+        if (empty($check)) return view('errors.not_admin');
         $semester = $request->input('semester');
         $order_id_array = $this->get_order_id_array($semester);
         $lunch_orders = array_flip($order_id_array);
-        $lunch_order_id = (empty($request->input('select_order_id')))?$order_id_array[substr(date('Y-m'),0,7)]:$request->input('select_order_id');
+        $lunch_order_id = (empty($request->input('select_order_id'))) ? $order_id_array[substr(date('Y-m'), 0, 7)] : $request->input('select_order_id');
 
 
         $order_dates = $this->get_order_dates($semester);
         $i = 0;
-        foreach($order_dates as $k=>$v){
-            if($v==1 and substr($k,0,7) == $lunch_orders[$lunch_order_id]){
+        foreach ($order_dates as $k => $v) {
+            if ($v == 1 and substr($k, 0, 7) == $lunch_orders[$lunch_order_id]) {
                 $this_order_dates[$i] = $k;
                 $i++;
             }
         }
 
-        $stu_order_datas = LunchStuDate::where('lunch_order_id','=',$lunch_order_id)->orderBy('class_id')->orderBy('order_date')->get();
+        $stu_order_datas = LunchStuDate::where('lunch_order_id', '=', $lunch_order_id)
+            ->where('enable','=','eat')
+            ->orderBy('class_id')->orderBy('order_date')->get();
         $last_class = "";
         $last_date = "";
 
-        foreach($stu_order_datas as $stu_order_data){
-            if($last_class != $stu_order_data->class_id or $last_date != $stu_order_data->order_date){
+        foreach ($stu_order_datas as $stu_order_data) {
+            if ($last_class != $stu_order_data->class_id or $last_date != $stu_order_data->order_date) {
                 $g = 0;
                 $w = 0;
             }
-            if($stu_order_data->p_id > 200 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat") {
+            if ($stu_order_data->p_id > 200 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat") {
                 $w++;
                 $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['w'] = $w;
-            }elseif($stu_order_data->p_id == 101 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat"){
+            } elseif ($stu_order_data->p_id == 101 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat") {
                 $g++;
                 $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g'] = $g;
             }
@@ -943,16 +1106,25 @@ class LunchController extends Controller
         }
 
 
-
         $data = [
-            'semester'=>$semester,
-            'lunch_orders'=>$lunch_orders,
-            'lunch_order_id'=>$lunch_order_id,
-            'this_order_dates'=>$this_order_dates,
-            'order_data'=>$order_data,
+            'semester' => $semester,
+            'lunch_orders' => $lunch_orders,
+            'lunch_order_id' => $lunch_order_id,
+            'this_order_dates' => $this_order_dates,
+            'order_data' => $order_data,
         ];
-        return view('lunch.report_stu2',$data);
+        return view('lunch.report_stu2', $data);
     }
+
+    public function report_stu3(Request $request){
+        //參數
+        $semester = $request->input('semester');
+        $data =[
+            'semester' => $semester,
+        ];
+        return view('lunch.report_stu3', $data);
+    }
+
 
     public function stu(Request $request)
     {
@@ -961,6 +1133,8 @@ class LunchController extends Controller
         $class_id = "";
         $year_class_id = "";
         $select_date_menu = [];
+        $stu_data=[];
+        $stu_data2=[];
 
         //查目前學期
         $y = date('Y') - 1911;
@@ -974,6 +1148,13 @@ class LunchController extends Controller
             }
         }else{
             $semester = ($y-1)."2";
+        }
+
+        //查新學期設好了沒
+        $check_new_semester = LunchOrderDate::where('semester','=',$semester)->first();
+        if(empty($check_new_semester)){
+            $words = "新學期尚未設定好！";
+            return view('errors.errors',compact('words'));
         }
 
 
@@ -1032,6 +1213,19 @@ class LunchController extends Controller
             $select_date = "";
         }else{
             $has_order = "1";
+            //訂餐過的班級名單要用午餐這邊的
+            $stu_datas2 = LunchStuOrder::where('semester','=',$semester)
+            ->where('student_num','like',$class_id.'%')
+            ->orderBy('student_num')
+            ->get();
+            foreach($stu_datas2 as $stu2){
+                $stu_data2[substr($stu2->student_num,3,2)]['name'] = $stu2->student->name;
+                $stu_data2[substr($stu2->student_num,3,2)]['sex'] = $stu2->student->sex;
+                $stu_data2[substr($stu2->student_num,3,2)]['id'] = $stu2->student->id;
+            }
+
+
+
             foreach($class_orders as $class_order){
                 $order_data[$class_order->order_date][$class_order->student_id]['eat_style'] = $class_order->eat_style;
                 $order_data[$class_order->order_date][$class_order->student_id]['p_id'] = $class_order->p_id;
@@ -1043,6 +1237,7 @@ class LunchController extends Controller
                 if($v == 1) $select_date_menu[$k] = $k;
             }
             $select_date = (empty($request->input('select_date')))?current($select_date_menu):$request->input('select_date');
+
         }
 
         $data = [
@@ -1051,6 +1246,7 @@ class LunchController extends Controller
             'class_id'=>$class_id,
             'is_admin'=>$is_admin,
             'stu_data'=>$stu_data,
+            'stu_data2'=>$stu_data2,
             'has_order'=>$has_order,
             'order_data'=>$order_data,
             'select_date'=>$select_date,
@@ -1076,23 +1272,28 @@ class LunchController extends Controller
 
         foreach($order_dates as $k=>$v) {
             foreach ($year_calss->semester_students as $semester_student) {
-                $att['order_date'] = $k;
-                if($v == "0") $att['enable'] = "not";
-                if($v == "1") $att['enable'] = "eat";
-                $att['semester'] = $semester;
-                $att['lunch_order_id'] = $order_id_array[substr($k,0,7)];
-                $att['student_id'] = $semester_student->student_id;
-                $att['class_id'] = $request->input('class_id');
-                $att['p_id'] = $p_id[$semester_student->student_id];
-                $att['eat_style'] = $eat_style[$semester_student->student_id];
-                if($att['eat_style']=="3") $att['enable'] = "no_eat";
-                LunchStuDate::create($att);
+                //轉出生不要在列
+                if($semester_student->at_school == "1") {
+                    $att['order_date'] = $k;
+                    if ($v == "0") $att['enable'] = "not";
+                    if ($v == "1") $att['enable'] = "eat";
+                    $att['semester'] = $semester;
+                    $att['lunch_order_id'] = $order_id_array[substr($k, 0, 7)];
+                    $att['student_id'] = $semester_student->student_id;
+                    $att['class_id'] = $request->input('class_id');
+                    $att['p_id'] = $p_id[$semester_student->student_id];
+                    $att['eat_style'] = $eat_style[$semester_student->student_id];
+                    if ($att['eat_style'] == "3" and $v == "1") $att['enable'] = "no_eat";
+                    LunchStuDate::create($att);
+                }
             }
         }
         foreach($student_num as $k=>$v){
             $att2['semester'] = $semester;
             $att2['student_id'] = $k;
             $att2['student_num'] = $v;
+            $att2['eat_style'] = $eat_style[$k];
+            $att2['p_id'] = $p_id[$k];
             LunchStuOrder::create($att2);
         }
 
@@ -1102,6 +1303,27 @@ class LunchController extends Controller
 
     public function stu_cancel(Request $request)
     {
+        //查目前學期
+        $y = date('Y') - 1911;
+        $array1 = array(8,9,10,11,12,1);
+        $array2 = array(2,3,4,5,6,7);
+        if(in_array(date('n'),$array1)){
+            if(date('n') == 1){
+                $semester = ($y-1)."1";
+            }else{
+                $semester = $y."1";
+            }
+        }else{
+            $semester = ($y-1)."2";
+        }
+
+        //查新學期設好了沒
+        $check_new_semester = LunchOrderDate::where('semester','=',$semester)->first();
+        if(empty($check_new_semester)){
+            $words = "新學期尚未設定好！";
+            return view('errors.errors',compact('words'));
+        }
+
         if(Input::get('do') == "1"){
 
             $student_id = Input::get('student_id');
@@ -1137,6 +1359,7 @@ class LunchController extends Controller
         $is_admin = "";
         $class_id = "";
         $year_class_id = "";
+
 
         //查目前學期
         $y = date('Y') - 1911;
@@ -1197,11 +1420,23 @@ class LunchController extends Controller
 
 
         if($year_class_id){
+            /*
             $stu_datas = SemesterStudent::where('year_class_id', '=', $year_class_id)->where('at_school','=','1')->orderBy('num')->get();
             foreach ($stu_datas as $stu) {
                 $stu_data[$stu->num]['name'] = $stu->student->name;
                 $stu_data[$stu->num]['sex'] = $stu->student->sex;
                 $stu_data[$stu->num]['id'] = $stu->student->id;
+            }
+            */
+            //名單應該訂餐系統這邊給
+            $stu_datas = LunchStuOrder::where('semester','=',$semester)
+                ->where('student_num','like',$class_id.'%')
+                ->orderBy('student_num')
+                ->get();
+            foreach($stu_datas as $stu){
+                $stu_data[substr($stu->student_num,3,2)]['name'] = $stu->student->name;
+                $stu_data[substr($stu->student_num,3,2)]['sex'] = $stu->student->sex;
+                $stu_data[substr($stu->student_num,3,2)]['id'] = $stu->student->id;
             }
         }else{
             $stu_data=[];
@@ -1233,6 +1468,7 @@ class LunchController extends Controller
             foreach($class_orders as $class_order){
                 $order_data[$class_order->student_id][$class_order->order_date]['eat_style'] = $class_order->eat_style;
                 $order_data[$class_order->student_id][$class_order->order_date]['enable'] = $class_order->enable;
+                $order_data[$class_order->student_id][$class_order->order_date]['p_id'] = $class_order->p_id;
             }
 
             $order_dates = $this->get_order_dates($semester);

@@ -20,7 +20,7 @@
                     <h4>{{ $mon }} 月逐日表</h4>
                 </div>
                 <div class="panel-content">
-                    <table border="1">
+                    <table class="table table-bordered">
                         <thead>
                         <tr>
                             <th>姓名</th>

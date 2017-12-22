@@ -55,6 +55,11 @@
                     <button class="btn btn-success">學生訂餐統計表</button>(依身份)
                     {{ Form::close() }}
 
+                    {{ Form::open(['route'=>'lunch.report_stu3','method'=>'POST','target'=>'_blank']) }}
+                    <input type="hidden" name="semester" value="{{ $semester }}">
+                    <button class="btn btn-success">學生退費統計表</button>
+                    {{ Form::close() }}
+
                 </div>
             </div>
 
@@ -72,7 +77,10 @@
                     <h4>給廠商</h4>
                 </div>
                 <div class="panel-content">
-
+                    {{ Form::open(['route'=>'lunch.report_fac','method'=>'POST','target'=>'_blank']) }}
+                    <input type="hidden" name="semester" value="{{ $semester }}">
+                    <button class="btn btn-success">學生訂餐統計表</button>(依葷素)
+                    {{ Form::close() }}
                 </div>
             </div>
         </div>

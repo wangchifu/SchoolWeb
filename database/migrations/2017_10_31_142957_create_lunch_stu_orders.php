@@ -18,6 +18,8 @@ class CreateLunchStuOrders extends Migration
             $table->unsignedInteger('semester');
             $table->unsignedInteger('student_id');
             $table->string('student_num');
+            $table->unsignedInteger('p_id');
+            $table->unsignedInteger('eat_style');
             $table->timestamps();
         });
     }

@@ -62,26 +62,32 @@
                                         $cancel_data['order_date'] = $v2;
                                         $cancel_data['lunch_order_id'] = $lunch_order_id;
                                         $name = $v1['name'];
+
+                                        if($order_data[$v1['id']][$v2]['p_id'] > 200){
+                                            $w_color = "#FFFFBB";
+                                        }else{
+                                            $w_color = "";
+                                        }
                                         ?>
                                         @if($order_data[$v1['id']][$v2]['eat_style'] != 3)
                                             <?php $cancel_data['enable'] = "abs"; ?>
                                             @if($order_data[$v1['id']][$v2]['enable'] == "eat" and $order_data[$v1['id']][$v2]['eat_style'] == 1)
-                                                <td><a href="{{ route('lunch.stu_cancel',$cancel_data) }}" onclick="return confirm('是否取消 {{ $class_id }}班 {{ $name }} {{ $v2 }} 的訂餐？');"><img src="{{ asset('/img/meat.png') }}" alt="葷"></a></td>
+                                                <td bgcolor="{{ $w_color }}"><a href="{{ route('lunch.stu_cancel',$cancel_data) }}" onclick="return confirm('是否取消 {{ $class_id }}班 {{ $name }} {{ $v2 }} 的訂餐？');"><img src="{{ asset('/img/meat.png') }}" alt="葷"></a></td>
                                             @elseif($order_data[$v1['id']][$v2]['enable'] == "eat" and $order_data[$v1['id']][$v2]['eat_style'] == 2)
-                                                <td><a href="{{ route('lunch.stu_cancel',$cancel_data) }}" onclick="return confirm('是否取消 {{ $class_id }}班 {{ $name }} {{ $v2 }} 的訂餐？');"><img src="{{ asset('/img/vegetarian.png') }}" alt="素"></a></td>
+                                                <td bgcolor="{{ $w_color }}"><a href="{{ route('lunch.stu_cancel',$cancel_data) }}" onclick="return confirm('是否取消 {{ $class_id }}班 {{ $name }} {{ $v2 }} 的訂餐？');"><img src="{{ asset('/img/vegetarian.png') }}" alt="素"></a></td>
                                             @elseif($order_data[$v1['id']][$v2]['enable'] == "abs")
                                             <?php $cancel_data['enable'] = "eat"; ?>
-                                                    <td><a href="{{ route('lunch.stu_cancel',$cancel_data) }}" onclick="return confirm('是否恢復 {{ $class_id }}班 {{ $name }} {{ $v2 }} 的訂餐？');"><img src="{{ asset('/img/no_check.png') }}" alt="退餐"></a></td>
+                                                    <td bgcolor="{{ $w_color }}"><a href="{{ route('lunch.stu_cancel',$cancel_data) }}" onclick="return confirm('是否恢復 {{ $class_id }}班 {{ $name }} {{ $v2 }} 的訂餐？');"><img src="{{ asset('/img/no_check.png') }}" alt="退餐"></a></td>
                                             @elseif($order_data[$v1['id']][$v2]['enable'] == "out")
-                                                <td><img src="{{ asset('/img/had_back.png') }}" alt="已退費"></td>
+                                                <td bgcolor="{{ $w_color }}"><img src="{{ asset('/img/had_back.png') }}" alt="已退費"></td>
                                             @elseif($order_data[$v1['id']][$v2]['enable'] == "not")
-                                                <td><img src="{{ asset('/img/remove.png') }}" alt="當日未供餐"></td>
+                                                <td bgcolor="{{ $w_color }}"><img src="{{ asset('/img/remove.png') }}" alt="當日未供餐"></td>
                                             @elseif($order_data[$v1['id']][$v2]['enable'] == "no_eat")
-                                                <td><img src="{{ asset('/img/minus.png') }}" alt="沒有訂餐"></td>
+                                                <td bgcolor="{{ $w_color }}"><img src="{{ asset('/img/minus.png') }}" alt="沒有訂餐"></td>
                                             @endif
                                         @elseif($order_data[$v1['id']][$v2]['eat_style'] == 3 and $order_data[$v1['id']][$v2]['enable'] == "no_eat")
                                             <?php $stu_name= $v1['name']; ?>
-                                            <td><a href="#" onclick="alert('{{ $stu_name }} 沒有訂餐！');"><img src="{{ asset('/img/minus.png') }}" alt="未訂餐"></a></td>
+                                            <td bgcolor="{{ $w_color }}"><a href="#" onclick="alert('{{ $stu_name }} 沒有訂餐！');"><img src="{{ asset('/img/minus.png') }}" alt="未訂餐"></a></td>
                                         @endif
                                     @endforeach
                                 </tr>
@@ -98,6 +104,7 @@
                     <img src="{{ asset('/img/vegetarian.png') }}" alt="素"> ：訂素食<br>
                     <img src="{{ asset('/img/no_check.png') }}" alt="退餐"> ：該日退餐，再按一下可以再訂餐<br>
                     <img src="{{ asset('/img/had_back.png') }}" alt="已退費"> ：該日為轉出生先行退費了！<br>
+                    <span style="background-color: #FFFFBB;">　　　　　　</span> ：底色為淺黃色的，是弱勢生。<br>
 
                 </div>
             </div>
