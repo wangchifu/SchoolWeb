@@ -115,6 +115,7 @@ Route::post('lunch/report_tea2_print','LunchController@report_tea2_print')->name
 Route::post('lunch/report_stu1','LunchController@report_stu1')->name('lunch.report_stu1');
 Route::post('lunch/report_stu2','LunchController@report_stu2')->name('lunch.report_stu2');
 Route::any('lunch/report_stu3','LunchController@report_stu3')->name('lunch.report_stu3');
+Route::post('lunch/report_stu3_print','LunchController@report_stu3_print')->name('lunch.report_stu3_print');
 
 //給廠商
 Route::any('lunch/report_fac','FacController@index')->name('lunch.report_fac');

@@ -50,26 +50,25 @@ class FacController extends Controller
         //教職
         $tea_order_datas = LunchTeaDate::where('lunch_order_id', '=', $lunch_order_id)
         ->where('enable','=','eat')
-            ->orderBy('place','DESC')
+            ->orderBy('place','ASC')
             ->get();
-        $last_place = "";
-        $last_tea_date = "";
-        dd($tea_order_datas);
+        $order_data_tea = [];
+
+
         foreach ($tea_order_datas as $tea_order_data) {
-            if ($last_place != $tea_order_data->place or $last_tea_date != $tea_order_data->order_date) {
-                $tea_m = 0;
-                $tea_g = 0;
-            }
             if ($tea_order_data->eat_style == "1" and $tea_order_data->enable == "eat") {
-                $tea_m++;
-                $tea_order_data[$tea_order_data->place][$tea_order_data->order_date]['m'] = $tea_m;
+                if ( ! isset($order_data_tea[$tea_order_data->place][$tea_order_data->order_date]['m'])) {
+                    $order_data_tea[$tea_order_data->place][$tea_order_data->order_date]['m'] = null;
+                }
+                $order_data_tea[$tea_order_data->place][$tea_order_data->order_date]['m']++;
             } elseif ($tea_order_data->eat_style == "2" and $tea_order_data->enable == "eat") {
-                $tea_g++;
-                $tea_order_data[$tea_order_data->place][$tea_order_data->order_date]['g'] = $tea_g;
+                if ( ! isset($order_data_tea[$tea_order_data->place][$tea_order_data->order_date]['g'])) {
+                    $order_data_tea[$tea_order_data->place][$tea_order_data->order_date]['g'] = null;
+                }
+                $order_data_tea[$tea_order_data->place][$tea_order_data->order_date]['g'] ++;
             }
-            $last_place = $tea_order_data->place;
-            $last_tea_date = $tea_order_data->order_date;
         }
+
 
 
 
@@ -77,23 +76,18 @@ class FacController extends Controller
         $stu_order_datas = LunchStuDate::where('lunch_order_id', '=', $lunch_order_id)
             ->where('eat_style','<>','3')
             ->orderBy('class_id')->orderBy('order_date')->get();
-        $last_class = "";
-        $last_date = "";
-
         foreach ($stu_order_datas as $stu_order_data) {
-            if ($last_class != $stu_order_data->class_id or $last_date != $stu_order_data->order_date) {
-                $m = 0;
-                $g = 0;
-            }
             if ($stu_order_data->eat_style == "1" and $stu_order_data->enable == "eat") {
-                $m++;
-                $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['m'] = $m;
+                if ( ! isset($order_data[$stu_order_data->class_id][$stu_order_data->order_date]['m'])) {
+                    $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['m'] = null;
+                }
+                $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['m']++;
             } elseif ($stu_order_data->eat_style == "2" and $stu_order_data->enable == "eat") {
-                $g++;
-                $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g'] = $g;
+                if ( ! isset($order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g'])) {
+                    $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g'] = null;
+                }
+                $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g']++;
             }
-            $last_class = $stu_order_data->class_id;
-            $last_date = $stu_order_data->order_date;
         }
 
 
@@ -103,7 +97,7 @@ class FacController extends Controller
             'lunch_order_id' => $lunch_order_id,
             'this_order_dates' => $this_order_dates,
             'order_data' => $order_data,
-            '$tea_order_data' => $tea_order_data,
+            'order_data_tea' => $order_data_tea,
         ];
         return view('lunch.report_fac', $data);
     }

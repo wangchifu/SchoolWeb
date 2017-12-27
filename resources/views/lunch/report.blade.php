@@ -59,10 +59,24 @@
                     <input type="hidden" name="semester" value="{{ $semester }}">
                     <button class="btn btn-success">學生退費統計表</button>
                     {{ Form::close() }}
-
                 </div>
             </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>給出納</h4>
+                </div>
+                <div class="panel-content">
+                    {{ Form::open(['route'=>'lunch.report_stu3','method'=>'POST','target'=>'_blank']) }}
+                    <input type="hidden" name="semester" value="{{ $semester }}">
+                    <button class="btn btn-success">學生退費印領清冊</button>
+                    {{ Form::close() }}
 
+                    {{ Form::open(['route'=>'lunch.report_stu3','method'=>'POST','target'=>'_blank']) }}
+                    <input type="hidden" name="semester" value="{{ $semester }}">
+                    <button class="btn btn-success">學生退費轉帳資料</button>
+                    {{ Form::close() }}
+                </div>
+            </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4>給主計</h4>

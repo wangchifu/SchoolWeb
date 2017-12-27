@@ -3,6 +3,25 @@
 @section('page-title', '午餐系統')
 
 @section('content')
+    <style>
+        .table-bordered {
+            border: 1px solid #ecf0f1 !important;
+        }
+        .table-bordered > thead > tr > th,
+        .table-bordered > tbody > tr > th,
+        .table-bordered > tfoot > tr > th,
+        .table-bordered > thead > tr > td,
+        .table-bordered > tbody > tr > td,
+        .table-bordered > tfoot > tr > td {
+            border: 1px solid #000000 !important;
+        }
+    </style>
+    <?php
+    $m_tea = null;
+    $g_tea = null;
+    $m =null;
+    $g = null;
+    ?>
 <div class="container-fluid">
     <div class="page-header">
         <h1>{{ $semester }} 學生訂餐統計表(依葷素)-廠商版</h1>
@@ -35,40 +54,40 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($tea_order_data as $k1=>$v1)
+                        @foreach($order_data_tea as $k1=>$v1)
                             <tr bgcolor='#FFFFFF' onmouseover="this.style.backgroundColor='#FFCDE5';" onMouseOut="this.style.backgroundColor='#FFFFFF';">
                                 <td>{{ $k1 }}</td>
                                 @foreach($this_order_dates as $k2=>$v2)
                                     <?php
                                     if(empty($v1[$v2]['m'])) $v1[$v2]['m'] = 0;
                                     if(empty($v1[$v2]['g'])) $v1[$v2]['g'] = 0;
-                                    if(empty($m[$v2])) $m[$v2] = 0;
-                                    if(empty($g[$v2])) $g[$v2] = 0;
+                                    if(empty($m_tea[$v2])) $m_tea[$v2] = 0;
+                                    if(empty($g_tea[$v2])) $g_tea[$v2] = 0;
                                     ?>
                                     <td>{{ $v1[$v2]['m'] }}</td><td>{{ $v1[$v2]['g'] }}</td>
                                     <?php
-                                    $m[$v2] += $v1[$v2]['m'];
-                                    $g[$v2] += $v1[$v2]['g'];
+                                    $m_tea[$v2] += $v1[$v2]['m'];
+                                    $g_tea[$v2] += $v1[$v2]['g'];
                                     ?>
                                 @endforeach
                             </tr>
                         @endforeach
                         <tr>
                             <td>合計</td>
-                            <?php $total_m = 0;$total_g=0; ?>
+                            <?php $total_m_tea = 0;$total_g_tea=0; ?>
                             @foreach($this_order_dates as $k=>$v)
-                                <th class="bg-danger">{{ $m[$v] }}</th><th class="bg-success">{{ $g[$v] }}</th>
+                                <th class="bg-danger">{{ $m_tea[$v] }}</th><th class="bg-success">{{ $g_tea[$v] }}</th>
                                 <?php
-                                $total_m += $m[$v];
-                                $total_g += $g[$v];
+                                $total_m_tea += $m_tea[$v];
+                                $total_g_tea += $g_tea[$v];
                                 ?>
                             @endforeach
                         </tr>
                         </tbody>
                     </table>
-                    本期教職葷食總餐數：{{ $total_m }}<br>
-                    本期教職素食總餐數：{{ $total_g }}<br>
-                    本期教職總餐數：{{ $total_m+$total_g }}<br>
+                    本期教職葷食總餐數：{{ $total_m_tea }}<br>
+                    本期教職素食總餐數：{{ $total_g_tea }}<br>
+                    本期教職總餐數：{{ $total_m_tea+$total_g_tea }}<br>
                 </div>
             </div>
             <div class="panel panel-default">
@@ -76,6 +95,7 @@
                     <h4>二、學生訂餐統計表(依葷素)</h4>
                 </div>
                 <div class="panel-content">
+                    <img src="{{ asset('img/plus.png') }}" width="16">：代表該班導師有訂餐！
                     <table class="table table-bordered">
                         <thead>
                         <tr class="bg-primary">
@@ -98,10 +118,22 @@
                                     <?php
                                     if(empty($v1[$v2]['m'])) $v1[$v2]['m'] = 0;
                                     if(empty($v1[$v2]['g'])) $v1[$v2]['g'] = 0;
+                                    if(empty($order_data_tea[$k1][$v2]['m'])) $order_data_tea[$k1][$v2]['m']="";
+                                    if(empty($order_data_tea[$k1][$v2]['g'])) $order_data_tea[$k1][$v2]['g']="";
                                     if(empty($m[$v2])) $m[$v2] = 0;
                                     if(empty($g[$v2])) $g[$v2] = 0;
+                                    if(!empty($order_data_tea[$k1][$v2]['m'])){
+                                        $tea_img_m = "<img src='" .asset('img/plus.png') ."' width='16'>";
+                                    }else{
+                                        $tea_img_m = "<img src='" .asset('img/no_color.png') ."' width='16'>";
+                                    }
+                                    if(!empty($order_data_tea[$k1][$v2]['g'])){
+                                        $tea_img_g = "<img src='" .asset('img/plus.png') ."' width='16'>";                                    }else{
+                                        $tea_img_g = "<img src='" .asset('img/no_color.png') ."' width='16'>";
+                                    }
+
                                     ?>
-                                <td>{{ $v1[$v2]['m'] }}</td><td>{{ $v1[$v2]['g'] }}</td>
+                                <td>{{ $v1[$v2]['m'] }}{!! $tea_img_m !!}</td><td>{{ $v1[$v2]['g'] }}{!! $tea_img_g !!}</td>
                                     <?php
                                         $m[$v2] += $v1[$v2]['m'];
                                         $g[$v2] += $v1[$v2]['g'];
@@ -111,7 +143,8 @@
                         @endforeach
                         <tr>
                             <td>合計</td>
-                            <?php $total_m = 0;$total_g=0; ?>
+                            <?php $total_m = 0;$total_g=0;
+                            ?>
                             @foreach($this_order_dates as $k=>$v)
                                 <th class="bg-danger">{{ $m[$v] }}</th><th class="bg-success">{{ $g[$v] }}</th>
                                 <?php

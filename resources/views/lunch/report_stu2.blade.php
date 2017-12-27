@@ -3,6 +3,19 @@
 @section('page-title', '午餐系統')
 
 @section('content')
+    <style>
+        .table-bordered {
+            border: 1px solid #ecf0f1 !important;
+        }
+        .table-bordered > thead > tr > th,
+        .table-bordered > tbody > tr > th,
+        .table-bordered > tfoot > tr > th,
+        .table-bordered > thead > tr > td,
+        .table-bordered > tbody > tr > td,
+        .table-bordered > tfoot > tr > td {
+            border: 1px solid #000000 !important;
+        }
+    </style>
 <div class="container-fluid">
     <div class="page-header">
         <h1>{{ $semester }} 學生訂餐統計表(依身份)</h1>
@@ -68,6 +81,7 @@
                     </table>
                     本期一般生總餐數：{{ $total_g }}<br>
                     本期弱勢生總餐數：{{ $total_w }}<br>
+                    本期學生總餐數：{{ $total_g+$total_w }}<br>
                 </div>
             </div>
         </div>

@@ -52,7 +52,15 @@
                                     </tr>
                                 @endif
                                 <tr>
-                                    <td>{{ $k1 }}</td><td>{{ $v1['name'] }}</td>
+                                    <td>
+                                        {{ $k1 }}</td><td>{{ $v1['name'] }}
+                                        @if($v1['out_in'] == "in")
+                                            <button class="btn btn-info btn-xs">轉入生</button>
+                                        @endif
+                                        @if($v1['out_in'] == "out")
+                                            <button class="btn btn-danger btn-xs">轉出生 </button>
+                                        @endif
+                                    </td>
                                     @foreach($this_order_dates as $k2=>$v2)
                                         <?php
                                         $cancel_data['do'] = "1";
@@ -63,7 +71,7 @@
                                         $cancel_data['lunch_order_id'] = $lunch_order_id;
                                         $name = $v1['name'];
 
-                                        if($order_data[$v1['id']][$v2]['p_id'] > 200){
+                                        if($order_data[$v1['id']][$v2]['p_id'] > 200 and $order_data[$v1['id']][$v2]['p_id'] < 300){
                                             $w_color = "#FFFFBB";
                                         }else{
                                             $w_color = "";

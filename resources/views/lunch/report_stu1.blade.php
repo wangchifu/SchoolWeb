@@ -3,6 +3,19 @@
 @section('page-title', '午餐系統')
 
 @section('content')
+    <style>
+        .table-bordered {
+            border: 1px solid #ecf0f1 !important;
+        }
+        .table-bordered > thead > tr > th,
+        .table-bordered > tbody > tr > th,
+        .table-bordered > tfoot > tr > th,
+        .table-bordered > thead > tr > td,
+        .table-bordered > tbody > tr > td,
+        .table-bordered > tfoot > tr > td {
+            border: 1px solid #000000 !important;
+        }
+    </style>
 <div class="container">
     <div class="page-header">
         <h1>{{ $semester }} 學生身份統計表</h1>
@@ -69,10 +82,10 @@
                                 </td>
                             </tr>
                         @endforeach
-                        </tbody>
                         <tr bgcolor='#FFFFFF' onmouseover="this.style.backgroundColor='#FFCDE5';" onMouseOut="this.style.backgroundColor='#FFFFFF';">
                             <td>合計</td><td>{{ $g }} (男：{{ $gb }} , 女：{{ $gg }})</td><td>{{ $w }} (男：{{ $wb }} , 女：{{ $wg }})</td><td>{{ $n }} (男：{{ $nb }} , 女：{{ $ng }})</td>
                         </tr>
+                        </tbody>
                     </table>
                 </div>
                 <div class="panel-heading">
@@ -237,11 +250,10 @@
                         </td>
                     </tr>
                     @endforeach
-
-                    </tbody>
                     <tr bgcolor='#FFFFFF' onmouseover="this.style.backgroundColor='#FFCDE5';" onMouseOut="this.style.backgroundColor='#FFFFFF';">
                         <td>合計</td><td>{{ $w201 }} (男{{ $w201b }} , 女{{ $w201g }})</td><td>{{ $w202 }} (男{{ $w202b }} , 女{{ $w202g }})</td><td>{{ $w203 }} (男{{ $w203b }} , 女{{ $w203g }})</td><td>{{ $w204 }} (男{{ $w204b }} , 女{{ $w204g }})</td><td>{{ $w205 }} (男{{ $w205b }} , 女{{ $w205g }})</td><td>{{ $w206 }} (男{{ $w206b }} , 女{{ $w206g }})</td><td>{{ $w207 }} (男{{ $w207b }} , 女{{ $w207g }})</td><td>{{ $w208 }} (男{{ $w208b }} , 女{{ $w208g }})</td><td>{{ $w209 }} (男{{ $w209b }} , 女{{ $w209g }})</td><td>{{ $w210 }} (男{{ $w210b }} , 女{{ $w210g }})</td>
                     </tr>
+                    </tbody>
                 </table>
             </div>
         </div>

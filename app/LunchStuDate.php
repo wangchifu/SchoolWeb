@@ -13,6 +13,7 @@ class LunchStuDate extends Model
         'lunch_order_id',
         'student_id',
         'class_id',
+        'num',
         'p_id',
         'eat_style',
     ];

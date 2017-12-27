@@ -3,6 +3,19 @@
 @section('page-title', '午餐系統')
 
 @section('content')
+    <style>
+        .table-bordered {
+            border: 1px solid #ecf0f1 !important;
+        }
+        .table-bordered > thead > tr > th,
+        .table-bordered > tbody > tr > th,
+        .table-bordered > tfoot > tr > th,
+        .table-bordered > thead > tr > td,
+        .table-bordered > tbody > tr > td,
+        .table-bordered > tfoot > tr > td {
+            border: 1px solid #000000 !important;
+        }
+    </style>
 <div class="container">
     <div class="page-header">
         <h1>{{ $semester }} 教職學期收費表</h1>
@@ -20,7 +33,7 @@
                 <div class="panel-content">
                     <table class="table table-bordered">
                         <thead>
-                        <tr>
+                        <tr class="bg-primary">
                             <th>姓名</th><th>訂餐日數</th><th>收費</th>
                         </tr>
                         </thead>

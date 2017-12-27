@@ -577,6 +577,11 @@ class LunchController extends Controller
                             ->update($att);
                     }
                 }
+                $att3['out_in'] = "out";
+                LunchStuOrder::where('semester','=',$request->input('semester'))
+                    ->where('student_id', '=', $student->id)
+                    ->update($att3);
+
                 return redirect()->route('lunch.special');
                 break;
             case "in_stud";
@@ -644,6 +649,7 @@ class LunchController extends Controller
                     $att5['student_num'] = $request->input('student_num');
                     $att5['eat_style'] = $request->input('eat_style');
                     $att5['p_id'] = $request->input('p_id');
+                    $att5['out_in'] = "in";
                     LunchStuOrder::create($att5);
 
                     //日期訂餐
@@ -653,11 +659,13 @@ class LunchController extends Controller
                         $att4['lunch_order_id'] = $order_id_array[substr($k, 0, 7)];
                         $att4['student_id'] = $student_id;
                         $att4['class_id'] = substr($request->input('student_num'), 0, 3);
+                        $att4['num'] = substr($request->input('student_num'), 3, 2);
                         $att4['p_id'] = $request->input('p_id');
                         $att4['eat_style'] = $request->input('eat_style');
                         if (str_replace('-', '', $k) < str_replace('-', '', $request->input('in_stud_order_date'))) {
                             if ($v == "0") $att4['enable'] = "not";
                             if ($v == "1") $att4['enable'] = "no_eat";
+                            $att4['p_id'] = "301";//轉入前，身份為轉入生
                         } else {
                             if ($v == "0") $att4['enable'] = "not";
                             if ($v == "1") $att4['enable'] = "eat";
@@ -798,17 +806,16 @@ class LunchController extends Controller
         $order_datas = LunchTeaDate::where('semester', '=', $request->input('semester'))
             ->orderBy('place','DESC')
             ->get();
-        $i = 0;
-        $last_user = "";
-        $user_datas = [];
+
         foreach ($order_datas as $order_data) {
             if ($order_data->enable == "eat") {
-                if ($last_user != $order_data->user->name) $i = 0;
-                $i++;
-                $user_datas[$order_data->user->name] = $i;
-                $last_user = $order_data->user->name;
+                if( !isset($user_datas[$order_data->user->name])) $user_datas[$order_data->user->name]=null;
+                $user_datas[$order_data->user->name]++;
             }
         }
+
+        if(!isset($user_datas)) $user_datas = [];
+
         $setups = $this->get_setup();
 
         $data = [
@@ -823,19 +830,20 @@ class LunchController extends Controller
     {
         $check = Fun::where('type', '=', '3')->where('username', '=', auth()->user()->username)->first();
         if (empty($check)) return view('errors.not_admin');
-        $order_datas = LunchTeaDate::where('semester', '=', $request->input('semester'))->get();
-        $i = 0;
-        $last_user = "";
-        $last_mon = "";
+        $order_datas = LunchTeaDate::where('semester', '=', $request->input('semester'))
+            ->orderBy('place','DESC')
+            ->get();
+
+
         foreach ($order_datas as $order_data) {
             if ($order_data->enable == "eat") {
-                if ($last_user != $order_data->user->name or $last_mon != substr($order_data->order_date, 0, 7)) $i = 0;
-                $i++;
-                $user_datas[$order_data->user->name][substr($order_data->order_date, 0, 7)] = $i;
-                $last_user = $order_data->user->name;
-                $last_mon = substr($order_data->order_date, 0, 7);
+                if(!isset($user_datas[$order_data->user->name][substr($order_data->order_date, 0, 7)])) $user_datas[$order_data->user->name][substr($order_data->order_date, 0, 7)]=null;
+                $user_datas[$order_data->user->name][substr($order_data->order_date, 0, 7)]++;
             }
         }
+
+        if(!isset($user_datas)) $user_datas = [];
+
         $setups = $this->get_setup();
         $data = [
             'user_datas' => $user_datas,
@@ -916,7 +924,7 @@ class LunchController extends Controller
             }
 
 
-            if ($p_id > 200 and $eat_style != 3) {
+            if ($p_id > 200 and $p_id < 300 and $eat_style != 3) {
                 $w++;
                 $order_data[$class_id][$order_date]['w'] = $w;
                 if ($sex == 1) {
@@ -1082,27 +1090,23 @@ class LunchController extends Controller
                 $i++;
             }
         }
-
+        $order_data=array();
         $stu_order_datas = LunchStuDate::where('lunch_order_id', '=', $lunch_order_id)
             ->where('enable','=','eat')
             ->orderBy('class_id')->orderBy('order_date')->get();
-        $last_class = "";
-        $last_date = "";
 
         foreach ($stu_order_datas as $stu_order_data) {
-            if ($last_class != $stu_order_data->class_id or $last_date != $stu_order_data->order_date) {
-                $g = 0;
-                $w = 0;
-            }
-            if ($stu_order_data->p_id > 200 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat") {
-                $w++;
-                $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['w'] = $w;
+            if ($stu_order_data->p_id > 200 and $stu_order_data->p_id < 300 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat") {
+                if ( ! isset($order_data[$stu_order_data->class_id][$stu_order_data->order_date]['w'])) {
+                    $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['w'] = null;
+                }
+                $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['w']++;
             } elseif ($stu_order_data->p_id == 101 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat") {
-                $g++;
-                $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g'] = $g;
+                if ( ! isset($order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g'])) {
+                    $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g'] = null;
+                }
+                $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g']++;
             }
-            $last_class = $stu_order_data->class_id;
-            $last_date = $stu_order_data->order_date;
         }
 
 
@@ -1119,10 +1123,94 @@ class LunchController extends Controller
     public function report_stu3(Request $request){
         //參數
         $semester = $request->input('semester');
+
+        $setup = $this->get_setup();
+
+        $stu_abs_data = LunchStuDate::where('semester','=',$semester)
+            ->where('p_id','<','200')
+            ->orderBy('class_id')
+            ->get();
+        $abs_data = [];
+        $out_data = [];
+        foreach($stu_abs_data as $stu_abs){
+            if($stu_abs->enable == "abs") {
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['name'] = $stu_abs->student->name;
+                if (!isset($abs_data[$stu_abs->class_id . $stu_abs->num]['back_money'])) {
+                    $abs_data[$stu_abs->class_id . $stu_abs->num]['back_money'] = null;
+                }
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['back_money'] += $setup[$semester]['stud_back_money'];
+                if (!isset($abs_data[$stu_abs->class_id . $stu_abs->num]['times'])) {
+                    $abs_data[$stu_abs->class_id . $stu_abs->num]['times'] = null;
+                }
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['times']++;
+                if (!isset($abs_data[$stu_abs->class_id . $stu_abs->num]['dates'])) {
+                    $abs_data[$stu_abs->class_id . $stu_abs->num]['dates'] = null;
+                }
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['dates'] .= $stu_abs->order_date . ",";
+            }elseif($stu_abs->enable == "out"){
+                $out_data[$stu_abs->class_id . $stu_abs->num]['name'] = $stu_abs->student->name;
+                if (!isset($out_data[$stu_abs->class_id . $stu_abs->num]['back_money'])) {
+                    $out_data[$stu_abs->class_id . $stu_abs->num]['back_money'] = null;
+                }
+                $out_data[$stu_abs->class_id . $stu_abs->num]['back_money'] += $setup[$semester]['stud_back_money'];
+                if (!isset($out_data[$stu_abs->class_id . $stu_abs->num]['times'])) {
+                    $out_data[$stu_abs->class_id . $stu_abs->num]['times'] = null;
+                }
+                $out_data[$stu_abs->class_id . $stu_abs->num]['times']++;
+                if (!isset($out_data[$stu_abs->class_id . $stu_abs->num]['dates'])) {
+                    $out_data[$stu_abs->class_id . $stu_abs->num]['dates'] = null;
+                }
+                $out_data[$stu_abs->class_id . $stu_abs->num]['dates'] .= $stu_abs->order_date . ",";
+            }
+        }
+        //依班級座號排序
+        ksort($out_data);
+        ksort($abs_data);
+
         $data =[
             'semester' => $semester,
+            'abs_data'=>$abs_data,
+            'out_data'=>$out_data,
         ];
         return view('lunch.report_stu3', $data);
+    }
+
+    public function report_stu3_print(Request $request){
+        //參數
+        $semester = $request->input('semester');
+
+        $setup = $this->get_setup();
+
+        $stu_abs_data = LunchStuDate::where('semester','=',$semester)
+            ->where('p_id','<','200')
+            ->orderBy('class_id')
+            ->get();
+        $abs_data = [];
+        foreach($stu_abs_data as $stu_abs){
+            if($stu_abs->enable == "abs") {
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['name'] = $stu_abs->student->name;
+                if (!isset($abs_data[$stu_abs->class_id . $stu_abs->num]['back_money'])) {
+                    $abs_data[$stu_abs->class_id . $stu_abs->num]['back_money'] = null;
+                }
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['back_money'] += $setup[$semester]['stud_back_money'];
+                if (!isset($abs_data[$stu_abs->class_id . $stu_abs->num]['times'])) {
+                    $abs_data[$stu_abs->class_id . $stu_abs->num]['times'] = null;
+                }
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['times']++;
+                if (!isset($abs_data[$stu_abs->class_id . $stu_abs->num]['dates'])) {
+                    $abs_data[$stu_abs->class_id . $stu_abs->num]['dates'] = null;
+                }
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['dates'] .= $stu_abs->order_date . ",";
+            }
+        }
+        //依班級座號排序
+        ksort($abs_data);
+
+        $data =[
+            'semester' => $semester,
+            'abs_data'=>$abs_data,
+        ];
+        return view('lunch.report_stu3_print', $data);
     }
 
 
@@ -1281,6 +1369,7 @@ class LunchController extends Controller
                     $att['lunch_order_id'] = $order_id_array[substr($k, 0, 7)];
                     $att['student_id'] = $semester_student->student_id;
                     $att['class_id'] = $request->input('class_id');
+                    $att['num'] = $semester_student->num;
                     $att['p_id'] = $p_id[$semester_student->student_id];
                     $att['eat_style'] = $eat_style[$semester_student->student_id];
                     if ($att['eat_style'] == "3" and $v == "1") $att['enable'] = "no_eat";
@@ -1437,6 +1526,7 @@ class LunchController extends Controller
                 $stu_data[substr($stu->student_num,3,2)]['name'] = $stu->student->name;
                 $stu_data[substr($stu->student_num,3,2)]['sex'] = $stu->student->sex;
                 $stu_data[substr($stu->student_num,3,2)]['id'] = $stu->student->id;
+                $stu_data[substr($stu->student_num,3,2)]['out_in'] = $stu->out_in;
             }
         }else{
             $stu_data=[];

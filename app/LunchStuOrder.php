@@ -11,6 +11,7 @@ class LunchStuOrder extends Model
         'student_id',
         'student_num',
         'p_id',
+        'out_in',
         'eat_style',
     ];
     public function student()
