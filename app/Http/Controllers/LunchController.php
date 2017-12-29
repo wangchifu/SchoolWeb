@@ -16,6 +16,7 @@ use App\YearClass;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LunchController extends Controller
 {
@@ -143,7 +144,22 @@ class LunchController extends Controller
 
     public function update_setup(LunchSetup $lunch_setup, Request $request)
     {
-        $lunch_setup->update($request->all());
+        $att['tea_money'] = $request->input('tea_money');
+        $att['stud_money'] = $request->input('stud_money');
+        $att['stud_back_money'] = $request->input('stud_back_money');
+        $att['support_part_money'] = $request->input('support_part_money');
+        $att['support_all_money'] = $request->input('support_all_money');
+        $att['die_line'] = $request->input('die_line');
+        $att['place'] = $request->input('place');
+        $att['factory'] = $request->input('factory');
+        $att['stud_gra_date'] = $request->input('stud_gra_date');
+        if(empty($request->input('disable'))){
+            $att['disable'] = null;
+        }else{
+            $att['disable'] = $request->input('disable');
+        }
+
+        $lunch_setup->update($att);
         return redirect()->route('lunch.setup');
     }
 
@@ -561,12 +577,21 @@ class LunchController extends Controller
                             ->where('enable', '=', 'abs')
                             ->update($att2);
 
+
+                        $att4['enable'] = "out";
+                        $att4['eat_style'] = "3";
                         //之後的訂餐，改為轉出
                         LunchStuDate::where('semester', '=', $request->input('semester'))
                             ->where('student_id', '=', $student->id)
                             ->where('enable', '=', 'eat')
                             ->where('order_date', '>=', $request->input('out_stud_order_date'))
-                            ->update($att2);
+                            ->update($att4);
+
+                            $att_stu_order1['change_date'] = $request->input('out_stud_order_date');
+                            $att_stu_order1['out_in'] = "out";
+                            LunchStuOrder::where('semester','=',$request->input('semester'))
+                            ->where('student_id', '=', $student->id)
+                            ->update($att_stu_order1);
 
                     } elseif ($request->input('type') == "no_eat") {
                         $att['enable'] = "abs";
@@ -575,12 +600,15 @@ class LunchController extends Controller
                             ->where('enable', '=', 'eat')
                             ->where('order_date', '>=', $request->input('out_stud_order_date'))
                             ->update($att);
+
+                        $att_stu_order2['change_date'] = $request->input('out_stud_order_date');
+                        $att_stu_order2['out_in'] = "no_eat";//不訂了
+                        LunchStuOrder::where('semester','=',$request->input('semester'))
+                            ->where('student_id', '=', $student->id)
+                            ->update($att_stu_order2);
+
                     }
                 }
-                $att3['out_in'] = "out";
-                LunchStuOrder::where('semester','=',$request->input('semester'))
-                    ->where('student_id', '=', $student->id)
-                    ->update($att3);
 
                 return redirect()->route('lunch.special');
                 break;
@@ -650,6 +678,7 @@ class LunchController extends Controller
                     $att5['eat_style'] = $request->input('eat_style');
                     $att5['p_id'] = $request->input('p_id');
                     $att5['out_in'] = "in";
+                    $att5['change_date'] = $request->input('in_stud_order_date');
                     LunchStuOrder::create($att5);
 
                     //日期訂餐
@@ -665,6 +694,7 @@ class LunchController extends Controller
                         if (str_replace('-', '', $k) < str_replace('-', '', $request->input('in_stud_order_date'))) {
                             if ($v == "0") $att4['enable'] = "not";
                             if ($v == "1") $att4['enable'] = "no_eat";
+                            $att4['eat_style'] = "3";
                             $att4['p_id'] = "301";//轉入前，身份為轉入生
                         } else {
                             if ($v == "0") $att4['enable'] = "not";
@@ -712,6 +742,14 @@ class LunchController extends Controller
                             ->where('enable', '=', 'not')
                             ->where('order_date', '>=', $request->input('in_stud_order_date'))
                             ->update($att);
+
+                        //更改order記錄
+                        $att_stu_order['change_date'] = $request->input('in_stud_order_date');
+                        $att_stu_order['out_in'] = "eat";//又訂了
+                        LunchStuOrder::where('semester','=',$request->input('semester'))
+                            ->where('student_id', '=', $student->id)
+                            ->update($att_stu_order);
+
                     }
                 }
                 return redirect()->route('lunch.special');
@@ -1214,6 +1252,252 @@ class LunchController extends Controller
     }
 
 
+    public function report_cashier1(Request $request)
+    {
+        $semester = $request->input('semester');
+        $data =[
+            'semester' => $semester,
+        ];
+        return view('lunch.report_cashier1',$data);
+    }
+
+    public function download_cashier_demo()
+    {
+        $realFile = asset('cashier_demo.csv');
+        header("Content-type:application");
+        //header("Content-Length: " .(string)(filesize($realFile)));
+        header("Content-Disposition: attachment; filename=學生帳戶資料.csv");
+        readfile($realFile);
+    }
+
+    public function export_cashier(Request $request)
+    {
+        if(Input::hasFile('csv')) {
+
+            $filePath = $request->file('csv')->getRealPath();
+
+            $data = Excel::load($filePath, function ($reader) {
+            })->get();
+
+            foreach ($data as $k => $v) {
+                $import_data[$v['學號']]['轉帳戶名'] = $v['轉帳戶名'];
+                $import_data[$v['學號']]['轉帳戶身份證編號'] = $v['轉帳戶身份證編號'];
+                $import_data[$v['學號']]['立帳局號'] = $v['立帳局號'];
+                $import_data[$v['學號']]['存簿帳號'] = $v['存簿帳號'];
+            }
+
+
+            //退費的資料
+            $semester = $request->input('semester');
+
+            $setup = $this->get_setup();
+
+            $stu_abs_data = LunchStuDate::where('semester','=',$semester)
+                ->where('p_id','<','200')
+                ->where('enable','=','abs')
+                ->orderBy('class_id')
+                ->get();
+            $abs_data = [];
+            foreach($stu_abs_data as $stu_abs){
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['name'] = $stu_abs->student->name;
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['year'] = substr($stu_abs->class_id,0,1);
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['class'] = (int)substr($stu_abs->class_id,1,2);
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['num'] = (int)$stu_abs->num;
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['sn'] = $stu_abs->student->sn;
+                if (!isset($abs_data[$stu_abs->class_id . $stu_abs->num]['back_money'])) {
+                    $abs_data[$stu_abs->class_id . $stu_abs->num]['back_money'] = null;
+                }
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['back_money'] += $setup[$semester]['stud_back_money'];
+            }
+            //依班級座號排序
+            ksort($abs_data);
+
+            $final_data = "年級,班級代號,座號,學號,學生姓名,轉帳戶名,轉帳戶身份證編號,立帳局號,存簿帳號,退費金額\r\n";
+            foreach($abs_data as $k => $v){
+                if(!isset($import_data[$v['sn']]['轉帳戶名']) or !isset($import_data[$v['sn']]['轉帳戶身份證編號']) or !isset($import_data[$v['sn']]['立帳局號']) or !isset($import_data[$v['sn']]['存簿帳號'])){
+                    $import_data[$v['sn']]['轉帳戶名'] = null;
+                    $import_data[$v['sn']]['轉帳戶身份證編號'] = null;
+                    $import_data[$v['sn']]['立帳局號'] = null;
+                    $import_data[$v['sn']]['存簿帳號'] = null;
+                }
+                $final_data .= $v['year'].",".$v['class'].",".$v['num'].",".$v['sn'].",".$v['name'].",".$import_data[$v['sn']]['轉帳戶名'].",".$import_data[$v['sn']]['轉帳戶身份證編號'].",".$import_data[$v['sn']]['立帳局號'].",".$import_data[$v['sn']]['存簿帳號'].",".$v['back_money']."\r\n";
+            }
+
+            header("Content-type:application");
+            header("Content-Disposition: attachment; filename=給出納組-學生退費資料.csv");
+            echo $final_data;
+        }
+
+    }
+    public function report_master1(Request $request){
+        //參數
+        $semester = $request->input('semester');
+
+        $setup = $this->get_setup();
+
+        $stu_abs_data = LunchStuDate::where('semester','=',$semester)
+            ->where('p_id','<','200')
+            ->orderBy('class_id')
+            ->get();
+        $abs_data = [];
+        $total_money = 0;
+        $total_times = 0;
+        foreach($stu_abs_data as $stu_abs){
+            if($stu_abs->enable == "abs") {
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['name'] = $stu_abs->student->name;
+                if (!isset($abs_data[$stu_abs->class_id . $stu_abs->num]['back_money'])) {
+                    $abs_data[$stu_abs->class_id . $stu_abs->num]['back_money'] = null;
+                }
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['back_money'] += $setup[$semester]['stud_back_money'];
+                if (!isset($abs_data[$stu_abs->class_id . $stu_abs->num]['times'])) {
+                    $abs_data[$stu_abs->class_id . $stu_abs->num]['times'] = null;
+                }
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['times']++;
+                if (!isset($abs_data[$stu_abs->class_id . $stu_abs->num]['dates'])) {
+                    $abs_data[$stu_abs->class_id . $stu_abs->num]['dates'] = null;
+                }
+                $abs_data[$stu_abs->class_id . $stu_abs->num]['dates'] .= $stu_abs->order_date . ",";
+                $total_money += $setup[$semester]['stud_back_money'];
+                $total_times++;
+            }
+        }
+        //依班級座號排序
+        ksort($abs_data);
+
+        $data =[
+            'semester' => $semester,
+            'abs_data'=>$abs_data,
+            'total_money'=>$total_money,
+            'total_times'=>$total_times,
+        ];
+        return view('lunch.report_master1_print', $data);
+    }
+
+    public function report_master2(Request $request)
+    {
+        $orders = $this->get_order_id_array($request->input('semester'));
+        $this_mon = date('Y-m');
+        $this_order_id = $orders[$this_mon];
+        //選取的月份id
+        $order_id = (empty($request->input('order_id'))) ? $this_order_id : $request->input('order_id');
+
+        $orders = array_flip($orders);
+        //選取的月份
+        $mon = $orders[$order_id];
+
+        $semester = $request->input('semester');
+
+        $setup = $this->get_setup();
+        $stud_money = $setup[$semester]['stud_money'];
+        $support_part_money = $setup[$semester]['support_part_money'];
+        $support_all_money = $setup[$semester]['support_all_money'];
+
+        $stu_orders = LunchStuDate::where('semester','=',$semester)
+            ->where('order_date','like',$mon.'%')
+            ->where('enable','=','eat')
+            ->get();
+        $total_g = 0;
+        $total_w = 0;
+        foreach($stu_orders as $stu_order){
+            if(!isset($class_data[$stu_order->class_id]['g'])) $class_data[$stu_order->class_id]['g']=0;
+            if(!isset($class_data[$stu_order->class_id]['w'])) $class_data[$stu_order->class_id]['w']=0;
+            if($stu_order->p_id > 100 and $stu_order->p_id < 200){
+                $class_data[$stu_order->class_id]['g']++;
+                $total_g++;
+            }elseif($stu_order->p_id > 200 and $stu_order->p_id < 300){
+                $class_data[$stu_order->class_id]['w']++;
+                $total_w++;
+            }
+        }
+        ksort($class_data);
+
+        //算各月收入多少錢
+        $order_dates = $this->get_order_dates($semester);
+        foreach($order_dates as $k=>$v){
+            if($v =="1"){
+                if(!isset($mon_eat_days[substr($k,0,7)])) $mon_eat_days[substr($k,0,7)]=null;
+                $mon_eat_days[substr($k,0,7)]++;
+            }
+        }
+
+        //本學期第一天的日期，自費的人數
+        $first_day = current(array_keys($order_dates));
+        $total_stu_order_num = LunchStuDate::where('order_date','=',$first_day)
+            ->where('eat_style','!=','3')
+            ->where('p_id','<','200')
+            ->count();
+
+        $data =[
+            'semester' => $semester,
+            'mon' => $mon,
+            'orders' => $orders,
+            'this_order_id' => $this_order_id,
+            'total_g' => $total_g,
+            'total_w' => $total_w,
+            'stud_money' => $stud_money,
+            'support_part_money' => $support_part_money,
+            'support_all_money' => $support_all_money,
+            'class_data' => $class_data,
+            'mon_eat_days' =>$mon_eat_days,
+            'total_stu_order_num'=>$total_stu_order_num,
+        ];
+        return view('lunch.report_master2',$data);
+    }
+
+    public function report_master3(Request $request)
+    {
+        $orders = $this->get_order_id_array($request->input('semester'));
+        $this_mon = date('Y-m');
+        $this_order_id = $orders[$this_mon];
+        //選取的月份id
+        $order_id = (empty($request->input('order_id'))) ? $this_order_id : $request->input('order_id');
+
+        $orders = array_flip($orders);
+        //選取的月份
+        $mon = $orders[$order_id];
+
+        $semester = $request->input('semester');
+
+        $setup = $this->get_setup();
+        $stud_money = $setup[$semester]['stud_money'];
+        $support_part_money = $setup[$semester]['support_part_money'];
+        $support_all_money = $setup[$semester]['support_all_money'];
+
+        $stu_orders = LunchStuDate::where('semester','=',$semester)
+            ->where('order_date','like',$mon.'%')
+            ->where('enable','=','eat')
+            ->get();
+        $total_g = 0;
+        $total_w = 0;
+        foreach($stu_orders as $stu_order){
+            if(!isset($class_data[$stu_order->class_id]['g'])) $class_data[$stu_order->class_id]['g']=0;
+            if(!isset($class_data[$stu_order->class_id]['w'])) $class_data[$stu_order->class_id]['w']=0;
+            if($stu_order->p_id > 100 and $stu_order->p_id < 200){
+                $class_data[$stu_order->class_id]['g']++;
+                $total_g++;
+            }elseif($stu_order->p_id > 200 and $stu_order->p_id < 300){
+                $class_data[$stu_order->class_id]['w']++;
+                $total_w++;
+            }
+        }
+        ksort($class_data);
+
+        $data =[
+            'semester' => $semester,
+            'mon' => $mon,
+            'orders' => $orders,
+            'this_order_id' => $this_order_id,
+            'total_g' => $total_g,
+            'total_w' => $total_w,
+            'stud_money' => $stud_money,
+            'support_part_money' => $support_part_money,
+            'support_all_money' => $support_all_money,
+            'class_data' => $class_data,
+        ];
+        return view('lunch.report_master3',$data);
+    }
+
+
     public function stu(Request $request)
     {
         $is_tea ="";
@@ -1412,6 +1696,14 @@ class LunchController extends Controller
             $words = "新學期尚未設定好！";
             return view('errors.errors',compact('words'));
         }
+
+        //是否有學生停止退餐
+        $setups = $this->get_setup();
+        if($setups[$semester]['disable'] == "on") {
+            $words = "本學期學生已停止退餐！！";
+            return view('errors.errors', compact('words'));
+        }
+
 
         if(Input::get('do') == "1"){
 
@@ -1766,6 +2058,7 @@ class LunchController extends Controller
             $lunch_setup[$setup->semester]['place'] = $setup->place;
             $lunch_setup[$setup->semester]['factory'] = $setup->factory;
             $lunch_setup[$setup->semester]['stud_gra_date'] = $setup->stud_gra_date;
+            $lunch_setup[$setup->semester]['disable'] = $setup->disable;
         }
         return $lunch_setup;
     }

@@ -128,6 +128,9 @@
                                 退費
                             </th>
                             <th>
+                                簽名
+                            </th>
+                            <th>
                                 退餐日期
                             </th>
                         </tr>
@@ -152,6 +155,9 @@
                                     {{ $v['back_money'] }}
                                 </td>
                                 <td>
+
+                                </td>
+                                <td>
                                     {{ $v['dates'] }}
                                 </td>
                                 <?php $total += $v['back_money']; ?>
@@ -172,6 +178,9 @@
                             </td>
                             <td>
                                 {{ $total }}
+                            </td>
+                            <td>
+
                             </td>
                             <td>
 

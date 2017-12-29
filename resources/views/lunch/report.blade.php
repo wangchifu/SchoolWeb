@@ -66,12 +66,7 @@
                     <h4>給出納</h4>
                 </div>
                 <div class="panel-content">
-                    {{ Form::open(['route'=>'lunch.report_stu3','method'=>'POST','target'=>'_blank']) }}
-                    <input type="hidden" name="semester" value="{{ $semester }}">
-                    <button class="btn btn-success">學生退費印領清冊</button>
-                    {{ Form::close() }}
-
-                    {{ Form::open(['route'=>'lunch.report_stu3','method'=>'POST','target'=>'_blank']) }}
+                    {{ Form::open(['route'=>'lunch.report_cashier1','method'=>'POST','target'=>'_blank']) }}
                     <input type="hidden" name="semester" value="{{ $semester }}">
                     <button class="btn btn-success">學生退費轉帳資料</button>
                     {{ Form::close() }}
@@ -81,8 +76,22 @@
                 <div class="panel-heading">
                     <h4>給主計</h4>
                 </div>
-                <div class="panel-content">
+                {{ Form::open(['route'=>'lunch.report_master1','method'=>'POST','target'=>'_blank']) }}
+                <input type="hidden" name="semester" value="{{ $semester }}">
+                <button class="btn btn-success">學生退費印領清冊</button>(附於退費動簽後)
+                {{ Form::close() }}
 
+                <div class="panel-content">
+                    {{ Form::open(['route'=>'lunch.report_master2','method'=>'POST','target'=>'_blank']) }}
+                    <input type="hidden" name="semester" value="{{ $semester }}">
+                    <button class="btn btn-success">學生各月請款</button>
+                    {{ Form::close() }}
+
+
+                    {{ Form::open(['route'=>'lunch.report_master3','method'=>'POST','target'=>'_blank']) }}
+                    <input type="hidden" name="semester" value="{{ $semester }}">
+                    <button class="btn btn-success">供餐數量表</button>
+                    {{ Form::close() }}
                 </div>
             </div>
 

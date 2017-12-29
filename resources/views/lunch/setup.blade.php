@@ -28,7 +28,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th class="col-md-1">學期</th><th>教職收費</th><th>學生收費</th><th>學生退費</th><th>部分補助</th><th>全額補助</th><th>幾日前退</th><th class="col-md-2">供餐地點</th><th class="col-md-1">廠商名稱</th><th class="col-md-1">畢業日期</th><th class="col-md-3">動作</th>
+                                <th class="col-md-1">學期</th><th>教職收費</th><th>學生收費</th><th>學生退費</th><th>部分補助</th><th>全額補助</th><th>幾日前退</th><th class="col-md-2">供餐地點</th><th class="col-md-1">廠商名稱</th><th class="col-md-1">畢業日期</th><th>學生停止退餐</th><th class="col-md-3">動作</th>
                         </thead>
                             </tr>
                         <tbody>
@@ -65,7 +65,10 @@
                                     {{ Form::text('stud_gra_date',null,['id'=>'stud_gra_date','class' => 'form-control', 'placeholder' => '2016-06-25','maxlength'=>'10']) }}
                                 </td>
                                 <td>
-                                    <button class="btn btn-success">新增</button>
+                                    <input type="checkbox" name="disable" style="zoom:150%">
+                                </td>
+                                <td>
+                                    <button class="btn btn-success btn-xs">新增</button>
                                 </td>
                             </tr>
                             {{ Form::close() }}
@@ -103,13 +106,23 @@
                                     {{ Form::text('stud_gra_date',$lunch_setup->stud_gra_date,['id'=>'stud_gra_date','class' => 'form-control', 'placeholder' => '2016-06-25','maxlength'=>'10']) }}
                                 </td>
                                 <td>
-                                    <button class="btn btn-info" onclick="bbconfirm('updateSetup{{ $k }}','確定修改？')">修改</button>
+                                    <?php
+                                    if($lunch_setup->disable == "on"){
+                                        $disable = "checked";
+                                    }else{
+                                        $disable = "";
+                                    }
+                                    ?>
+                                    <input type="checkbox" name="disable" {{ $disable }} style="zoom:150%" >
+                                </td>
+                                <td>
+                                    <button class="btn btn-info btn-xs" onclick="bbconfirm('updateSetup{{ $k }}','確定修改？')">修改</button>
                                     @if($has_order[$lunch_setup->semester])
-                                        <a href="{{ route('lunch.show_order',$lunch_setup->semester) }}" class="btn btn-primary">觀看餐期</a>
+                                        <a href="{{ route('lunch.show_order',$lunch_setup->semester) }}" class="btn btn-primary btn-xs">觀看餐期</a>
                                     @else
-                                    <a href="{{ route('lunch.create_order',$lunch_setup->semester) }}" class="btn btn-success">設定餐期</a>
+                                    <a href="{{ route('lunch.create_order',$lunch_setup->semester) }}" class="btn btn-success btn-xs">設定餐期</a>
                                     @endif
-                                    <a href="{{ route('lunch.delete_setup',$lunch_setup->id) }}" id="DelLink{{ $k }}" class="btn btn-danger" onclick="bbconfirm2('DelLink{{ $k }}','你確定要刪除這學期的設定嗎？<br>若已有任何訂餐資料時，切勿刪除！')">整個刪除</a>
+                                    <a href="{{ route('lunch.delete_setup',$lunch_setup->id) }}" id="DelLink{{ $k }}" class="btn btn-danger btn-xs" onclick="bbconfirm2('DelLink{{ $k }}','你確定要刪除這學期的設定嗎？<br>若已有任何訂餐資料時，切勿刪除！')">整個刪除</a>
                                 </td>
                             </tr>
                             {{ Form::close() }}

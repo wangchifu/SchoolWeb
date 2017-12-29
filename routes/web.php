@@ -116,6 +116,13 @@ Route::post('lunch/report_stu1','LunchController@report_stu1')->name('lunch.repo
 Route::post('lunch/report_stu2','LunchController@report_stu2')->name('lunch.report_stu2');
 Route::any('lunch/report_stu3','LunchController@report_stu3')->name('lunch.report_stu3');
 Route::post('lunch/report_stu3_print','LunchController@report_stu3_print')->name('lunch.report_stu3_print');
+Route::post('lunch/report_cashier1','LunchController@report_cashier1')->name('lunch.report_cashier1');
+Route::get('lunch/download_cashier_demo','LunchController@download_cashier_demo')->name('lunch.download_cashier_demo');
+Route::post('lunch/export_cashier','LunchController@export_cashier')->name('lunch.export_cashier');
+Route::post('lunch/report_master1','LunchController@report_master1')->name('lunch.report_master1');
+Route::post('lunch/report_master2','LunchController@report_master2')->name('lunch.report_master2');
+Route::post('lunch/report_master3','LunchController@report_master3')->name('lunch.report_master3');
+
 
 //給廠商
 Route::any('lunch/report_fac','FacController@index')->name('lunch.report_fac');

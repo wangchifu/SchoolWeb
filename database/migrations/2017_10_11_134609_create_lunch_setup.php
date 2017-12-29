@@ -25,6 +25,7 @@ class CreateLunchSetup extends Migration
             $table->string('place');
             $table->string('factory');
             $table->string('stud_gra_date')->nullable();
+            $table->string('disable')->nullable();
             $table->timestamps();
         });
     }
