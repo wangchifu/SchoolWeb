@@ -181,7 +181,70 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>四、班級或學年學生單日退餐</h4>
+                    <h4>四、更改學生期初訂餐資料(期中切勿操作)</h4>
+                </div>
+                <div class="panel-content">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>
+                                班級座號
+                            </th>
+                            <th>
+                                學期
+                            </th>
+                            <th class="col-md-3">
+                                葷素?
+                            </th>
+                            <th>
+                                學生身份
+                            </th>
+                            <th>
+                                動作
+                            </th>
+                        </tr>
+                        </thead>
+                        <tr>
+                            {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST']) }}
+                            <input type="hidden" name="op" value="change_one_stud">
+                            <td>
+                                {{ Form::text('student_num',null, ['id' => 'num', 'class' => 'form-control',"maxlength"=>"5", 'placeholder' => '班級座號5碼', 'required' => 'required']) }}
+                            </td>
+                            <td>
+                                {{ Form::text('semester',$semester, ['id' => 'semester', 'class' => 'form-control', 'readonly' => 'readonly']) }}
+                            </td>
+                            <td>
+                                <input type="radio" name="eat_style" value="1" checked><span class="btn btn-danger btn-xs">葷食</span>　　<input type="radio" name="eat_style" value="2"><span class="btn btn-success btn-xs">素食</span>　　<input type="radio" name="eat_style" value="3"><span class="btn btn-default btn-xs">不訂</span>
+                            </td>
+                            <?php
+                            $selects = [
+                                '101'=>"100-----一般生",
+                                '201'=>"201-----弱勢生-----低收入戶",
+                                '202'=>"202-----弱勢生-----中低收入戶",
+                                '203'=>"203-----弱勢生-----家庭突發因素",
+                                '204'=>"204-----弱勢生-----父母一方失業",
+                                '205'=>"205-----弱勢生-----單親家庭",
+                                '206'=>"206-----弱勢生-----隔代教養",
+                                '207'=>"207-----弱勢生-----特殊境遇",
+                                '208'=>"208-----弱勢生-----身心障礙學生",
+                                '209'=>"209-----弱勢生-----新住民子女",
+                                '210'=>"210-----弱勢生-----原住民子女",
+                            ];
+                            ?>
+                            <td>
+                                {{ Form::select('p_id', $selects, null, ['id' => 'p_id', 'class' => 'form-control']) }}
+                            </td>
+                            <td>
+                                <button class="btn btn-success" onclick="if(confirm('您確定送出嗎?')) return true;else return false">執行更改學生訂餐</button>
+                            </td>
+                            {{ Form::close() }}
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>五、班級或學年學生單日退餐</h4>
                 </div>
                 <div class="panel-content">
                     <table class="table">
@@ -295,7 +358,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>五、轉入生處理(或是原本不訂，突然要訂)，開始用餐日之前不計退費</h4>
+                    <h4>六、轉入生處理(或是原本不訂，突然要訂)，開始用餐日之前不計退費</h4>
                 </div>
                 <div class="panel-content">
                     <table class="table">
@@ -397,7 +460,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>六、轉出生處理(或是原本有訂，突然不訂)，不用餐日起要退費</h4>
+                    <h4>七、轉出生處理(或是原本有訂，突然不訂)，不用餐日起要退費</h4>
                 </div>
                 <div class="panel-content">
                     <table class="table">
@@ -440,7 +503,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>七、學生多人多日退餐退費(球隊比賽)</h4>
+                    <h4>八、學生多人多日退餐退費(球隊比賽)</h4>
                 </div>
                 <div class="panel-content">
                     <table class="table">

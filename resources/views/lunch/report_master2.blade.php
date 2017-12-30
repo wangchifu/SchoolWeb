@@ -473,7 +473,7 @@
                         <span class="text-danger">本月轉出或臨時不訂學生退費為： -  元</span><br>
                         <span class="text-success">本月轉入或臨時補訂學生收費為： +  元</span><br>
                     </div>
-                    註1：本學期初 學生自付款 各月收費<br>
+                    註：各月收支分析<br>
                     <table class="table table-bordered">
                         <tr>
                             <th>
@@ -489,7 +489,22 @@
                                 自費
                             </th>
                             <th>
-                                收費小計(供餐日數 x 期初訂餐人數 x 自費)
+                                期初收費小計
+                            </th>
+                            <th>
+                                轉入(臨時訂餐)加收
+                            </th>
+                            <th>
+                                給廠商
+                            </th>
+                            <th>
+                                退餐退費
+                            </th>
+                            <th>
+                                轉出(臨時不訂)退費
+                            </th>
+                            <th>
+                                結餘
                             </th>
                         </tr>
                         <?php $tt=0; ?>
@@ -508,8 +523,23 @@
                                     {{ $stud_money }}
                                 </th>
                                 <th>
-                                    {{ $v * $total_stu_order_num * $stud_money}}
+                                    +{{ $v * $total_stu_order_num * $stud_money}}
                                     <?php $tt += $v * $total_stu_order_num * $stud_money; ?>
+                                </th>
+                                <th>
+                                    +
+                                </th>
+                                <th>
+                                    -
+                                </th>
+                                <th>
+                                    -
+                                </th>
+                                <th>
+                                    -
+                                </th>
+                                <th>
+
                                 </th>
                             </tr>
                         @endforeach
@@ -529,22 +559,22 @@
                             <th>
                                 {{ $tt }}
                             </th>
+                            <th>
+
+                            </th>
+                            <th>
+
+                            </th>
+                            <th>
+
+                            </th>
+                            <th>
+
+                            </th>
+                            <th>
+
+                            </th>
                         </tr>
-                    </table>
-                    <br>
-                    註2：學生各月退餐退費表<br>
-                    <table>
-
-                    </table>
-                    <br>
-                    註3：轉出或臨時不訂學生各月退費表<br>
-                    <table>
-
-                    </table>
-                    <br>
-                    註4：轉入或臨時補訂學生各月收費表<br>
-                    <table>
-
                     </table>
                     <br>
                 </div>

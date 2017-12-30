@@ -443,6 +443,60 @@ class LunchController extends Controller
                 }
 
                 break;
+
+            case "change_one_stud";
+                $year_class_data = YearClass::where('semester', '=', $request->input('semester'))
+                    ->where('year_class', '=', substr($request->input('student_num'), 0, 3))
+                    ->first();
+                if (empty($year_class_data)) {
+                    $words = "查無此班級：" . $request->input('student_num');
+                    return view('errors.errors', compact('words'));
+                }
+                $semester_student = SemesterStudent::where('year_class_id', '=', $year_class_data->id)
+                    ->where('num', '=', substr($request->input('student_num'), 3, 2))
+                    ->first();
+                if (empty($semester_student)) {
+                    $words = "查無此學生：" . $request->input('student_num');
+                    return view('errors.errors', compact('words'));
+                }
+                $student = Student::where('id', '=', $semester_student->student_id)->first();
+                if (empty($student)) {
+                    $words = "查無此學生：" . $request->input('student_num');
+                    return view('errors.errors', compact('words'));
+                }
+
+                $order_data = LunchStuOrder::where('semester','=',$request->input('semester'))
+                    ->where('student_id','=',$student->id)
+                    ->first();
+                if (empty($order_data)) {
+                    $words = "查無此學生的訂餐資料：" . $student->name;
+                    return view('errors.errors', compact('words'));
+                }
+                $att['p_id'] = $request->input('p_id');
+                $att['eat_style'] = $request->input('eat_style');
+                $order_data->update($att);
+
+
+                LunchStuDate::where('semester','=',$request->input('semester'))
+                ->where('student_id','=',$student->id)
+                ->update($att);
+
+                if($request->input('eat_style') ==3 ) {
+                    $att1['enable'] = "no_eat";
+                }else{
+                    $att1['enable'] = "eat";
+                }
+
+                LunchStuDate::where('semester','=',$request->input('semester'))
+                    ->where('student_id','=',$student->id)
+                    ->where('enable','!=','not')
+                    ->update($att1);
+
+
+                return redirect()->route('lunch.special');
+
+            break;
+
             case "change_stu1";
                 if (empty(($request->input('select_class')))) {
                     $words = "你沒有填班級！";
