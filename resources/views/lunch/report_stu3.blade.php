@@ -112,22 +112,22 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr class="bg-primary">
-                            <th>
+                            <th class="col-md-1">
                                 班級
                             </th>
-                            <th>
+                            <th class="col-md-1">
                                 座號
                             </th>
-                            <th>
+                            <th class="col-md-1">
                                 姓名
                             </th>
-                            <th>
+                            <th class="col-md-1">
                                 退餐次數
                             </th>
-                            <th>
+                            <th class="col-md-1">
                                 退費
                             </th>
-                            <th>
+                            <th class="col-md-1">
                                 簽名
                             </th>
                             <th>

@@ -93,9 +93,13 @@
                                             @elseif($order_data[$v1['id']][$v2]['enable'] == "no_eat")
                                                 <td bgcolor="{{ $w_color }}"><img src="{{ asset('/img/minus.png') }}" alt="沒有訂餐"></td>
                                             @endif
-                                        @elseif($order_data[$v1['id']][$v2]['eat_style'] == 3 and $order_data[$v1['id']][$v2]['enable'] == "no_eat")
+                                        @elseif($order_data[$v1['id']][$v2]['eat_style'] == 3)
+                                            @if($order_data[$v1['id']][$v2]['enable'] == "no_eat")
                                             <?php $stu_name= $v1['name']; ?>
-                                            <td bgcolor="{{ $w_color }}"><a href="#" onclick="alert('{{ $stu_name }} 沒有訂餐！');"><img src="{{ asset('/img/minus.png') }}" alt="未訂餐"></a></td>
+                                                <td bgcolor="{{ $w_color }}"><a href="#" onclick="alert('{{ $stu_name }} 沒有訂餐！');"><img src="{{ asset('/img/minus.png') }}" alt="未訂餐"></a></td>
+                                            @elseif($order_data[$v1['id']][$v2]['enable'] == "out")
+                                                <td bgcolor="{{ $w_color }}"><img src="{{ asset('/img/had_back.png') }}" alt="已退費"></td>
+                                            @endif
                                         @endif
                                     @endforeach
                                 </tr>

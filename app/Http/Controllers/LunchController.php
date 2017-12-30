@@ -641,6 +641,14 @@ class LunchController extends Controller
                             ->where('order_date', '>=', $request->input('out_stud_order_date'))
                             ->update($att4);
 
+                        //未供餐的順便改一下eat_style
+                        $att_not['eat_style']="3";
+                        LunchStuDate::where('semester', '=', $request->input('semester'))
+                            ->where('student_id', '=', $student->id)
+                            ->where('enable', '=', 'not')
+                            ->where('order_date', '>=', $request->input('out_stud_order_date'))
+                            ->update($att_not);
+
                             $att_stu_order1['change_date'] = $request->input('out_stud_order_date');
                             $att_stu_order1['out_in'] = "out";
                             LunchStuOrder::where('semester','=',$request->input('semester'))
@@ -1221,6 +1229,8 @@ class LunchController extends Controller
         $stu_abs_data = LunchStuDate::where('semester','=',$semester)
             ->where('p_id','<','200')
             ->orderBy('class_id')
+            ->orderBy('num')
+            ->orderBy('order_date')
             ->get();
         $abs_data = [];
         $out_data = [];
@@ -1443,6 +1453,7 @@ class LunchController extends Controller
 
         $setup = $this->get_setup();
         $stud_money = $setup[$semester]['stud_money'];
+        $stud_back_money = $setup[$semester]['stud_back_money'];
         $support_part_money = $setup[$semester]['support_part_money'];
         $support_all_money = $setup[$semester]['support_all_money'];
 
@@ -1481,6 +1492,56 @@ class LunchController extends Controller
             ->where('p_id','<','200')
             ->count();
 
+
+        //請假的一般生人數
+        foreach($orders as $k =>$v) {
+            $abs_num[$v] = LunchStuDate::where('semester', '=', $semester)
+                ->where('order_date', 'like', $v . '%')
+                ->where('enable', '=', 'abs')
+                ->where('p_id', '<', '200')
+                ->count();
+
+            $eat_num[$v] = LunchStuDate::where('semester', '=', $semester)
+                ->where('order_date', 'like', $v . '%')
+                ->where('enable', '=', 'eat')
+                ->where('p_id', '<', '200')
+                ->count();
+
+            $out_num[$v] = LunchStuDate::where('semester', '=', $semester)
+                ->where('order_date', 'like', $v . '%')
+                ->where('enable', '=', 'out')
+                ->where('p_id', '<', '200')
+                ->count();
+        }
+
+        //轉入生或臨時又要訂餐的補交錢
+        $in_eat_data = LunchStuOrder::where('semester','=',$semester)
+            ->where('out_in','!=','')
+            ->where('p_id', '<', '200')
+            ->get();
+
+        foreach($orders as $k=>$v){
+            $in_num[$v] = 0;
+        }
+
+
+        foreach($in_eat_data as $a){
+            if($a->out_in =="in" or $a->out_in =="eat"){
+                $c = LunchStuDate::where('semester','=',$semester)
+                    ->where('student_id','=',$a->student_id)
+                    ->where('p_id', '<', '200')
+                    ->where('enable','!=','not')
+                    ->get();
+                foreach($c as $d){
+                    if(!isset($in_num[substr($d->order_date,0,7)])) $in_num[substr($d->order_date,0,7)]=0;
+                    $in_num[substr($d->order_date,0,7)]++;
+                }
+
+            }
+        }
+
+
+
         $data =[
             'semester' => $semester,
             'mon' => $mon,
@@ -1489,11 +1550,16 @@ class LunchController extends Controller
             'total_g' => $total_g,
             'total_w' => $total_w,
             'stud_money' => $stud_money,
+            'stud_back_money' => $stud_back_money,
             'support_part_money' => $support_part_money,
             'support_all_money' => $support_all_money,
             'class_data' => $class_data,
             'mon_eat_days' =>$mon_eat_days,
             'total_stu_order_num'=>$total_stu_order_num,
+            'abs_num'=>$abs_num,
+            'eat_num'=>$eat_num,
+            'out_num'=>$out_num,
+            'in_num'=>$in_num,
         ];
         return view('lunch.report_master2',$data);
     }
@@ -1852,6 +1918,8 @@ class LunchController extends Controller
             $words = " 你沒有權限來這裡！";
             return view('errors.errors',compact('words'));
         }
+
+        $stu_data = [];
 
 
         if($year_class_id){

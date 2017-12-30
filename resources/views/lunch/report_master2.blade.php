@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="well">
-                {{ Form::open(['route' => 'lunch.report_master1', 'method' => 'POST']) }}
+                {{ Form::open(['route' => 'lunch.report_master2', 'method' => 'POST']) }}
                 <input type="hidden" name="semester" value="{{ $semester }}">
                 請先選擇餐期：{{ Form::select('order_id', $orders, $this_order_id, ['id' => 'order_id', 'class' => 'form-control', 'placeholder' => '請先選擇餐期','onchange'=>'if(this.value != 0) { this.form.submit(); }']) }}
                 {{ Form::close() }}
@@ -469,9 +469,9 @@
                             </tr>
                         </table>
                         <span class="text-primary">特別注意 A1 和 A2 ； B1 和 B2 是否相同，將差異寫在 C1 或是 C2 ，原因寫於 D。</span><br>
-                        <span class="text-danger">本月退餐退費為： 元</span><br>
-                        <span class="text-danger">本月轉出或臨時不訂學生退費為： -  元</span><br>
-                        <span class="text-success">本月轉入或臨時補訂學生收費為： +  元</span><br>
+                        <span class="text-danger">本月一般生退餐退費為： -{{ $abs_num[$mon] * $stud_back_money }} 元</span><br>
+                        <span class="text-danger">本月轉出一般生退費為： -{{ $out_num[$mon] * $stud_back_money }} 元</span><br>
+                        <span class="text-success">本月轉入或臨時補訂一般生收費為： + {{ $in_num[$mon] * $stud_money }} 元</span><br>
                     </div>
                     註：各月收支分析<br>
                     <table class="table table-bordered">
@@ -483,7 +483,7 @@
                                 供餐日數
                             </th>
                             <th>
-                                期初訂餐人數
+                                期初一般生人數
                             </th>
                             <th>
                                 自費
@@ -492,22 +492,22 @@
                                 期初收費小計
                             </th>
                             <th>
-                                轉入(臨時訂餐)加收
+                                轉入(臨時訂餐)一般生加收
                             </th>
                             <th>
-                                給廠商
+                                給廠商的一般生費用
                             </th>
                             <th>
-                                退餐退費
+                                一般生退餐退費
                             </th>
                             <th>
-                                轉出(臨時不訂)退費
+                                轉出一般生退費
                             </th>
                             <th>
                                 結餘
                             </th>
                         </tr>
-                        <?php $tt=0; ?>
+                        <?php $tt=0;$tt2=0;$tt3=0;$tt4=0; ?>
                         @foreach($mon_eat_days as $k=>$v)
                             <tr bgcolor='#FFFFFF' onmouseover="this.style.backgroundColor='#FFCDE5';" onMouseOut="this.style.backgroundColor='#FFFFFF';">
                                 <th>
@@ -523,23 +523,26 @@
                                     {{ $stud_money }}
                                 </th>
                                 <th>
-                                    +{{ $v * $total_stu_order_num * $stud_money}}
+                                    +{{ $v * $total_stu_order_num * $stud_money }}
                                     <?php $tt += $v * $total_stu_order_num * $stud_money; ?>
                                 </th>
                                 <th>
-                                    +
+                                    +{{ $in_num[$k] * $stud_money}}
+                                    <?php $tt2 += $in_num[$k] * $stud_money ?>
                                 </th>
                                 <th>
-                                    -
+                                    -{{ $eat_num[$k] * $stud_money }}
                                 </th>
                                 <th>
-                                    -
+                                    -{{ $abs_num[$k] * $stud_back_money }}
+                                    <?php $tt3 += $abs_num[$k] * $stud_back_money ?>
                                 </th>
                                 <th>
-                                    -
+                                    -{{ $out_num[$k] * $stud_back_money }}
+                                    <?php $tt4 +=  $out_num[$k] * $stud_back_money ?>
                                 </th>
                                 <th>
-
+                                    {{ $v * $total_stu_order_num * $stud_money + $in_num[$k] * $stud_money - $eat_num[$k] * $stud_money - $abs_num[$k] * $stud_back_money -$out_num[$k] * $stud_back_money }}
                                 </th>
                             </tr>
                         @endforeach
@@ -560,16 +563,16 @@
                                 {{ $tt }}
                             </th>
                             <th>
-
+                                {{ $tt2 }}
                             </th>
                             <th>
 
                             </th>
                             <th>
-
+                                {{ $tt3 }}
                             </th>
                             <th>
-
+                                {{ $tt4 }}
                             </th>
                             <th>
 
