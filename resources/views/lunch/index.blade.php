@@ -58,6 +58,7 @@
                 <div class="panel-content">
                 @if($total_order_dates != "0")
                         @if($user_has_order =="1")
+                            @if($setups[$semester]['disable'] != "on")
                         <div>
                             <script src="{{ asset('js/cal/jscal2.js') }}"></script>
                             <script src="{{ asset('js/cal/lang/cn.js') }}"></script>
@@ -77,6 +78,9 @@
                                 });
                             </script>
                         </div>
+                                @else
+                                <div class="alert alert-danger" role="alert"><h2>期末結算已停止退餐</h2></div>
+                                @endif
                         @endif
                     <br>
                 {{ Form::open(['route'=>'lunch.store_tea_date','method'=>'POST']) }}

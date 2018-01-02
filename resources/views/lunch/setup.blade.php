@@ -28,7 +28,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th class="col-md-1">學期</th><th>教職收費</th><th>學生收費</th><th>學生退費</th><th>部分補助</th><th>全額補助</th><th>幾日前退</th><th class="col-md-2">供餐地點</th><th class="col-md-1">廠商名稱</th><th class="col-md-1">畢業日期</th><th>學生停止退餐</th><th class="col-md-3">動作</th>
+                                <th class="col-md-1">學期</th><th>教職收費</th><th>學生收費</th><th>學生退費</th><th>部分補助</th><th>全額補助</th><th>幾日前退</th><th class="col-md-2">供餐地點</th><th class="col-md-1">廠商名稱</th><th class="col-md-1">畢業日期</th><th>師生停止退餐</th><th class="col-md-3">動作</th>
                         </thead>
                             </tr>
                         <tbody>
