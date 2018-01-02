@@ -90,7 +90,7 @@
 
                     {{ Form::open(['route'=>'lunch.report_master3','method'=>'POST','target'=>'_blank']) }}
                     <input type="hidden" name="semester" value="{{ $semester }}">
-                    <button class="btn btn-success">供餐數量表</button>
+                    <button class="btn btn-success">供餐數量表</button>(主計版)
                     {{ Form::close() }}
                 </div>
             </div>

@@ -19,19 +19,7 @@ class FacController extends Controller
 
     public function index(Request $request)
     {
-        //查目前學期
-        $y = date('Y') - 1911;
-        $array1 = array(8, 9, 10, 11, 12, 1);
-        $array2 = array(2, 3, 4, 5, 6, 7);
-        if (in_array(date('n'), $array1)) {
-            if (date('n') == 1) {
-                $this_semester = ($y - 1) . "1";
-            } else {
-                $semester = $y . "1";
-            }
-        } else {
-            $semester = ($y - 1) . "2";
-        }
+        $semester = $request->input('semester');
 
         $order_id_array = $this->get_order_id_array($semester);
         $lunch_orders = array_flip($order_id_array);

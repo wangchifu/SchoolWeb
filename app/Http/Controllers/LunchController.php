@@ -1566,53 +1566,70 @@ class LunchController extends Controller
 
     public function report_master3(Request $request)
     {
-        $orders = $this->get_order_id_array($request->input('semester'));
-        $this_mon = date('Y-m');
-        $this_order_id = $orders[$this_mon];
-        //選取的月份id
-        $order_id = (empty($request->input('order_id'))) ? $this_order_id : $request->input('order_id');
-
-        $orders = array_flip($orders);
-        //選取的月份
-        $mon = $orders[$order_id];
-
+        $check = Fun::where('type', '=', '3')->where('username', '=', auth()->user()->username)->first();
+        if (empty($check)) return view('errors.not_admin');
         $semester = $request->input('semester');
+        $order_id_array = $this->get_order_id_array($semester);
+        $lunch_orders = array_flip($order_id_array);
+        $lunch_order_id = (empty($request->input('select_order_id'))) ? $order_id_array[substr(date('Y-m'), 0, 7)] : $request->input('select_order_id');
+
+
+        $order_dates = $this->get_order_dates($semester);
+        $i = 0;
+        foreach ($order_dates as $k => $v) {
+            if ($v == 1 and substr($k, 0, 7) == $lunch_orders[$lunch_order_id]) {
+                $this_order_dates[$i] = $k;
+                $i++;
+            }
+        }
+        $order_data=array();
+        $stu_order_datas = LunchStuDate::where('lunch_order_id', '=', $lunch_order_id)
+            ->where('enable','=','eat')
+            ->orderBy('class_id')->orderBy('order_date')->get();
+
+        foreach ($stu_order_datas as $stu_order_data) {
+            if ($stu_order_data->p_id > 200 and $stu_order_data->p_id < 300 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat") {
+                if ( ! isset($order_data[$stu_order_data->class_id][$stu_order_data->order_date]['w'])) {
+                    $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['w'] = null;
+                }
+                $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['w']++;
+            } elseif ($stu_order_data->p_id == 101 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat") {
+                if ( ! isset($order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g'])) {
+                    $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g'] = null;
+                }
+                $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g']++;
+            }
+        }
 
         $setup = $this->get_setup();
         $stud_money = $setup[$semester]['stud_money'];
+        $stud_back_money = $setup[$semester]['stud_back_money'];
         $support_part_money = $setup[$semester]['support_part_money'];
         $support_all_money = $setup[$semester]['support_all_money'];
 
-        $stu_orders = LunchStuDate::where('semester','=',$semester)
-            ->where('order_date','like',$mon.'%')
-            ->where('enable','=','eat')
+        //預定人數
+        $class_people_data = LunchStuOrder::where('semester','=',$semester)
+            ->where('eat_style','!=','3')
+            ->where('out_in','=',null)
+            ->orderBy('student_num')
             ->get();
-        $total_g = 0;
-        $total_w = 0;
-        foreach($stu_orders as $stu_order){
-            if(!isset($class_data[$stu_order->class_id]['g'])) $class_data[$stu_order->class_id]['g']=0;
-            if(!isset($class_data[$stu_order->class_id]['w'])) $class_data[$stu_order->class_id]['w']=0;
-            if($stu_order->p_id > 100 and $stu_order->p_id < 200){
-                $class_data[$stu_order->class_id]['g']++;
-                $total_g++;
-            }elseif($stu_order->p_id > 200 and $stu_order->p_id < 300){
-                $class_data[$stu_order->class_id]['w']++;
-                $total_w++;
-            }
+        foreach($class_people_data as $i){
+            if(!isset($class_people[substr($i->student_num,0,3)])) $class_people[substr($i->student_num,0,3)] = 0;
+            $class_people[substr($i->student_num,0,3)]++;
         }
-        ksort($class_data);
 
-        $data =[
+
+        $data = [
             'semester' => $semester,
-            'mon' => $mon,
-            'orders' => $orders,
-            'this_order_id' => $this_order_id,
-            'total_g' => $total_g,
-            'total_w' => $total_w,
+            'lunch_orders' => $lunch_orders,
+            'lunch_order_id' => $lunch_order_id,
+            'this_order_dates' => $this_order_dates,
+            'order_data' => $order_data,
             'stud_money' => $stud_money,
+            'stud_back_money' => $stud_back_money,
             'support_part_money' => $support_part_money,
             'support_all_money' => $support_all_money,
-            'class_data' => $class_data,
+            'class_people' => $class_people,
         ];
         return view('lunch.report_master3',$data);
     }
