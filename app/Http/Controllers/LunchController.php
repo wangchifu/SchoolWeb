@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Fun;
+use App\LunchCheck;
 use App\LunchOrder;
 use App\LunchOrderDate;
 use App\LunchSetup;
@@ -2015,6 +2016,183 @@ class LunchController extends Controller
 
         return view('lunch.stu_cancel',$data);
 
+    }
+
+    public function check(Request $request)
+    {
+        //查目前學期
+        $y = date('Y') - 1911;
+        $array1 = array(8, 9, 10, 11, 12, 1);
+        $array2 = array(2, 3, 4, 5, 6, 7);
+        if (in_array(date('n'), $array1)) {
+            if (date('n') == 1) {
+                $this_semester = ($y - 1) . "1";
+            } else {
+                $this_semester = $y . "1";
+            }
+        } else {
+            $this_semester = ($y - 1) . "2";
+        }
+
+        $semester = (empty($request->input('semester'))) ? $this_semester : $request->input('semester');
+        $semesters = LunchSetup::orderBy('id')->pluck('semester', 'semester')->toArray();
+
+
+        //查是不是導師
+        if(auth()->user()->group_id =="4" or auth()->user()->group_id2 =="4"){
+            $year_class_data = YearClass::where('semester','=',$semester)->where('user_id','=',auth()->user()->id)->first();
+            if($year_class_data) {
+                $class_id = $year_class_data->year_class;
+                $checks = LunchCheck::where('semester','=',$semester)
+                    ->where('user_id','=',auth()->user()->id)
+                    ->where('class_id','=',$class_id)
+                    ->orderBy('order_date','DESC')
+                    ->get();
+            }
+            $is_admin = "";
+            $mons ="";
+        }
+
+        //是不是管理人員
+        if(auth()->user()->admin ==1){
+            $mons = $this->get_order_id_array($semester);
+            $is_admin =1 ;
+            $class_id = "";
+            $checks = LunchCheck::where('semester','=',$semester)
+                ->orderBy('class_id')
+                ->orderBy('order_date','DESC')
+                ->get();
+        }
+
+        if(empty($class_id) and empty($is_admin)){
+            $words = "你不是級任老師！";
+            return view('errors.errors',compact('words'));
+        }
+
+        $data = [
+            'semester' => $semester,
+            'semesters' =>$semesters,
+            'class_id' =>$class_id,
+            'checks' =>$checks,
+            'is_admin' =>$is_admin,
+            'mons'=>$mons,
+        ];
+
+        return view('lunch.check',$data);
+    }
+
+    public function check_store(Request $request)
+    {
+        if(empty($request->input('main_eat'))){
+            $att['main_eat'] = 1 ;
+        }
+        if(empty($request->input('main_vag'))){
+            $att['main_vag'] = 1 ;
+        }
+        if(empty($request->input('co_vag'))){
+            $att['co_vag'] = 1 ;
+        }
+        if(empty($request->input('vag'))){
+            $att['vag'] = 1 ;
+        }
+        if(empty($request->input('soup'))){
+            $att['soup'] = 1 ;
+        }
+
+        if(empty($att)){
+            $words = "每一項都合格不用回報！";
+            return view('errors.errors',compact('words'));
+        }
+
+        if(empty($request->input('reason') )){
+            $words = "請輸入不合格原因！";
+            return view('errors.errors',compact('words'));
+        }
+
+        $dates = $this->get_order_dates($request->input('semester'));
+        if($dates[$request->input('order_date')] != "1"){
+            $words = $request->input('order_date') . " 該日沒有供餐！";
+            return view('errors.errors',compact('words'));
+        }
+
+        $check = LunchCheck::where('class_id','=',$request->input('class_id'))
+            ->where('order_date','=',$request->input('order_date'))
+            ->first();
+        if(!empty($check)){
+            $words = $request->input('order_date') . " 該日已回報過！";
+            return view('errors.errors',compact('words'));
+        }
+
+
+        $att['order_date'] = $request->input('order_date');
+        $att['reason'] = $request->input('reason');
+        $att['action'] = $request->input('action');
+        $att['semester'] = $request->input('semester');
+        $att['class_id'] = $request->input('class_id');
+        $att['user_id'] = $request->input('user_id');
+
+        LunchCheck::create($att);
+        return redirect()->route('lunch.check');
+
+    }
+
+    public function check_destroy(LunchCheck $check)
+    {
+        $check->delete();
+        return redirect()->route('lunch.check');
+    }
+
+    public function check_print(Request $request)
+    {
+        $semester = $request->input('semester');
+        $mon = $request->input('mon');
+        $dates = $this->get_order_dates($semester);
+
+        $class_datas = YearClass::where('semester','=',$semester)
+            ->orderBy('year_class')
+            ->get();
+
+        foreach($class_datas as $class_data){
+            $class_tea[$class_data->year_class]['name'] = $class_data->name;
+            if(!empty($class_data->user_id)) {
+                $class_tea[$class_data->year_class]['tea'] = $class_data->user->name;
+            }else{
+                $class_tea[$class_data->year_class]['tea'] = "";
+            }
+        }
+
+        $checks = LunchCheck::where('semester','=',$semester)
+            ->orderBy('class_id')
+            ->orderBy('order_date','DESC')
+            ->get();
+
+        foreach($checks as $check){
+            $check_data[$check->class_id][$check->order_date]['main_eat'] = $check->main_eat;
+            $check_data[$check->class_id][$check->order_date]['main_vag'] = $check->main_vag;
+            $check_data[$check->class_id][$check->order_date]['co_vag'] = $check->co_vag;
+            $check_data[$check->class_id][$check->order_date]['vag'] = $check->vag;
+            $check_data[$check->class_id][$check->order_date]['soup'] = $check->soup;
+            $check_data[$check->class_id][$check->order_date]['reason'] = $check->reason;
+            if($check->action =="1"){
+                $check_data[$check->class_id][$check->order_date]['action'] = "已處理";
+            }
+            if($check->action =="2"){
+                $check_data[$check->class_id][$check->order_date]['action'] = "已更換";
+            }
+            if($check->action =="3"){
+                $check_data[$check->class_id][$check->order_date]['action'] = "僅通報";
+            }
+
+        }
+
+        $data = [
+            'semester'=>$semester,
+            'mon'=>$mon,
+            'dates'=>$dates,
+            'class_tea'=>$class_tea,
+            'check_data'=>$check_data,
+        ];
+        return view('lunch.check_print',$data);
     }
 
     /**
