@@ -11,7 +11,7 @@
         <li><a href="{{ route('lunch.stu') }}">2.學生訂餐</a></li>
         <li><a href="{{ route('lunch.stu_cancel') }}">3.學生退餐</a></li>
         <li class="active"><a href="{{ route('lunch.check') }}">4.供餐問題</a></li>
-        <li><a href="">5.滿意度調查</a></li>
+        <li><a href="{{ route('lunch.satisfaction') }}">5.滿意度調查</a></li>
         <li><a href="{{ route('lunch.special') }}">6.特殊處理</a></li>
         <li><a href="{{ route('lunch.report') }}">7.報表輸出</a></li>
         <li><a href="{{ route('lunch.setup') }}">8.系統管理</a></li>
@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="well">
-                {{ Form::open(['route' => 'lunch.report', 'method' => 'POST']) }}
+                {{ Form::open(['route' => 'lunch.check', 'method' => 'POST']) }}
                 請先選擇學期：{{ Form::select('semester', $semesters, $semester, ['id' => 'semester', 'class' => 'form-control', 'placeholder' => '請先選擇學期','onchange'=>'if(this.value != 0) { this.form.submit(); }']) }}
                 {{ Form::close() }}
             </div>

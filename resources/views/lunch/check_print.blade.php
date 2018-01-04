@@ -2,11 +2,12 @@
 $data ="";
     foreach($class_tea as $k2 => $v2){
         $data .="
-        <h1>和東國小 {$semester} 學期 學生午餐 供餐檢核表</h1>
+        <center><h1>和東國小 {$semester} 學期 學生午餐 供餐檢核表</h1></center>
         班級：{$v2['name']} 月份：{$mon}
+        <center>
         <table style='border: 1px solid #000000;border-collapse: collapse;'>
-            <tr style='border: 1px solid #000000;'>
-                <td style='border: 1px solid #000000;width:50px'>
+            <tr style='border: 1px solid #000000;font-size: 20px;'>
+                <td style='border: 1px solid #000000;width:150px'>
                     日期
                 </td>
                 <td style='border: 1px solid #000000;width:50px'>
@@ -23,10 +24,10 @@ $data ="";
                 </td>
                 <td style='border: 1px solid #000000;width:50px'>
                     湯品</td>
-                <td style='border: 1px solid #000000;'>
+                <td style='border: 1px solid #000000;width:180px'>
                     不合格原因
                 </td>
-                <td style='border: 1px solid #000000;'>
+                <td style='border: 1px solid #000000;width:50px'>
                     處置
                 </td>
             </tr>";
@@ -66,22 +67,22 @@ $data ="";
                 }
                 $data .= "
                 <tr style='border: 1px solid #000000;'>
-                    <td style='border: 1px solid #000000;'>
+                    <td align='center' style='border: 1px solid #000000;font-size: 30px;'>
                         {$k3}
                     </td>
-                    <td style='border: 1px solid #000000;'>
+                    <td align='center' style='border: 1px solid #000000;'>
                         {$img1}
                     </td>
-                    <td style='border: 1px solid #000000;'>
+                    <td align='center' style='border: 1px solid #000000;'>
                         {$img2}
                     </td>
-                    <td style='border: 1px solid #000000;'>
+                    <td align='center' style='border: 1px solid #000000;'>
                         {$img3}
                     </td>
-                    <td style='border: 1px solid #000000;'>
+                    <td align='center' style='border: 1px solid #000000;'>
                         {$img4}
                     </td>
-                    <td style='border: 1px solid #000000;'>
+                    <td align='center' style='border: 1px solid #000000;'>
                         {$img5}
                     </td>
                     <td style='border: 1px solid #000000;'>
@@ -93,7 +94,7 @@ $data ="";
                 </tr>";
             }
         }
-        $data .= "</table>級任老師：{$v2['tea']}<p style='page-break-after:always'></p>";
+        $data .= "</table></center>級任老師：{$v2['tea']}<p style='page-break-after:always'></p>";
     }
 
 echo "<body onload='window.print()'>";

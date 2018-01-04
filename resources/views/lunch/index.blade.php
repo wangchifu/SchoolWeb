@@ -11,7 +11,7 @@
         <li><a href="{{ route('lunch.stu') }}">2.學生訂餐</a></li>
         <li><a href="{{ route('lunch.stu_cancel') }}">3.學生退餐</a></li>
         <li><a href="{{ route('lunch.check') }}">4.供餐問題</a></li>
-        <li><a href="">5.滿意度調查</a></li>
+        <li><a href="{{ route('lunch.satisfaction') }}">5.滿意度調查</a></li>
         <li><a href="{{ route('lunch.special') }}">6.特殊處理</a></li>
         <li><a href="{{ route('lunch.report') }}">7.報表輸出</a></li>
         <li><a href="{{ route('lunch.setup') }}">8.系統管理</a></li>

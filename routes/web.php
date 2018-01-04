@@ -127,6 +127,15 @@ Route::post('lunch/check_store','LunchController@check_store')->name('lunch.chec
 Route::post('lunch/check_destroy/{check}','LunchController@check_destroy')->name('lunch.check_destroy');
 Route::post('lunch/check_print','LunchController@check_print')->name('lunch.check_print');
 
+Route::any('lunch/satisfaction','LunchController@satisfaction')->name('lunch.satisfaction');
+Route::post('lunch/satisfaction_store','LunchController@satisfaction_store')->name('lunch.satisfaction_store');
+Route::post('lunch/satisfaction_destroy/{satisfaction}','LunchController@satisfaction_destroy')->name('lunch.satisfaction_destroy');
+Route::get('lunch/satisfaction_show/{id}','LunchController@satisfaction_show')->name('lunch.satisfaction_show');
+Route::get('lunch/satisfaction_show_answer/{id}','LunchController@satisfaction_show_answer')->name('lunch.satisfaction_show_answer');
+Route::post('lunch/satisfaction_show_store','LunchController@satisfaction_show_store')->name('lunch.satisfaction_show_store');
+
+Route::get('lunch/satisfaction_help/{id}','LunchController@satisfaction_help')->name('lunch.satisfaction_help');
+Route::get('lunch/satisfaction_print/{id}','LunchController@satisfaction_print')->name('lunch.satisfaction_print');
 
 
 //給廠商
