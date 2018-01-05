@@ -22,7 +22,7 @@
             <div class="well">
                 <h4>查詢學期</h4>
                 {{ Form::open(['route' => 'admin.indexStud', 'method' => 'POST']) }}
-                {{ Form::select('semester', $semesters, null, ['id' => 'semester', 'class' => 'form-control', 'placeholder' => '請選擇學期','onchange'=>'if(this.value != 0) { this.form.submit(); }']) }}
+                {{ Form::select('semester', $semesters, $semester, ['id' => 'semester', 'class' => 'form-control', 'placeholder' => '請選擇學期','onchange'=>'if(this.value != 0) { this.form.submit(); }']) }}
                 {{ Form::close() }}
             </div>
             @if($semester)
