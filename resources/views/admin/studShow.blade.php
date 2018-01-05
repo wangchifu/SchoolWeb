@@ -98,7 +98,7 @@
                                     {{ Form::select('sex', $stud_sex, $v['性別'], ['id' => 'sex', 'class' => 'form-control', 'placeholder' => '選擇','required'=>'required']) }}
                                 </td>
                                 <td>
-                                    <button class="btn btn-info btn-xs" onclick="bbconfirm('year_class{{ $k }}','你真的要修改嗎？')">修改</button> <a href="{{ route('admin.outStud',$v['id']) }}" class="btn btn-danger btn-xs" id="out" onclick="bbconfirm2('out','確定要轉出？')">轉出</a>
+                                    <button class="btn btn-info btn-xs" onclick="bbconfirm('year_class{{ $k }}','你真的要修改嗎？')">修改</button> <a href="{{ route('admin.outStud',$v['id']) }}" class="btn btn-danger btn-xs" id="out{{ $v['學號'] }}" onclick="bbconfirm2('out{{ $v['學號'] }}','確定要轉出？')">轉出</a>
                                 </td>
                             </tr>
                             {{ Form::close() }}
