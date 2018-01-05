@@ -1,3 +1,4 @@
+<script src="{{ asset('js/jquery.min.js') }}"></script>
 <!DOCTYPE html>
 <html lang="zh-tw">
 <head>

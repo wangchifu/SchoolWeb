@@ -133,18 +133,18 @@
                                 <a href="#" class="btn btn-danger" onclick="bbconfirm('satisfaction_destroy','確定要刪除這個調查表？')">刪除</a>
                             </td>
                         </tr>
-                            <script>
-                                $('#a{{ $satisfaction->id }}').click(function(){
-                                    $('#td{{ $satisfaction->id }}').toggle();
-                                });
-                            </script>
-                        <tr id="td{{ $satisfaction->id }}" style="display:none">
-                            <td></td>
-                            <td colspan="2">
+                        <tr id="content{{ $satisfaction->id }}" style="display:none">
+                            <td colspan="4">
                                 {{ $class_name }}
                             </td>
-                            <td></td>
                         </tr>
+                            <script>
+                                $(document).ready(function(){
+                                    $('#a{{ $satisfaction->id }}').click(function(){
+                                        $('#content{{ $satisfaction->id }}').toggle(500);
+                                    });
+                                });
+                            </script>
                             {{ Form::close() }}
                         @endforeach
                     </table>
