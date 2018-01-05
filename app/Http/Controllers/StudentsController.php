@@ -27,7 +27,22 @@ class StudentsController extends Controller
             ->groupBy('semester')
             ->pluck('semester', 'semester')->toArray();
 
-        $semester = $request->input('semester');
+        //$semester = $request->input('semester');
+        //查目前學期
+        $y = date('Y') - 1911;
+        $array1 = array(8, 9, 10, 11, 12, 1);
+        $array2 = array(2, 3, 4, 5, 6, 7);
+        if (in_array(date('n'), $array1)) {
+            if (date('n') == 1) {
+                $this_semester = ($y - 1) . "1";
+            } else {
+                $this_semester = $y . "1";
+            }
+        } else {
+            $this_semester = ($y - 1) . "2";
+        }
+
+        $semester = (empty($request->input('semester'))) ? $this_semester : $request->input('semester');
 
 
         if($semester) {
