@@ -35,8 +35,23 @@ class LunchController extends Controller
      */
     public function index(Request $request)
     {
+//查目前學期
+        $y = date('Y') - 1911;
+        $array1 = array(8, 9, 10, 11, 12, 1);
+        $array2 = array(2, 3, 4, 5, 6, 7);
+        if (in_array(date('n'), $array1)) {
+            if (date('n') == 1) {
+                $this_semester = ($y - 1) . "1";
+            } else {
+                $this_semester = $y . "1";
+            }
+        } else {
+            $this_semester = ($y - 1) . "2";
+        }
 
-        $semester = ($request->input('semester')) ? $request->input('semester') : "";
+        $semester = (empty($request->input('semester'))) ? $this_semester : $request->input('semester');
+
+        //$semester = ($request->input('semester')) ? $request->input('semester') : "";
         $semester_dates = $this->get_semester_dates($semester);
         $order_dates = $this->get_order_dates($semester);
         $user_has_order = "0";
@@ -535,9 +550,11 @@ class LunchController extends Controller
                 //取該學年該日的資料
                 $year_one = $request->input('select_year');
                 $order_date = $request->input('stu2-2_order_date');
-                $stu_data = LunchStuDate::where('class_id', 'like', $year_one . '%')->where('order_date', '=', $order_date);
+                $stu_data = LunchStuDate::where('class_id', 'like', $year_one . '%')
+                    ->where('eat_style','!=','3')
+                    ->where('order_date', '=', $order_date);
 
-                $att['enable'] = "no_eat";
+                $att['enable'] = "not_in";
                 $stu_data->update($att);
 
 
@@ -1515,6 +1532,13 @@ class LunchController extends Controller
                 ->where('enable', '=', 'out')
                 ->where('p_id', '<', '200')
                 ->count();
+
+            //算出納當初就沒算錢的人次
+            $not_in_num[$v] = LunchStuDate::where('semester', '=', $semester)
+                ->where('order_date', 'like', $v . '%')
+                ->where('enable', '=', 'not_in')
+                ->where('p_id', '<', '200')
+                ->count();
         }
 
         //轉入生或臨時又要訂餐的補交錢
@@ -1545,6 +1569,7 @@ class LunchController extends Controller
 
 
 
+
         $data =[
             'semester' => $semester,
             'mon' => $mon,
@@ -1563,6 +1588,7 @@ class LunchController extends Controller
             'eat_num'=>$eat_num,
             'out_num'=>$out_num,
             'in_num'=>$in_num,
+            'not_in_num'=>$not_in_num,
         ];
         return view('lunch.report_master2',$data);
     }

@@ -408,10 +408,10 @@
                                     {{ $stud_money }}
                                 </td>
                                 <td>
-                                    {{ $mon_eat_days[$mon] * $total_stu_order_num }}<br><button class="btn btn-danger btn-xs">A1</button>
+                                    {{ $mon_eat_days[$mon] * $total_stu_order_num - $not_in_num[$mon] }}<br><button class="btn btn-danger btn-xs">A1</button>
                                 </td>
                                 <td>
-                                    {{ $mon_eat_days[$mon] * $total_stu_order_num * $stud_money}}<br><button class="btn btn-warning btn-xs">B1</button>
+                                    {{ ($mon_eat_days[$mon] * $total_stu_order_num - $not_in_num[$mon] )* $stud_money}}<br><button class="btn btn-warning btn-xs">B1</button>
                                 </td>
                                 <td>
                                     {{ $total_g }}<br><button class="btn btn-danger btn-xs">A2</button>
@@ -468,10 +468,12 @@
                                 </td>
                             </tr>
                         </table>
+                        <?php $ps = ($not_in_num[$mon] != 0 )?"本月有年段有未收費日":""; ?>
                         <span class="text-primary">特別注意 A1 和 A2 ； B1 和 B2 是否相同，將差異寫在 C1 或是 C2 ，原因寫於 D。</span><br>
                         <span class="text-danger">本月一般生退餐退費為： -{{ $abs_num[$mon] * $stud_back_money }} 元</span><br>
                         <span class="text-danger">本月轉出一般生退費為： -{{ $out_num[$mon] * $stud_back_money }} 元</span><br>
                         <span class="text-success">本月轉入或臨時補訂一般生收費為： + {{ $in_num[$mon] * $stud_money }} 元</span><br>
+                        <span class="text-default">本月有學年有活動事先告訴未收午餐費： {{ $not_in_num[$mon] }} 餐次</span><br>
                     </div>
                     註：各月收支分析<br>
                     <table class="table table-bordered">
@@ -514,7 +516,8 @@
                                     {{ $k }}
                                 </th>
                                 <th>
-                                    {{ $v }}
+                                    <?php $warnning = ($not_in_num[$k] != 0 )?"(有未收費日)":""; ?>
+                                    {{ $v }} {{ $warnning }}
                                 </th>
                                 <th>
                                     {{ $total_stu_order_num }}
@@ -523,8 +526,8 @@
                                     {{ $stud_money }}
                                 </th>
                                 <th>
-                                    +{{ $v * $total_stu_order_num * $stud_money }}
-                                    <?php $tt += $v * $total_stu_order_num * $stud_money; ?>
+                                    +{{ ($v * $total_stu_order_num-$not_in_num[$k]) * $stud_money }}
+                                    <?php $tt += ($v * $total_stu_order_num-$not_in_num[$k]) * $stud_money; ?>
                                 </th>
                                 <th>
                                     +{{ $in_num[$k] * $stud_money}}
@@ -542,7 +545,7 @@
                                     <?php $tt4 +=  $out_num[$k] * $stud_back_money ?>
                                 </th>
                                 <th>
-                                    {{ $v * $total_stu_order_num * $stud_money + $in_num[$k] * $stud_money - $eat_num[$k] * $stud_money - $abs_num[$k] * $stud_back_money -$out_num[$k] * $stud_back_money }}
+                                    {{ ($v * $total_stu_order_num-$not_in_num[$k]) * $stud_money + $in_num[$k] * $stud_money - $eat_num[$k] * $stud_money - $abs_num[$k] * $stud_back_money -$out_num[$k] * $stud_back_money }}
                                 </th>
                             </tr>
                         @endforeach

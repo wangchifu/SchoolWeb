@@ -21,6 +21,9 @@ class StudentsController extends Controller
      */
     public function index(Request $request)
     {
+        //變數先指定
+        $stud_num = [];
+
         //學年選單
         $semesters = DB::table('year_classes')
             ->select('semester')

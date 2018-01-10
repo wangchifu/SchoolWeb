@@ -92,6 +92,8 @@
                                                 <td bgcolor="{{ $w_color }}"><img src="{{ asset('/img/remove.png') }}" alt="當日未供餐"></td>
                                             @elseif($order_data[$v1['id']][$v2]['enable'] == "no_eat")
                                                 <td bgcolor="{{ $w_color }}"><img src="{{ asset('/img/minus.png') }}" alt="沒有訂餐"></td>
+                                            @elseif($order_data[$v1['id']][$v2]['enable'] == "not_in")
+                                                <td bgcolor="{{ $w_color }}"><img src="{{ asset('/img/not_in.png') }}" alt="當初沒算進"></td>
                                             @endif
                                         @elseif($order_data[$v1['id']][$v2]['eat_style'] == 3)
                                             @if($order_data[$v1['id']][$v2]['enable'] == "no_eat")
@@ -116,6 +118,7 @@
                     <img src="{{ asset('/img/vegetarian.png') }}" alt="素"> ：訂素食<br>
                     <img src="{{ asset('/img/no_check.png') }}" alt="退餐"> ：該日退餐，再按一下可以再訂餐<br>
                     <img src="{{ asset('/img/had_back.png') }}" alt="已退費"> ：該日為轉出生先行退費了！<br>
+                    <img src="{{ asset('/img/not_in.png') }}" alt="出納沒算進"> ：該日為出納收費時，就沒算進去了！(事先知道的學年活動)<br>
                     <span style="background-color: #FFFFBB;">　　　　　　</span> ：底色為淺黃色的，是弱勢生。<br>
 
                 </div>
