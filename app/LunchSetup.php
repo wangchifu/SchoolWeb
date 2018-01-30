@@ -17,6 +17,7 @@ class LunchSetup extends Model
         'place',
         'factory',
         'stud_gra_date',
+        'tea_open',
         'disable',
     ];
 }

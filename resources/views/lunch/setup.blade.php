@@ -28,7 +28,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th class="col-md-1">學期</th><th>教職收費</th><th>學生收費</th><th>學生退費</th><th>部分補助</th><th>全額補助</th><th>幾日前退</th><th class="col-md-2">供餐地點</th><th class="col-md-1">廠商名稱</th><th class="col-md-1">畢業日期</th><th>師生停止退餐</th><th class="col-md-3">動作</th>
+                                <th class="col-md-1" nowrap>學期</th><th nowrap>教職收費</th><th nowrap>學生收費</th><th nowrap>學生退費</th><th nowrap>部分補助</th><th nowrap>全額補助</th><th nowrap>幾日前退</th><th nowrap>供餐地點</th><th nowrap>廠商名稱</th><th nowrap>畢業日期</th><th>教師隨時可訂</th><th>師生停止退餐</th><th class="col-md-3">動作</th>
                         </thead>
                             </tr>
                         <tbody>
@@ -63,6 +63,9 @@
                                 </td>
                                 <td>
                                     {{ Form::text('stud_gra_date',null,['id'=>'stud_gra_date','class' => 'form-control', 'placeholder' => '2016-06-25','maxlength'=>'10']) }}
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="tea_open" style="zoom:150%">
                                 </td>
                                 <td>
                                     <input type="checkbox" name="disable" style="zoom:150%">
@@ -104,6 +107,16 @@
                                 </td>
                                 <td>
                                     {{ Form::text('stud_gra_date',$lunch_setup->stud_gra_date,['id'=>'stud_gra_date','class' => 'form-control', 'placeholder' => '2016-06-25','maxlength'=>'10']) }}
+                                </td>
+                                <td>
+                                    <?php
+                                    if($lunch_setup->tea_open == "on"){
+                                        $disable1 = "checked";
+                                    }else{
+                                        $disable1 = "";
+                                    }
+                                    ?>
+                                    <input type="checkbox" name="tea_open" {{ $disable1 }} style="zoom:150%">
                                 </td>
                                 <td>
                                     <?php

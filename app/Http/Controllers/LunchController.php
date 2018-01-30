@@ -72,13 +72,18 @@ class LunchController extends Controller
                 $tea_eat_styles = $this->get_user_eat_style($semester);
             } else {
 
-                //處理逾期不給訂
-                $first = LunchOrderDate::where('semester', '=', $semester)->where('enable', '=', '1')->orderBy('id')->first();
-                if ($first) {
-                    $die_date = str_replace('-', '', $first->order_date);
-                    if (date('Ymd') > $die_date) {
-                        $words = "你已經超過訂餐期限，忘記訂餐請洽管理者！";
-                        return view('errors.errors', compact('words'));
+                $tea_open = $setups[$semester]['tea_open'];
+
+                //如果沒開啟隨時可訂
+                if($tea_open != "on") {
+                    //處理逾期不給訂
+                    $first = LunchOrderDate::where('semester', '=', $semester)->where('enable', '=', '1')->orderBy('id')->first();
+                    if ($first) {
+                        $die_date = str_replace('-', '', $first->order_date);
+                        if (date('Ymd') > $die_date) {
+                            $words = "你已經超過訂餐期限，忘記訂餐請洽管理者！";
+                            return view('errors.errors', compact('words'));
+                        }
                     }
                 }
 
@@ -162,6 +167,12 @@ class LunchController extends Controller
             $att['disable'] = null;
         }else{
             $att['disable'] = $request->input('disable');
+        }
+
+        if(empty($request->input('tea_open'))){
+            $att['tea_open'] = null;
+        }else{
+            $att['tea_open'] = $request->input('tea_open');
         }
 
         $lunch_setup->update($att);
@@ -2707,6 +2718,7 @@ class LunchController extends Controller
             $lunch_setup[$setup->semester]['place'] = $setup->place;
             $lunch_setup[$setup->semester]['factory'] = $setup->factory;
             $lunch_setup[$setup->semester]['stud_gra_date'] = $setup->stud_gra_date;
+            $lunch_setup[$setup->semester]['tea_open'] = $setup->tea_open;
             $lunch_setup[$setup->semester]['disable'] = $setup->disable;
         }
         return $lunch_setup;
