@@ -966,6 +966,7 @@ class LunchController extends Controller
 
         $setups = $this->get_setup();
         $data = [
+            'semester'=>$request->input('semester'),
             'user_datas' => $user_datas,
             'tea_money' => $setups[$request->input('semester')]['tea_money'],
         ];
@@ -992,6 +993,7 @@ class LunchController extends Controller
         $class_orders = $class_orders_dates->where('order_date', '=', $select_date)->get();
 
         $last_class = "";
+        $order_data=[];
 
         foreach ($class_orders as $class_order) {
 
@@ -1042,6 +1044,7 @@ class LunchController extends Controller
                 $w210b = 0;
                 $w210g = 0;
             }
+
 
 
             if ($p_id > 200 and $p_id < 300 and $eat_style != 3) {
@@ -1483,6 +1486,7 @@ class LunchController extends Controller
             ->get();
         $total_g = 0;
         $total_w = 0;
+        $class_data =[];
         foreach($stu_orders as $stu_order){
             if(!isset($class_data[$stu_order->class_id]['g'])) $class_data[$stu_order->class_id]['g']=0;
             if(!isset($class_data[$stu_order->class_id]['w'])) $class_data[$stu_order->class_id]['w']=0;
@@ -1494,7 +1498,7 @@ class LunchController extends Controller
                 $total_w++;
             }
         }
-        ksort($class_data);
+        if(!empty($class_data)) ksort($class_data);
 
         //算各月收入多少錢
         $order_dates = $this->get_order_dates($semester);
@@ -1666,6 +1670,7 @@ class LunchController extends Controller
             ->where('out_in','=',null)
             ->orderBy('student_num')
             ->get();
+        $class_people = [];
         foreach($class_people_data as $i){
             if(!isset($class_people[substr($i->student_num,0,3)])) $class_people[substr($i->student_num,0,3)] = 0;
             $class_people[substr($i->student_num,0,3)]++;

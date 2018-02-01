@@ -48,6 +48,7 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <?php $g=[];$w=[]; ?>
                         @foreach($order_data as $k1=>$v1)
                             <tr bgcolor='#FFFFFF' onmouseover="this.style.backgroundColor='#FFCDE5';" onMouseOut="this.style.backgroundColor='#FFFFFF';">
                                 <td>{{ $k1 }}</td>

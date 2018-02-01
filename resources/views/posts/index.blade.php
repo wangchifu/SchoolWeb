@@ -22,11 +22,11 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>日期</th>
+            <th width="110">日期</th>
             <th>公告標題</th>
-            <th>發佈者</th>
-            <th>分類</th>
-            <th>點閱</th>
+            <th width="80">發佈者</th>
+            <th width="70">分類</th>
+            <th width="50">點閱</th>
         </tr>
         </thead>
         <tbody>

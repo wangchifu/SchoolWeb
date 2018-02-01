@@ -24,14 +24,14 @@ foreach($user_datas as $k1 => $v1){
 echo "<body onload='window.print()'>";
 echo $table;
  * */
-$title = ['收執聯','報核聯','存根聯'];
+
  $date = explode('-',date('Y-m-d'));
  $chy = $date[0]-1911;
- $num = 106001;
+ $num = $semester."001";
 echo "<body onload='window.print()'>";
 foreach($user_datas as $k1 => $v1){
     $table = "
-              中華民國{$chy}年{$date[1]}月{$date[2]}日　　　　　　　　　　　　　　　　　　　　　　　　　　　　　彰和東午字第{$num}號
+              中華民國{$chy}年{$date[1]}月{$date[2]}日　　　　　　　　　　　　　　　　　　　　　　　　　　　彰和東午字第{$num}號
               <table cellPadding='0' width='800' border=1 cellSpacing='0' style='border-bottom-style:none;border-top-style:none;border-left-style:none;border-right-style:none;border-collapse:collapse;font-size:18pt'>";
     $count = 0;
     $table .= "
