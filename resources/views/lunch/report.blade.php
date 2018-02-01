@@ -87,6 +87,11 @@
                     <button class="btn btn-success">學生各月請款</button>
                     {{ Form::close() }}
 
+                    {{ Form::open(['route'=>'lunch.report_master4','method'=>'POST','target'=>'_blank']) }}
+                    <input type="hidden" name="semester" value="{{ $semester }}">
+                    <button class="btn btn-success">教師各月請款</button>
+                    {{ Form::close() }}
+
 
                     {{ Form::open(['route'=>'lunch.report_master3','method'=>'POST','target'=>'_blank']) }}
                     <input type="hidden" name="semester" value="{{ $semester }}">

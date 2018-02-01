@@ -922,6 +922,7 @@ class LunchController extends Controller
         if (empty($check)) return view('errors.not_admin');
 
         $order_datas = LunchTeaDate::where('semester', '=', $request->input('semester'))
+            ->orderBy('lunch_order_id')
             ->orderBy('place','DESC')
             ->get();
 
@@ -949,6 +950,7 @@ class LunchController extends Controller
         $check = Fun::where('type', '=', '3')->where('username', '=', auth()->user()->username)->first();
         if (empty($check)) return view('errors.not_admin');
         $order_datas = LunchTeaDate::where('semester', '=', $request->input('semester'))
+            ->orderBy('lunch_order_id')
             ->orderBy('place','DESC')
             ->get();
 
@@ -1589,6 +1591,30 @@ class LunchController extends Controller
             'not_in_num'=>$not_in_num,
         ];
         return view('lunch.report_master2',$data);
+    }
+
+    public function report_master4(Request $request)
+    {
+        $orders = $this->get_order_id_array($request->input('semester'));
+        $this_mon = date('Y-m');
+        $this_order_id = $orders[$this_mon];
+        //選取的月份id
+        $order_id = (empty($request->input('order_id'))) ? $this_order_id : $request->input('order_id');
+
+        $orders = array_flip($orders);
+        //選取的月份
+        $mon = $orders[$order_id];
+
+        $semester = $request->input('semester');
+
+        $data =[
+            'semester' => $semester,
+            'mon' => $mon,
+            'orders' => $orders,
+            'this_order_id' => $this_order_id,
+        ];
+
+        return view('lunch.report_master4',$data);
     }
 
     public function report_master3(Request $request)

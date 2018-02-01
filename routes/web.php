@@ -122,6 +122,7 @@ Route::post('lunch/export_cashier','LunchController@export_cashier')->name('lunc
 Route::post('lunch/report_master1','LunchController@report_master1')->name('lunch.report_master1');
 Route::post('lunch/report_master2','LunchController@report_master2')->name('lunch.report_master2');
 Route::post('lunch/report_master3','LunchController@report_master3')->name('lunch.report_master3');
+Route::post('lunch/report_master4','LunchController@report_master4')->name('lunch.report_master4');
 Route::any('lunch/check','LunchController@check')->name('lunch.check');
 Route::post('lunch/check_store','LunchController@check_store')->name('lunch.check_store');
 Route::post('lunch/check_destroy/{check}','LunchController@check_destroy')->name('lunch.check_destroy');
