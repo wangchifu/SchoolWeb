@@ -248,6 +248,7 @@ class LunchController extends Controller
         //避免F5
         $s_key = "store_tea".auth()->user()->id;
 
+
         if(!session($s_key)) {
             session([$s_key => '1']);
             foreach ($order_dates as $k => $v) {
