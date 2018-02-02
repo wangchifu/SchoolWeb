@@ -47,7 +47,7 @@
                     <tr>
                         <th width="110">日期</th>
                         <th>公告標題</th>
-                        <th width="80">發佈者</th>
+                        <th width="90">發佈者</th>
                         <th width="70">分類</th>
                         <th width="50">點閱</th>
                     </tr>
