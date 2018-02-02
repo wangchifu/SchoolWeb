@@ -297,13 +297,13 @@ class StudentsController extends Controller
             foreach ($data as $key => $value) {
                 $stud_class = $value['年級'].sprintf("%02s",$value['班級']);
                 $yearclass = YearClass::where('semester','=',$value['學期'])->where('year_class','=',$stud_class)->first();
-                $user = User::where('name','=',$value['導師'])->first();
+                //$user = User::where('name','=',$value['導師'])->first();
 
                 //更新班級的導師
-                if($user) {
-                    $att1['user_id'] = $user->id;
-                    $yearclass->update($att1);
-                }
+                //if($user) {
+                //    $att1['user_id'] = $user->id;
+                //    $yearclass->update($att1);
+                //}
                 //無此班級跳過
                 if($yearclass) {
 
