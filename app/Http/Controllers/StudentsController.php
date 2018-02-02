@@ -23,12 +23,24 @@ class StudentsController extends Controller
     {
         //變數先指定
         $stud_num = [];
+        $tea_menu = [];
 
         //學年選單
         $semesters = DB::table('year_classes')
             ->select('semester')
             ->groupBy('semester')
             ->pluck('semester', 'semester')->toArray();
+
+        //級任選單
+        $teas = User::where('unactive','=',null)
+            ->where('group_id','=','4')
+            ->orWhere('group_id2','=','4')
+            ->orderBy('order_by')
+            ->get();
+        foreach($teas as $tea){
+            $tea_menu[$tea->id] = $tea->name . substr($tea->order_by,1,2);
+        }
+
 
         //$semester = $request->input('semester');
         //查目前學期
@@ -109,10 +121,25 @@ class StudentsController extends Controller
             'stud_num'=>$stud_num,
             'all_school'=>$all_school,
             'out_students'=>$out_students,
+            'tea_menu'=>$tea_menu,
         ];
 
 
         return view('admin.studAdmin',$data);
+    }
+
+    public function store_class_tea(Request $request)
+    {
+        $class_tea = $request->input('class_tea');
+        foreach($class_tea as $k =>$v){
+            if(!empty($v)){
+                $att['user_id'] = $v;
+                YearClass::where('id','=',$k)
+                    ->update($att);
+            }
+        }
+
+        return redirect()->route('admin.indexStud');
     }
 
     /**

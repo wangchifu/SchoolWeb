@@ -154,6 +154,7 @@ Route::group(['middleware' => 'admin'],function(){
 
 //學生管理
     Route::any('admin/studAdmin','StudentsController@index')->name('admin.indexStud');
+    Route::any('admin/studAdmin/store_class_tea','StudentsController@store_class_tea')->name('admin.store_class_tea');
     Route::post('admin/storeYearClass', 'StudentsController@storeYearClass')->name('admin.storeYearClass');
     //Route::post('admin/studAdmin','StudentsController@index')->name('admin.indexStud');
     Route::get('admin/{semester}/dekYearClass', 'StudentsController@delYearClass')->name('admin.delYearClass');

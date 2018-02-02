@@ -33,7 +33,16 @@
                     <h4>{{ $mon }} 月教職請款資料</h4>
                 </div>
                 <div class="panel-content">
-
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <td>總餐數</td><td>單價</td><td>總計</td>
+                    </tr>
+                    <tr>
+                        <td>{{ $num }}</td><td>{{ $tea_money }}</td><td>{{ $num * $tea_money }}</td>
+                    </tr>
+                    </thead>
+                </table>
                 </div>
             </div>
         </div>

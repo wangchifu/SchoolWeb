@@ -196,6 +196,12 @@
                         </thead>
                         <tbody>
                         @if($YearClasses)
+                            {{ Form::open(['route'=>'admin.store_class_tea','method'=>'post','id'=>'store_class_tea','onsubmit'=>'return false']) }}
+                            <tr>
+                                <td>
+                                    <a href="#" class="btn btn-primary" onclick="bbconfirm('store_class_tea','確定嗎？')">確定級任老師</a>
+                                </td>
+                            </tr>
                             @foreach($YearClasses as $YearClass)
                                 <tr>
                                     <td>
@@ -210,10 +216,18 @@
                                     <td>
                                         @if($YearClass->user_id)
                                             {{ $YearClass->user->name }}
+                                        @else
+                                            {{ Form::select('class_tea['.$YearClass->id.']', $tea_menu, null, ['class' => 'form-control', 'placeholder' => '請選擇級任']) }}
                                         @endif
                                     </td>
                                 </tr>
                             @endforeach
+                            <tr>
+                                <td>
+                                    <a href="#" class="btn btn-primary" onclick="bbconfirm('store_class_tea','確定嗎？')">確定級任老師</a>
+                                </td>
+                            </tr>
+                            {{ Form::close() }}
                         @endif
                         </tbody>
                     </table>

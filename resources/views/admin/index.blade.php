@@ -21,7 +21,7 @@
     <div class="col-md-10">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h4>現職管理</h4>
+            <h4>現職管理 ( 新學期設定：1.使用者更新 2.學生管理->新學期->新級任->新學生 )</h4>
         </div>
         <div class="panel-body forum-content">
             {{ Form::open(['route' => 'admin.storeUser', 'method' => 'POST']) }}

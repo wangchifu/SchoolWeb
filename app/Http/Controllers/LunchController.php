@@ -1611,11 +1611,21 @@ class LunchController extends Controller
 
         $semester = $request->input('semester');
 
+        $setup = $this->get_setup();
+
+        $tea_money = $setup[$semester]['tea_money'];
+
+        $num = LunchTeaDate::where('lunch_order_id','=',$order_id)
+        ->where('enable','=','eat')
+            ->count();
+
         $data =[
             'semester' => $semester,
             'mon' => $mon,
             'orders' => $orders,
             'this_order_id' => $this_order_id,
+            'tea_money'=>$tea_money,
+            'num'=>$num,
         ];
 
         return view('lunch.report_master4',$data);
