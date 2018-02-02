@@ -111,7 +111,7 @@
                                 @endforeach
                                 <input type="hidden" name="semester" value="{{ $semester }}">
                                 <input type="hidden" name="class_id" value="{{ $class_id }}">
-                                <tr><td><button class="btn btn-info" onclick="bbconfirm('stu_store','確定送出訂單？')">送出訂單</button></td></tr>
+                                <tr><td><button class="btn btn-info" id="b_submit" onclick="bbconfirm3('stu_store','確定送出訂單？按確定後，請等待一下！！')">送出訂單</button></td></tr>
                                 {{ Form::close() }}
                             @endif
                         @else
@@ -200,5 +200,10 @@
             </div>
         </div>
     </div>
+    <script>
+        $("#b_submit").click(function(){
+            $("#b_submit").hide();
+        });
+    </script>
 @endsection
 @include('layouts.partials.bootbox')

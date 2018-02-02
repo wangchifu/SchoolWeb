@@ -50,7 +50,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     @if($user_has_order=="0")
-                    <h3>請依序選擇你 {{ $semester }} 學期訂餐資訊後，在最下方「送出」</h3>
+                        <h3>請依序選擇你 {{ $semester }} 學期訂餐資訊後，在最下方「送出」</h3>
                     @else
                     <h3>你 {{ $semester }} 學期訂餐日期如下，共 {{ $total_order_dates }} 天</h3>
                     @endif
@@ -83,17 +83,25 @@
                                 @endif
                         @endif
                     <br>
-                {{ Form::open(['route'=>'lunch.store_tea_date','method'=>'POST']) }}
-                            <div class="form-group">
-                                <label for="title">(1)供餐廠商：</label>
+                        <table class="table">
+                {{ Form::open(['route'=>'lunch.store_tea_date','method'=>'POST','id'=>'store','onsubmit'=>'return false;']) }}
+                            <tr>
+                                <td width="200">
+                                    <label for="title">(1)供餐廠商：</label>
+                                </td>
+                                <td>
                                 @if($user_has_order =="1")
                                     {{ $setups[$semester]['factory'] }}
                                 @else
-                                    <input name="factory" value="{{ $setups[$semester]['factory'] }}" readonly="readonly">
+                                    <input name="factory" class="form-control" value="{{ $setups[$semester]['factory'] }}" readonly="readonly">
                                 @endif
-                            </div>
-                            <div class="form-group">
-                            <label for="title">(2)葷素食：</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="title">(2)葷素食：</label><p class="text-danger">請選擇</p>
+                                </td>
+                                <td>
                                 @if($user_has_order =="1")
                                     @if($user_eat_style =="1")
                                         <span class="btn btn-danger btn-xs">葷食</span> (欲改葷素食請通知管理者)
@@ -104,28 +112,37 @@
                                 @else
                                     <input name="eat_style" type="radio" id='style1' value="1" checked><span class="btn btn-danger btn-xs" onclick="getElementById('style1').checked='true';">葷食</span>　　　<input name="eat_style" type="radio" id='style2' value="2"><span class="btn btn-success btn-xs" onclick="getElementById('style2').checked='true';">素食</span><br>
                                 @endif
-                            </div>
+                                </td>
+                            </tr>
                         <?php
                             $places = explode(',',$setups[$semester]['place']);
                             foreach($places as $k=>$v){
                                 $place_array[$v] = $v;
                             }
                         ?>
-                            <div class="form-group">
-                                <label for="title">(3)取餐地點：</label>
-                                @if($user_has_order =="1")
-                                {{ $user_place }} (欲改地點請通知管理者)
-                                @else
-                                    @if($has_class_tea)
-                                        {{ Form::text('place', $has_class_tea, ['id' => 'place', 'readonly'=>'readonly']) }}
+                            <tr>
+                                <td>
+                                    <label for="title">(3)取餐地點：</label><p class="text-danger">請選擇</p>
+                                </td>
+                                <td>
+                                    @if($user_has_order =="1")
+                                    {{ $user_place }} (欲改地點請通知管理者)
                                     @else
-                                        {{ Form::select('place', $place_array, null, ['id' => 'place', 'placeholder' => '請選擇用餐地點','required'=>'required']) }}
+                                        @if($has_class_tea)
+                                            {{ Form::text('place', $has_class_tea, ['id' => 'place','class'=>'form-control', 'readonly'=>'readonly']) }}
+                                        @else
+                                            {{ Form::select('place', $place_array, '地下室', ['id' => 'place','class'=>'form-control', 'placeholder' => '請選擇用餐地點','required'=>'required']) }}
+                                        @endif
                                     @endif
-                                @endif
-                            </div>
-                            <div class="form-group">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                 <label for="title">(4)訂餐日期：</label>
-                            </div>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </table>
 
                 @foreach($semester_dates as $k1=>$v1)
                     <table class="table table-bordered">
@@ -241,7 +258,7 @@
                 @endforeach
                     <input type="hidden" name="semester" value="{{ $semester }}">
                     @if($user_has_order=="0")
-                    <button class="btn btn-success">送出</button>
+                    <button class="btn btn-success" id="b_submit" onclick="bbconfirm3('store','確定嗎？按確定後，請等待一下！！');">送出</button>
                     @endif
                     {{ Form::close() }}
                     <br>
@@ -252,5 +269,10 @@
             @endif
         </div>
     </div>
+    <script>
+        $("#b_submit").click(function(){
+            $("#b_submit").hide();
+        });
+    </script>
 @endsection
 @include('layouts.partials.bootbox')
