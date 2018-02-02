@@ -245,20 +245,25 @@ class LunchController extends Controller
 
         $order_id_array = $this->get_order_id_array($request->input('semester'));
 
-        foreach ($order_dates as $k => $v) {
-            $att['order_date'] = $k;
-            $att['lunch_order_id'] = $order_id_array[substr($k, 0, 7)];
-            if ($v == 1) {
-                if (!empty($tea_order_date[$k])) {
-                    $att['enable'] = "eat";
-                } else {
-                    $att['enable'] = "no_eat";
-                }
-            } else {
-                $att['enable'] = "no";
-            }
-            LunchTeaDate::create($att);
+        //避免F5
+        $s_key = "store_tea".auth()->user()->id;
 
+        if(!session($s_key)) {
+            session([$s_key => '1']);
+            foreach ($order_dates as $k => $v) {
+                $att['order_date'] = $k;
+                $att['lunch_order_id'] = $order_id_array[substr($k, 0, 7)];
+                if ($v == 1) {
+                    if (!empty($tea_order_date[$k])) {
+                        $att['enable'] = "eat";
+                    } else {
+                        $att['enable'] = "no_eat";
+                    }
+                } else {
+                    $att['enable'] = "no";
+                }
+                LunchTeaDate::create($att);
+            }
         }
         return redirect()->route('lunch.index');
     }
