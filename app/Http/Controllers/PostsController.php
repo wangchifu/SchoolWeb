@@ -240,7 +240,8 @@ class PostsController extends Controller
 
         $realFile = "../storage/app/public/posts/".$filename;
 
-        unlink($realFile);
+
+        if(file_exists($realFile)) unlink($realFile);
 
         $pfile->delete();
 
