@@ -89,7 +89,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>二、教職訂餐改變</h4>
+                    <h4>二、教職退訂餐</h4>
                 </div>
                 <div class="panel-content">
                     {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST','id'=>'cancel_tea','onsubmit'=>'return false;']) }}
