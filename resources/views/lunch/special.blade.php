@@ -25,7 +25,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>一、教師補訂餐</h4>
+                    <h4>一、教師補訂餐(整期忘了訂餐)</h4>
                 </div>
                 <div class="panel-content">
                     {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST','id'=>'order_tea','onsubmit'=>'return false;']) }}
@@ -89,7 +89,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>二、教職退訂餐</h4>
+                    <h4>二、教職退訂餐(忘了退餐)</h4>
                 </div>
                 <div class="panel-content">
                     {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST','id'=>'cancel_tea','onsubmit'=>'return false;']) }}
