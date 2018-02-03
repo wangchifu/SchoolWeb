@@ -33,15 +33,34 @@
                     <h4>{{ $mon }} 月教職請款資料</h4>
                 </div>
                 <div class="panel-content">
-                <table class="table">
+                <table class="table table-bordered">
                     <thead>
-                    <tr>
-                        <td>總餐數</td><td>單價</td><td>總計</td>
-                    </tr>
-                    <tr>
-                        <td>{{ $num }}</td><td>{{ $tea_money }}</td><td>{{ $num * $tea_money }}</td>
+                    <tr class="bg-primary">
+                        <th>項目</th><th>總餐數</th><th>單價</th><th>總計</th>
                     </tr>
                     </thead>
+                    <tbody>
+                    <tr class="bg-info">
+                        <td>合計</td><td>{{ $num }}</td><td>{{ $tea_money }}</td><td>{{ $num * $tea_money }}</td>
+                    </tr>
+                    </tbody>
+                    <thead>
+                    <tr class="bg-primary">
+                        <td>姓名</td><td>餐數</td><td>單價</td><td>小計</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php $total =0 ; ?>
+                    @foreach($tea_order as $k => $v)
+                    <tr>
+                        <td>{{ $k }}</td><td>{{ $v }}</td><td>{{ $tea_money }}</td><td>{{ $v * $tea_money }}</td>
+                    </tr>
+                    <?php $total += $v; ?>
+                    @endforeach
+                    <tr class="bg-info">
+                        <td>合計</td><td>{{ $total }}</td><td>{{ $tea_money }}</td><td>{{ $total * $tea_money }}</td>
+                    </tr>
+                    </tbody>
                 </table>
                 </div>
             </div>

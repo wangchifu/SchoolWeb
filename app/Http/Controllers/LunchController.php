@@ -1625,6 +1625,23 @@ class LunchController extends Controller
         ->where('enable','=','eat')
             ->count();
 
+        //取名字
+        $users = User::where('unactive','=',null)->get();
+        foreach($users as $user){
+            $tea[$user->id] = $user->name;
+        }
+
+        //取老師訂餐
+        $get_tea_data = LunchTeaDate::where('lunch_order_id','=',$order_id)
+        ->where('enable','=','eat')
+            ->get();
+
+        foreach($get_tea_data as $tea_data){
+            if(!isset($tea_order[$tea[$tea_data->user_id]])) $tea_order[$tea[$tea_data->user_id]]=null;
+            $tea_order[$tea[$tea_data->user_id]]++;
+        }
+
+
         $data =[
             'semester' => $semester,
             'mon' => $mon,
@@ -1632,6 +1649,7 @@ class LunchController extends Controller
             'this_order_id' => $this_order_id,
             'tea_money'=>$tea_money,
             'num'=>$num,
+            'tea_order'=>$tea_order,
         ];
 
         return view('lunch.report_master4',$data);
