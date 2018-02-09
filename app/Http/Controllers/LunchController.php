@@ -285,10 +285,18 @@ class LunchController extends Controller
             return view('errors.errors', compact('words'));
         }
 
-        $tea_date = LunchTeaDate::where('order_date', '=', $order_date)->first();
+        $tea_date = LunchTeaDate::where('order_date', '=', $order_date)
+            ->where('user_id','=',auth()->user()->id)
+            ->first();
+
+
         if (!empty($tea_date)) {
-            if ($tea_date->enable == "no_eat") {
+            if ($tea_date->enable == "no_eat" and $request->input('enable')=="no_eat") {
                 $words = $order_date . " 你當天本來就取消訂餐了！";
+                return view('errors.errors', compact('words'));
+            }
+            if ($tea_date->enable == "eat" and $request->input('enable')=="eat") {
+                $words = $order_date . " 你當天本來就有訂餐了！";
                 return view('errors.errors', compact('words'));
             }
             if ($tea_date->enable == "no") {
@@ -301,7 +309,7 @@ class LunchController extends Controller
         }
 
 
-        $att['enable'] = "no_eat";
+        $att['enable'] = $request->input('enable');
         LunchTeaDate::where('order_date', '=', $order_date)
             ->where('user_id','=',auth()->user()->id)
             ->update($att);

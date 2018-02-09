@@ -66,7 +66,11 @@
                             <link rel="stylesheet" type="text/css" href="{{ asset('css/cal/border-radius.css') }}">
                             <link rel="stylesheet" type="text/css" href="{{ asset('css/cal/steel/steel.css') }}">
                             {{ Form::open(['route'=>'lunch.del_tea_date','method'=>'POST']) }}
-                            取消訂餐：<input type="text" id="del_tea_date" name="del_tea_date" maxlength="10" required><button class="btn btn-danger btn-xs" onclick="if(confirm('您確定取消嗎?')) return true;else return false"">確認取消</button> ( {{ $setups[$semester]['die_line'] }} 天前方可取消訂餐)
+                            <table>
+                            <tr style="font-size:18px;">
+                                <td><img src="{{ asset('img/face_smile.png') }}">訂餐更改：<input type="text" id="del_tea_date" name="del_tea_date" maxlength="10" required></td><td><select name="enable"><option value="no_eat">取消訂餐</option><option value="eat">又要訂餐</option></select></td><td><button class="btn btn-success" onclick="if(confirm('您確定嗎?')) return true;else return false"">確認送出</button> ( {{ $setups[$semester]['die_line'] }} 天前方可更改訂餐)</td>
+                            </tr>
+                            </table>
                             <input type="hidden" name="semester" value="{{ $semester }}">
                             {{ Form::close() }}
                             <script>
