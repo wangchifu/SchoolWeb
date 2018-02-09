@@ -302,7 +302,9 @@ class LunchController extends Controller
 
 
         $att['enable'] = "no_eat";
-        LunchTeaDate::where('order_date', '=', $order_date)->update($att);
+        LunchTeaDate::where('order_date', '=', $order_date)
+            ->where('user_id','=',auth()->user()->id)
+            ->update($att);
         return redirect()->route('lunch.index');
     }
 
@@ -1635,6 +1637,8 @@ class LunchController extends Controller
         $get_tea_data = LunchTeaDate::where('lunch_order_id','=',$order_id)
         ->where('enable','=','eat')
             ->get();
+
+        $tea_order = [];
 
         foreach($get_tea_data as $tea_data){
             if(!isset($tea_order[$tea[$tea_data->user_id]])) $tea_order[$tea[$tea_data->user_id]]=null;
