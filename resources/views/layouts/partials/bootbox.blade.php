@@ -71,8 +71,8 @@
                 if (result) {
 
                     var dialog = bootbox.dialog({
-                        title: 'A custom dialog with init',
-                        message: '<p><i class="fa fa-spin fa-spinner"></i> 儲存中...不要亂按！</p>'
+                        title: '請稍後，不要亂按！重新整理F5都會造成重覆訂餐！',
+                        message: '<p><i class="fa fa-spin fa-spinner"></i> 儲存中...</p>'
                     });
 
                     document.getElementById(id).submit();
