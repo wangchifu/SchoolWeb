@@ -52,13 +52,7 @@
         bootbox.alert(word);
     }
 
-    function bbwait(){
-        var dialog = bootbox.dialog({
-            message: '<p class="text-center">請等待一會，不要關閉視窗，也不要按F5...</p>',
-            closeButton: false
-        });
-        dialog.modal('hide');
-    }
+
     function bbconfirm3(id,title) {
         bootbox.confirm({
             title: '請你確定一下',
@@ -75,12 +69,19 @@
             },
             callback: function (result) {
                 if (result) {
-                    document.getElementById(id).submit();
+
                     var dialog = bootbox.dialog({
-                        message: '<p class="text-center">請等待一會，不要關閉視窗，也不要按F5...</p>',
-                        closeButton: false
+                        title: 'A custom dialog with init',
+                        message: '<p><i class="fa fa-spin fa-spinner"></i> 儲存中...不要亂按！</p>'
                     });
-                    dialog.modal('hide');
+
+                    document.getElementById(id).submit();
+
+                    dialog.init(function(){
+                        setTimeout(function(){
+                            dialog.find('.bootbox-body').html('請等待畫面跳轉後，即完成！!');
+                        }, 3000);
+                    });
                 }else{
                     $("#b_submit").show();
                 }
