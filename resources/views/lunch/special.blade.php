@@ -244,7 +244,49 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>五、班級或學年學生單日退餐</h4>
+                    <h4>五、單一學生更改某日訂餐</h4>
+                </div>
+                <div class="panel-content">
+                    {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST','id'=>'change_stu1','onsubmit'=>'return false;']) }}
+                    <input type="hidden" name="op" value="change_stu0">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>班級座號</th><th>學期</th><th>日期</th><th>更改項目</th><th>動作</th></tr>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr style="font-size:18px;">
+                            <td><input type="text" name="student_num" class="form-control" required placeholder="班級座號5碼"></td>
+                            <td><input type="text" name="semester" value="{{ $semester }}" class="form-control" readonly="readonly"></td>
+                            <td><input type="text" id="stu0_order_date" name="stu0_order_date" maxlength="10" required class="form-control"></td>
+                            <script>
+                                Calendar.setup({
+                                    dateFormat : '%Y-%m-%d',
+                                    inputField : 'stu0_order_date',
+                                    trigger    : 'stu0_order_date',
+                                    onSelect   : function() { this.hide();}
+                                });
+                            </script>
+                            <td>
+                                <select name="enable" class="form-control">
+                                    <option value="abs">請假退餐(退費)</option>
+                                    <option value="eat">又要訂餐(收費)</option>
+                                    <option value="no_eat">沒有訂餐(不退費)</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn btn-success" onclick="if(confirm('您確定嗎?')) return true;else return false"">確認送出</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    {{ Form::close() }}
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>六、班級或學年學生單日退餐</h4>
                 </div>
                 <div class="panel-content">
                     <table class="table">
@@ -358,7 +400,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>六、轉入生處理(或是原本不訂，突然要訂)，開始用餐日之前不計退費</h4>
+                    <h4>七、轉入生處理(或是原本不訂，突然要訂)，開始用餐日之前不計退費</h4>
                 </div>
                 <div class="panel-content">
                     <table class="table">
@@ -460,7 +502,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>七、轉出生處理(或是原本有訂，突然不訂)，不用餐日起要退費</h4>
+                    <h4>八、轉出生處理(或是原本有訂，突然不訂)，不用餐日起要退費</h4>
                 </div>
                 <div class="panel-content">
                     <table class="table">
@@ -503,7 +545,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>八、學生多人多日退餐退費(球隊比賽)</h4>
+                    <h4>九、學生多人多日退餐退費(球隊比賽)</h4>
                 </div>
                 <div class="panel-content">
                     <table class="table">
