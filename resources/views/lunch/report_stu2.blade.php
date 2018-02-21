@@ -43,7 +43,9 @@
                         </tr>
                         <tr>
                         @foreach($this_order_dates as $k=>$v)
+                            @if($all_support == '0')
                             <th class="bg-danger">般</th><th class="bg-success">弱</th>
+                            @endif
                         @endforeach
                         </tr>
                         </thead>
@@ -56,33 +58,53 @@
                                     <?php
                                     if(empty($v1[$v2]['g'])) $v1[$v2]['g'] = 0;
                                     if(empty($v1[$v2]['w'])) $v1[$v2]['w'] = 0;
+                                    if(empty($v1[$v2]['a'])) $v1[$v2]['a'] = 0;
                                     if(empty($g[$v2])) $g[$v2] = 0;
                                     if(empty($w[$v2])) $w[$v2] = 0;
+                                    if(empty($a[$v2])) $a[$v2] = 0;
                                     ?>
-                                <td>{{ $v1[$v2]['g'] }}</td><td>{{ $v1[$v2]['w'] }}</td>
+                                    @if($all_support == '1')
+                                    <td colspan="2">{{ $v1[$v2]['a'] }}</td>
+                                    <?php
+                                        $a[$v2] += $v1[$v2]['a'];
+                                    ?>
+                                    @else
+                                    <td>{{ $v1[$v2]['g'] }}</td><td>{{ $v1[$v2]['w'] }}</td>
                                     <?php
                                         $g[$v2] += $v1[$v2]['g'];
                                         $w[$v2] += $v1[$v2]['w'];
                                     ?>
+                                    @endif
                                 @endforeach
                             </tr>
                         @endforeach
                         <tr>
                             <td>合計</td>
-                            <?php $total_g = 0;$total_w=0; ?>
+                            <?php $total_a = 0;$total_g = 0;$total_w=0; ?>
                             @foreach($this_order_dates as $k=>$v)
+                            @if($all_support == '1')
+                            <th colspan="2">{{ $a[$v] }}</th>
+                                <?php
+                                $total_a += $a[$v];
+                                ?>
+                            @else
                                 <th class="bg-danger">{{ $g[$v] }}</th><th class="bg-success">{{ $w[$v] }}</th>
                                 <?php
                                     $total_g += $g[$v];
                                     $total_w += $w[$v];
                                 ?>
+                            @endif
                             @endforeach
                         </tr>
                         </tbody>
                     </table>
+                    @if($all_support == '1')
+                    本期用餐學生總餐數：{{ $total_a }}<br>
+                    @else
                     本期一般生總餐數：{{ $total_g }}<br>
                     本期弱勢生總餐數：{{ $total_w }}<br>
                     本期學生總餐數：{{ $total_g+$total_w }}<br>
+                    @endif
                 </div>
             </div>
         </div>

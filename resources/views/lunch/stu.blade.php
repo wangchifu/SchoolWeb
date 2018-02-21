@@ -88,7 +88,7 @@
                                     <td>
                                         <?php
                                             $selects = [
-                                                '101'=>"100-----一般生",
+                                                '101'=>"101-----一般生",
                                                 '201'=>"201-----弱勢生-----低收入戶",
                                                 '202'=>"202-----弱勢生-----中低收入戶",
                                                 '203'=>"203-----弱勢生-----家庭突發因素",
@@ -99,9 +99,10 @@
                                                 '208'=>"208-----弱勢生-----身心障礙學生",
                                                 '209'=>"209-----弱勢生-----新住民子女",
                                                 '210'=>"210-----弱勢生-----原住民子女",
+                                                '301'=>"301---全校都補助時---全額補助",
                                             ];
                                         ?>
-                                        {{ Form::select('p_id['.$v['id'].']', $selects, null, ['id' => 'p_id', 'class' => 'form-control','onchange'=>'goChangep'.$k.'(this)']) }}
+                                        {{ Form::select('p_id['.$v['id'].']', $selects, $stu_default_p_id, ['id' => 'p_id', 'class' => 'form-control','onchange'=>'goChangep'.$k.'(this)']) }}
                                     </td>
                                     <td>{{ $k }}</td>
                                     <td><span class="{{ $color }}">{{ $v['name'] }}</span></td>
@@ -164,6 +165,7 @@
                                                 if($order_data[$select_date][$v['id']]['p_id'] == "208") $p = "身心障礙學生";
                                                 if($order_data[$select_date][$v['id']]['p_id'] == "209") $p = "新住民子女";
                                                 if($order_data[$select_date][$v['id']]['p_id'] == "210") $p = "原住民子女";
+                                                if($order_data[$select_date][$v['id']]['p_id'] == "301") $p = "全額補助";
 
                                             }else{
                                                 $mess3 = "<img src=\"../img/no_color.png\">";

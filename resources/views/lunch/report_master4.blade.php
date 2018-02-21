@@ -50,12 +50,12 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php $total =0 ; ?>
+                    <?php $total =0;$i=1; ?>
                     @foreach($tea_order as $k => $v)
                     <tr>
-                        <td>{{ $k }}</td><td>{{ $v }}</td><td>{{ $tea_money }}</td><td>{{ $v * $tea_money }}</td>
+                        <td>{{ $i }}-{{ $k }}</td><td>{{ $v }}</td><td>{{ $tea_money }}</td><td>{{ $v * $tea_money }}</td>
                     </tr>
-                    <?php $total += $v; ?>
+                    <?php $total += $v;$i++; ?>
                     @endforeach
                     <tr class="bg-info">
                         <td>合計</td><td>{{ $total }}</td><td>{{ $tea_money }}</td><td>{{ $total * $tea_money }}</td>

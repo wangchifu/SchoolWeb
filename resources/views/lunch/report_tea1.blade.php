@@ -43,9 +43,10 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <?php $num=1; ?>
                         @foreach($user_datas as $k1=>$v1)
                             <tr bgcolor='#FFFFFF' onmouseover="this.style.backgroundColor='#FFCDE5';" onMouseOut="this.style.backgroundColor='#FFFFFF';">
-                                <td>{{ $k1 }}</td>
+                                <td>{{ $num }}-{{ $k1 }}</td>
                                 @foreach($order_dates as $order_date)
                                     @if($v1[$order_date]['enable'] == "eat")
                                         @if($v1[$order_date]['eat_style'] == "1")
@@ -59,6 +60,7 @@
 
                                 @endforeach
                             </tr>
+                        <?php $num++; ?>
                         @endforeach
                         </tbody>
                     </table>

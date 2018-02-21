@@ -34,16 +34,36 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr class="bg-primary">
-                            <th>班級</th><th>一般學生</th><th>經濟弱勢學生</th><th>不訂餐</th>
+                            <th>班級</th>
+                            @if($all_support == '1')
+                                <th>訂餐</th>
+                            @else
+                                <th>一般學生</th><th>經濟弱勢學生</th>
+                            @endif
+                            <th>不訂餐</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <?php $g=0;$w=0;$n=0;$gb=0;$gg=0;$wb=0;$wg=0;$nb=0;$ng=0; ?>
+                        <?php $a=0;$ab=0;$ag=0;$g=0;$w=0;$n=0;$gb=0;$gg=0;$wb=0;$wg=0;$nb=0;$ng=0; ?>
                         @foreach($order_data as $k=>$v)
                             <tr bgcolor='#FFFFFF' onmouseover="this.style.backgroundColor='#FFCDE5';" onMouseOut="this.style.backgroundColor='#FFFFFF';">
                                 <td>
                                     {{ $k }}
                                 </td>
+                                @if($all_support == '1')
+                                <td><?php
+                                    if(empty($v[$select_date]['a'])) $v[$select_date]['a'] = 0;
+                                    if(empty($v[$select_date]['ab'])) $v[$select_date]['ab'] = 0;
+                                    if(empty($v[$select_date]['ag'])) $v[$select_date]['ag'] = 0;
+                                    ?>
+                                    {{ $v[$select_date]['a'] }} (男：{{ $v[$select_date]['ab'] }} , 女：{{ $v[$select_date]['ag'] }})
+                                    <?php
+                                    $a+=$v[$select_date]['a'];
+                                    $ab+=$v[$select_date]['ab'];
+                                    $ag+=$v[$select_date]['ag'];
+                                    ?>
+                                </td>
+                                @else
                                 <td><?php
                                     if(empty($v[$select_date]['g'])) $v[$select_date]['g'] = 0;
                                     if(empty($v[$select_date]['gb'])) $v[$select_date]['gb'] = 0;
@@ -68,6 +88,7 @@
                                     $wg+=$v[$select_date]['wg'];
                                     ?>
                                 </td>
+                                @endif
                                 <td><?php
                                     if(empty($v[$select_date]['n'])) $v[$select_date]['n'] = 0;
                                     if(empty($v[$select_date]['nb'])) $v[$select_date]['nb'] = 0;
@@ -83,7 +104,13 @@
                             </tr>
                         @endforeach
                         <tr bgcolor='#FFFFFF' onmouseover="this.style.backgroundColor='#FFCDE5';" onMouseOut="this.style.backgroundColor='#FFFFFF';">
-                            <td>合計</td><td>{{ $g }} (男：{{ $gb }} , 女：{{ $gg }})</td><td>{{ $w }} (男：{{ $wb }} , 女：{{ $wg }})</td><td>{{ $n }} (男：{{ $nb }} , 女：{{ $ng }})</td>
+                            <td>合計</td>
+                            @if($all_support == '1')
+                            <td>{{ $a }} (男：{{ $ab }} , 女：{{ $ag }})</td>
+                            @else
+                            <td>{{ $g }} (男：{{ $gb }} , 女：{{ $gg }})</td><td>{{ $w }} (男：{{ $wb }} , 女：{{ $wg }})</td>
+                            @endif
+                            <td>{{ $n }} (男：{{ $nb }} , 女：{{ $ng }})</td>
                         </tr>
                         </tbody>
                     </table>

@@ -953,7 +953,8 @@ class LunchController extends Controller
         //訂餐者資料
         $user_datas = [];
         $order_datas = LunchTeaDate::where('lunch_order_id', '=', $order_id)
-            ->orderBy('place','DESC')
+            ->orderBy('place','ASC')
+            ->orderBy('user_id')
             ->get();
         foreach ($order_datas as $order_data) {
             $user_datas[$order_data->user->name][$order_data->order_date]['enable'] = $order_data->enable;
@@ -979,7 +980,8 @@ class LunchController extends Controller
 
         $order_datas = LunchTeaDate::where('semester', '=', $request->input('semester'))
             ->orderBy('lunch_order_id')
-            ->orderBy('place','DESC')
+            ->orderBy('place','ASC')
+            ->orderBy('user_id')
             ->get();
 
         foreach ($order_datas as $order_data) {
@@ -1007,7 +1009,8 @@ class LunchController extends Controller
         if (empty($check)) return view('errors.not_admin');
         $order_datas = LunchTeaDate::where('semester', '=', $request->input('semester'))
             ->orderBy('lunch_order_id')
-            ->orderBy('place','DESC')
+            ->orderBy('place','ASC')
+            ->orderBy('user_id')
             ->get();
 
 
@@ -1063,6 +1066,9 @@ class LunchController extends Controller
                 $g = 0;
                 $w = 0;
                 $n = 0;
+                $a = 0;
+                $ab = 0;
+                $ag = 0;
                 $gb = 0;
                 $gg = 0;
                 $wb = 0;
@@ -1099,6 +1105,8 @@ class LunchController extends Controller
                 $w209g = 0;
                 $w210b = 0;
                 $w210g = 0;
+                $w301b = 0;
+                $w301g = 0;
             }
 
 
@@ -1214,7 +1222,16 @@ class LunchController extends Controller
                         $order_data[$class_id][$order_date]['w210g'] = $w210g;
                     }
                 }
-
+            }elseif($p_id == 301 and $eat_style != 3){
+                $a++;
+                $order_data[$class_id][$order_date]['a'] = $a;
+                if ($sex == 1) {
+                    $ab++;
+                    $order_data[$class_id][$order_date]['ab'] = $ab;
+                } else {
+                    $ag++;
+                    $order_data[$class_id][$order_date]['ag'] = $ag;
+                }
             } elseif ($p_id == 101 and $eat_style != 3) {
                 $g++;
                 $order_data[$class_id][$order_date]['g'] = $g;
@@ -1241,11 +1258,20 @@ class LunchController extends Controller
 
         }
 
+        $setups = $this->get_setup();
+        if($setups[$semester]['stud_money'] == '0'){
+            $all_support = "1";
+        }else{
+            $all_support = "0";//全校都補助
+        }
+
+
         $data = [
             'semester' => $semester,
             'select_date' => $select_date,
             'select_date_menu' => $select_date_menu,
             'order_data' => $order_data,
+            'all_support'=>$all_support,
         ];
         return view('lunch.report_stu1', $data);
 
@@ -1276,16 +1302,28 @@ class LunchController extends Controller
 
         foreach ($stu_order_datas as $stu_order_data) {
             if ($stu_order_data->p_id > 200 and $stu_order_data->p_id < 300 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat") {
-                if ( ! isset($order_data[$stu_order_data->class_id][$stu_order_data->order_date]['w'])) {
+                if (!isset($order_data[$stu_order_data->class_id][$stu_order_data->order_date]['w'])) {
                     $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['w'] = null;
                 }
                 $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['w']++;
+            }elseif($stu_order_data->p_id == 301 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat"){
+                if ( ! isset($order_data[$stu_order_data->class_id][$stu_order_data->order_date]['a'])) {
+                    $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['a'] = null;
+                }
+                $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['a']++;
             } elseif ($stu_order_data->p_id == 101 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat") {
                 if ( ! isset($order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g'])) {
                     $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g'] = null;
                 }
                 $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g']++;
             }
+        }
+
+        $setups = $this->get_setup();
+        if($setups[$semester]['stud_money'] == '0'){
+            $all_support = "1";
+        }else{
+            $all_support = "0";//全校都補助
         }
 
 
@@ -1295,6 +1333,7 @@ class LunchController extends Controller
             'lunch_order_id' => $lunch_order_id,
             'this_order_dates' => $this_order_dates,
             'order_data' => $order_data,
+            'all_support'=> $all_support,
         ];
         return view('lunch.report_stu2', $data);
     }
@@ -1542,16 +1581,21 @@ class LunchController extends Controller
             ->get();
         $total_g = 0;
         $total_w = 0;
+        $total_a = 0;
         $class_data =[];
         foreach($stu_orders as $stu_order){
             if(!isset($class_data[$stu_order->class_id]['g'])) $class_data[$stu_order->class_id]['g']=0;
             if(!isset($class_data[$stu_order->class_id]['w'])) $class_data[$stu_order->class_id]['w']=0;
-            if($stu_order->p_id > 100 and $stu_order->p_id < 200){
+            if(!isset($class_data[$stu_order->class_id]['a'])) $class_data[$stu_order->class_id]['a']=0;
+            if($stu_order->p_id == "101"){
                 $class_data[$stu_order->class_id]['g']++;
                 $total_g++;
             }elseif($stu_order->p_id > 200 and $stu_order->p_id < 300){
                 $class_data[$stu_order->class_id]['w']++;
                 $total_w++;
+            }elseif($stu_order->p_id == "301"){
+                $class_data[$stu_order->class_id]['a']++;
+                $total_a++;
             }
         }
         if(!empty($class_data)) ksort($class_data);
@@ -1628,29 +1672,43 @@ class LunchController extends Controller
         }
 
 
+        if($setup[$semester]['stud_money'] == '0'){
+            $data = [
+                'semester' => $semester,
+                'mon' => $mon,
+                'orders' => $orders,
+                'this_order_id' => $this_order_id,
+                'class_data' => $class_data,
+                'support_all_money' => $support_all_money,
+                'total_a' => $total_a,
+            ];
+            return view('lunch.report_master2-a',$data);
+        }else{
+            $data =[
+                'semester' => $semester,
+                'mon' => $mon,
+                'orders' => $orders,
+                'this_order_id' => $this_order_id,
+                'total_g' => $total_g,
+                'total_w' => $total_w,
+                'stud_money' => $stud_money,
+                'stud_back_money' => $stud_back_money,
+                'support_part_money' => $support_part_money,
+                'support_all_money' => $support_all_money,
+                'class_data' => $class_data,
+                'mon_eat_days' =>$mon_eat_days,
+                'total_stu_order_num'=>$total_stu_order_num,
+                'abs_num'=>$abs_num,
+                'eat_num'=>$eat_num,
+                'out_num'=>$out_num,
+                'in_num'=>$in_num,
+                'not_in_num'=>$not_in_num,
+            ];
+
+            return view('lunch.report_master2',$data);
+        }
 
 
-        $data =[
-            'semester' => $semester,
-            'mon' => $mon,
-            'orders' => $orders,
-            'this_order_id' => $this_order_id,
-            'total_g' => $total_g,
-            'total_w' => $total_w,
-            'stud_money' => $stud_money,
-            'stud_back_money' => $stud_back_money,
-            'support_part_money' => $support_part_money,
-            'support_all_money' => $support_all_money,
-            'class_data' => $class_data,
-            'mon_eat_days' =>$mon_eat_days,
-            'total_stu_order_num'=>$total_stu_order_num,
-            'abs_num'=>$abs_num,
-            'eat_num'=>$eat_num,
-            'out_num'=>$out_num,
-            'in_num'=>$in_num,
-            'not_in_num'=>$not_in_num,
-        ];
-        return view('lunch.report_master2',$data);
     }
 
     public function report_master4(Request $request)
@@ -1684,6 +1742,8 @@ class LunchController extends Controller
         //取老師訂餐
         $get_tea_data = LunchTeaDate::where('lunch_order_id','=',$order_id)
         ->where('enable','=','eat')
+            ->orderBy('place','ASC')
+            ->orderBy('user_id')
             ->get();
 
         $tea_order = [];
@@ -1741,8 +1801,14 @@ class LunchController extends Controller
                     $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g'] = null;
                 }
                 $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['g']++;
+            }elseif($stu_order_data->p_id == 301 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat"){
+                if ( ! isset($order_data[$stu_order_data->class_id][$stu_order_data->order_date]['a'])) {
+                    $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['a'] = null;
+                }
+                $order_data[$stu_order_data->class_id][$stu_order_data->order_date]['a']++;
             }
         }
+
 
         $setup = $this->get_setup();
         $stud_money = $setup[$semester]['stud_money'];
@@ -1762,20 +1828,35 @@ class LunchController extends Controller
             $class_people[substr($i->student_num,0,3)]++;
         }
 
+        if($setup[$semester]['stud_money'] == '0') {
+            $data = [
+                'semester' => $semester,
+                'lunch_orders' => $lunch_orders,
+                'lunch_order_id' => $lunch_order_id,
+                'this_order_dates' => $this_order_dates,
+                'order_data' => $order_data,
+                'support_all_money' => $support_all_money,
+                'class_people' => $class_people,
+            ];
+            return view('lunch.report_master3-a',$data);
+        }else{
+            $data = [
+                'semester' => $semester,
+                'lunch_orders' => $lunch_orders,
+                'lunch_order_id' => $lunch_order_id,
+                'this_order_dates' => $this_order_dates,
+                'order_data' => $order_data,
+                'stud_money' => $stud_money,
+                'stud_back_money' => $stud_back_money,
+                'support_part_money' => $support_part_money,
+                'support_all_money' => $support_all_money,
+                'class_people' => $class_people,
+            ];
+            return view('lunch.report_master3',$data);
+        }
 
-        $data = [
-            'semester' => $semester,
-            'lunch_orders' => $lunch_orders,
-            'lunch_order_id' => $lunch_order_id,
-            'this_order_dates' => $this_order_dates,
-            'order_data' => $order_data,
-            'stud_money' => $stud_money,
-            'stud_back_money' => $stud_back_money,
-            'support_part_money' => $support_part_money,
-            'support_all_money' => $support_all_money,
-            'class_people' => $class_people,
-        ];
-        return view('lunch.report_master3',$data);
+
+
     }
 
 
@@ -1893,6 +1974,13 @@ class LunchController extends Controller
 
         }
 
+        $setups = $this->get_setup();
+        if($setups[$semester]['stud_money'] == '0'){
+            $stu_default_p_id = "301";
+        }else{
+            $stu_default_p_id = "101";
+        }
+
         $data = [
             'semester'=>$semester,
             'is_tea'=>$is_tea,
@@ -1904,6 +1992,7 @@ class LunchController extends Controller
             'order_data'=>$order_data,
             'select_date'=>$select_date,
             'select_date_menu'=>$select_date_menu,
+            'stu_default_p_id'=>$stu_default_p_id,
         ];
 
 

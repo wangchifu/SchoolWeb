@@ -29,6 +29,7 @@ echo $table;
  $chy = $date[0]-1911;
  $num = $semester."001";
 echo "<body onload='window.print()'>";
+$i=1;
 foreach($user_datas as $k1 => $v1){
     $table = "
               中華民國{$chy}年{$date[1]}月{$date[2]}日　　　　　　　　　　　　　　　　　　　　　　　　　　　彰和東午字第{$num}號
@@ -37,7 +38,7 @@ foreach($user_datas as $k1 => $v1){
     $table .= "
                <tr>
                 <td align='center' width='250'>繳　款　人</td>
-                <td colspan='2'>{$k1}</td>
+                <td colspan='2'>{$i}-{$k1}</td>
                </tr>
                <tr>
                 <td align='center'>明細</td>
@@ -75,6 +76,7 @@ foreach($user_datas as $k1 => $v1){
     echo $total_table;
 
       $num++;
+      $i++;
 
 }
 

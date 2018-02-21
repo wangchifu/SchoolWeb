@@ -61,7 +61,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <?php $total_people = 0;$g=[];$w=[]; ?>?>
+                            <?php $total_people = 0;$g=[];$w=[]; ?>
                             @foreach($order_data as $k1=>$v1)
                                 <tr bgcolor='#FFFFFF'>
                                     <td>{{ $k1 }}</td>
