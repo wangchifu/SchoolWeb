@@ -294,6 +294,7 @@ class StudentsController extends Controller
             $data = Excel::load($filePath, function ($reader) {
             })->get();
 
+            $create_ss = [];
             foreach ($data as $key => $value) {
                 $stud_class = $value['年級'].sprintf("%02s",$value['班級']);
                 $yearclass = YearClass::where('semester','=',$value['學期'])->where('year_class','=',$stud_class)->first();
@@ -330,10 +331,20 @@ class StudentsController extends Controller
                     $att3['num'] = sprintf("%02s", $value['座號']);
                     $att3['at_school'] = 1;
 
-                    SemesterStudent::create($att3);
+                    //SemesterStudent::create($att3);
+                    $new_one = [
+                        'semester'=>$att3['semester'],
+                        'student_id'=>$att3['student_id'],
+                        'year_class_id'=>$att3['year_class_id'],
+                        'num'=>$att3['num'],
+                        'at_school'=>1
+                    ];
+                    array_push($create_ss, $new_one);
                 }
 
             }
+            SemesterStudent::insert($create_ss);
+
         }
         return redirect()->route('admin.indexStud',"semester=".$value['學期']);
 

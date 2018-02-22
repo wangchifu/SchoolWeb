@@ -240,7 +240,6 @@ class LunchController extends Controller
         $att['place'] = $request->input('place');
         $att['factory'] = $request->input('factory');
         $att['eat_style'] = $request->input('eat_style');
-        $att['semester'] = $request->input('semester');
         $att['user_id'] = auth()->user()->id;
 
         $order_id_array = $this->get_order_id_array($request->input('semester'));
@@ -248,7 +247,7 @@ class LunchController extends Controller
         //避免F5
         $s_key = "store_tea".auth()->user()->id;
 
-
+        $create_tea = [];
         if(!session($s_key)) {
             session([$s_key => '1']);
             foreach ($order_dates as $k => $v) {
@@ -263,8 +262,21 @@ class LunchController extends Controller
                 } else {
                     $att['enable'] = "no";
                 }
-                LunchTeaDate::create($att);
+                //LunchTeaDate::create($att);
+                $new_one = [
+                    'order_date'=>$att['order_date'],
+                    'semester'=>$att['semester'],
+                    'place'=>$att['place'],
+                    'factory'=>$att['factory'],
+                    'eat_style'=>$att['eat_style'],
+                    'user_id'=>$att['user_id'],
+                    'enable'=>$att['enable'],
+                    'lunch_order_id'=>$att['lunch_order_id'],
+                ];
+                array_push($create_tea, $new_one);
+
             }
+            LunchTeaDate::insert($create_tea);
         }
         return redirect()->route('lunch.index');
     }
@@ -2012,6 +2024,8 @@ class LunchController extends Controller
 
         $year_calss = YearClass::where('semester','=',$semester)->where('year_class','=',$request->input('class_id'))->first();
 
+        $create_stu_date = [];
+        $create_stu_order = [];
         foreach($order_dates as $k=>$v) {
             foreach ($year_calss->semester_students as $semester_student) {
                 //轉出生不要在列
@@ -2027,18 +2041,46 @@ class LunchController extends Controller
                     $att['p_id'] = $p_id[$semester_student->student_id];
                     $att['eat_style'] = $eat_style[$semester_student->student_id];
                     if ($att['eat_style'] == "3" and $v == "1") $att['enable'] = "no_eat";
-                    LunchStuDate::create($att);
+                    //LunchStuDate::create($att);
+                    $new_one = [
+                        "order_date"=>$att['order_date'],
+                        "enable"=>$att['enable'],
+                        "semester"=>$att['semester'],
+                        "lunch_order_id"=>$att['lunch_order_id'],
+                        "student_id"=>$att['student_id'],
+                        "class_id"=>$att['class_id'],
+                        "num"=>$att['num'],
+                        "p_id"=>$att['p_id'],
+                        "eat_style"=>$att['eat_style'],
+                    ];
+                    array_push($create_stu_date, $new_one);
+
                 }
             }
         }
+
+        LunchStuDate::insert($create_stu_date);
+
+
         foreach($student_num as $k=>$v){
             $att2['semester'] = $semester;
             $att2['student_id'] = $k;
             $att2['student_num'] = $v;
             $att2['eat_style'] = $eat_style[$k];
             $att2['p_id'] = $p_id[$k];
-            LunchStuOrder::create($att2);
+            //LunchStuOrder::create($att2);
+            $new_one = [
+                "semester"=>$att2['semester'],
+                "student_id"=>$att2['student_id'],
+                "student_num"=>$att2['student_num'],
+                "eat_style"=>$att2['eat_style'],
+                "p_id"=>$att2['p_id'],
+            ];
+            array_push($create_stu_order, $new_one);
+
         }
+
+        LunchStuOrder::insert($create_stu_order);
 
 
         return redirect()->route('lunch.stu');
