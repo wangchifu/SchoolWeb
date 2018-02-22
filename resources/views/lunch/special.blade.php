@@ -181,7 +181,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>四、更改學生期初訂餐資料(期中切勿操作)</h4>
+                    <h4>四、更改學生期初訂餐資料(整期更改，期中切勿操作)</h4>
                 </div>
                 <div class="panel-content">
                     <table class="table">
@@ -218,7 +218,7 @@
                             </td>
                             <?php
                             $selects = [
-                                '101'=>"100-----一般生",
+                                '101'=>"101-----一般生",
                                 '201'=>"201-----弱勢生-----低收入戶",
                                 '202'=>"202-----弱勢生-----中低收入戶",
                                 '203'=>"203-----弱勢生-----家庭突發因素",
@@ -229,6 +229,7 @@
                                 '208'=>"208-----弱勢生-----身心障礙學生",
                                 '209'=>"209-----弱勢生-----新住民子女",
                                 '210'=>"210-----弱勢生-----原住民子女",
+                                '301'=>"301---全校都補助時---全額補助",
                             ];
                             ?>
                             <td>
@@ -244,10 +245,51 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>五、單一學生更改某日訂餐</h4>
+                    <h4>五、單一學生某日起更改葷素</h4>
                 </div>
                 <div class="panel-content">
-                    {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST','id'=>'change_stu1','onsubmit'=>'return false;']) }}
+                    {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST','id'=>'change_stu1']) }}
+                    <input type="hidden" name="op" value="change_stu00">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>班級座號</th><th>學期</th><th>開始更改日</th><th>更改項目</th><th>動作</th></tr>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr style="font-size:18px;">
+                            <td><input type="text" name="student_num" class="form-control" required placeholder="班級座號5碼" maxlength="5"></td>
+                            <td><input type="text" name="semester" value="{{ $semester }}" class="form-control" readonly="readonly"></td>
+                            <td><input type="text" id="stu00_order_date" name="stu00_order_date" maxlength="10" required class="form-control"></td>
+                            <script>
+                                Calendar.setup({
+                                    dateFormat : '%Y-%m-%d',
+                                    inputField : 'stu00_order_date',
+                                    trigger    : 'stu00_order_date',
+                                    onSelect   : function() { this.hide();}
+                                });
+                            </script>
+                            <td>
+                                <select name="eat_style" class="form-control">
+                                    <option value="2">改吃素的</option>
+                                    <option value="1">改吃葷的</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn btn-success" onclick="if(confirm('您確定嗎?')) return true;else return false"">確認送出</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    {{ Form::close() }}
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>六、單一學生更改某日訂餐</h4>
+                </div>
+                <div class="panel-content">
+                    {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST','id'=>'change_stu1']) }}
                     <input type="hidden" name="op" value="change_stu0">
                     <table class="table">
                         <thead>
@@ -257,7 +299,7 @@
                         </thead>
                         <tbody>
                         <tr style="font-size:18px;">
-                            <td><input type="text" name="student_num" class="form-control" required placeholder="班級座號5碼"></td>
+                            <td><input type="text" name="student_num" class="form-control" required placeholder="班級座號5碼" maxlength="5"></td>
                             <td><input type="text" name="semester" value="{{ $semester }}" class="form-control" readonly="readonly"></td>
                             <td><input type="text" id="stu0_order_date" name="stu0_order_date" maxlength="10" required class="form-control"></td>
                             <script>
@@ -286,7 +328,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>六、班級或學年學生單日退餐</h4>
+                    <h4>七、班級或學年學生單日退餐</h4>
                 </div>
                 <div class="panel-content">
                     <table class="table">
@@ -400,7 +442,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>七、轉入生處理(或是原本不訂，突然要訂)，開始用餐日之前不計退費</h4>
+                    <h4>八、轉入生處理(或是原本不訂，突然要訂)，開始用餐日之前不計退費</h4>
                 </div>
                 <div class="panel-content">
                     <table class="table">
@@ -465,7 +507,7 @@
                             </td>
                             <?php
                             $selects = [
-                                '101'=>"100-----一般生",
+                                '101'=>"101-----一般生",
                                 '201'=>"201-----弱勢生-----低收入戶",
                                 '202'=>"202-----弱勢生-----中低收入戶",
                                 '203'=>"203-----弱勢生-----家庭突發因素",
@@ -476,6 +518,7 @@
                                 '208'=>"208-----弱勢生-----身心障礙學生",
                                 '209'=>"209-----弱勢生-----新住民子女",
                                 '210'=>"210-----弱勢生-----原住民子女",
+                                '301'=>"301---全校都補助時---全額補助",
                             ];
                             ?>
                             <td>
@@ -502,7 +545,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>八、轉出生處理(或是原本有訂，突然不訂)，不用餐日起要退費</h4>
+                    <h4>九、轉出生處理(或是原本有訂，突然不訂)，不用餐日起要退費</h4>
                 </div>
                 <div class="panel-content">
                     <table class="table">
@@ -545,7 +588,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>九、學生多人多日退餐退費(球隊比賽)</h4>
+                    <h4>十、學生多人多日退餐退費(球隊比賽)</h4>
                 </div>
                 <div class="panel-content">
                     <table class="table">

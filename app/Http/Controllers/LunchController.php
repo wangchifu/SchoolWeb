@@ -540,7 +540,46 @@ class LunchController extends Controller
                 return redirect()->route('lunch.special');
 
             break;
+            case "change_stu00";
+                $year_class_data = YearClass::where('semester', '=', $request->input('semester'))
+                    ->where('year_class', '=', substr($request->input('student_num'), 0, 3))
+                    ->first();
+                if (empty($year_class_data)) {
+                    $words = "查無此班級：" . $request->input('student_num');
+                    return view('errors.errors', compact('words'));
+                }
+                $semester_student = SemesterStudent::where('year_class_id', '=', $year_class_data->id)
+                    ->where('num', '=', substr($request->input('student_num'), 3, 2))
+                    ->first();
+                if (empty($semester_student)) {
+                    $words = "查無此學生：" . $request->input('student_num');
+                    return view('errors.errors', compact('words'));
+                }
+                $student = Student::where('id', '=', $semester_student->student_id)->first();
+                if (empty($student)) {
+                    $words = "查無此學生：" . $request->input('student_num');
+                    return view('errors.errors', compact('words'));
+                }
 
+                $lunch_order_date = LunchOrderDate::where('order_date','=',$request->input('stu00_order_date'))
+                    ->first();
+                if (empty($lunch_order_date)) {
+                    $words = "此日無訂餐資料：" . $request->input('stu00_order_date');
+                    return view('errors.errors', compact('words'));
+                }
+
+                if ($lunch_order_date->enable == "0") {
+                    $words = "此日不供餐：" . $request->input('stu0_order_date');
+                    return view('errors.errors', compact('words'));
+                }
+                $att['eat_style'] = $request->input('eat_style');
+
+                //之後的訂餐，改葷素
+                LunchStuDate::where('student_id','=',$student->id)
+                    ->where('order_date', '>=', $request->input('stu00_order_date'))
+                    ->update($att);
+                return redirect()->route('lunch.special');
+            break;
             case "change_stu0";
                 $year_class_data = YearClass::where('semester', '=', $request->input('semester'))
                     ->where('year_class', '=', substr($request->input('student_num'), 0, 3))
