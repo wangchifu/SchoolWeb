@@ -1614,11 +1614,37 @@ class LunchController extends Controller
         //選取的月份id
         $order_id = (empty($request->input('order_id'))) ? $this_order_id : $request->input('order_id');
 
-        $orders = array_flip($orders);
-        //選取的月份
-        $mon = $orders[$order_id];
-
         $semester = $request->input('semester');
+
+        $orders = array_flip($orders);
+
+        if(substr($semester,3,1)=="1"){
+            $orders['前2月']='8~9月';
+            ksort($orders);
+        }else{
+            $orders['前2月']='2~3月';
+            ksort($orders);
+        }
+
+
+        if($order_id == "前2月") {
+            $k1 = key($orders);
+            next($orders);
+            $k2 = key($orders);
+            next($orders);
+            $k3 = key($orders);
+            $mon2 = [$k2, $k3];
+            if (substr($semester, 3, 1) == "1") {
+                $mon = '8~9月';
+            } else {
+                $mon = '2~3月';
+            }
+        }else{
+            //選取的月份
+            $mon = $orders[$order_id];
+        }
+
+
 
         $setup = $this->get_setup();
         $stud_money = $setup[$semester]['stud_money'];
@@ -1626,10 +1652,18 @@ class LunchController extends Controller
         $support_part_money = $setup[$semester]['support_part_money'];
         $support_all_money = $setup[$semester]['support_all_money'];
 
-        $stu_orders = LunchStuDate::where('semester','=',$semester)
-            ->where('order_date','like',$mon.'%')
-            ->where('enable','=','eat')
-            ->get();
+
+        if($order_id == "前2月") {
+            $stu_orders = LunchStuDate::whereIn('lunch_order_id', $mon2)
+                ->where('enable','=','eat')
+                ->get();
+        }else{
+            $stu_orders = LunchStuDate::where('semester','=',$semester)
+                ->where('order_date','like',$mon.'%')
+                ->where('enable','=','eat')
+                ->get();
+        }
+
         $total_g = 0;
         $total_w = 0;
         $total_a = 0;
@@ -1771,18 +1805,46 @@ class LunchController extends Controller
         $order_id = (empty($request->input('order_id'))) ? $this_order_id : $request->input('order_id');
 
         $orders = array_flip($orders);
-        //選取的月份
-        $mon = $orders[$order_id];
+
+
 
         $semester = $request->input('semester');
+
+        if(substr($semester,3,1)=="1"){
+            $orders['前2月']='8~9月';
+            ksort($orders);
+        }else{
+            $orders['前2月']='2~3月';
+            ksort($orders);
+        }
 
         $setup = $this->get_setup();
 
         $tea_money = $setup[$semester]['tea_money'];
 
-        $num = LunchTeaDate::where('lunch_order_id','=',$order_id)
-        ->where('enable','=','eat')
-            ->count();
+        if($order_id == "前2月"){
+            $k1 = key($orders);
+            next($orders);
+            $k2 = key($orders);
+            next($orders);
+            $k3 = key($orders);
+            $mon2 = [$k2,$k3];
+            if(substr($semester,3,1)=="1"){
+                $mon='8~9月';
+            }else{
+                $mon='2~3月';
+            }
+            $num = LunchTeaDate::whereIn('lunch_order_id', $mon2)
+                ->where('enable', '=', 'eat')
+                ->count();
+        }else {
+            //選取的月份
+            $mon = $orders[$order_id];
+
+            $num = LunchTeaDate::where('lunch_order_id', '=', $order_id)
+                ->where('enable', '=', 'eat')
+                ->count();
+        }
 
         //取名字
         $users = User::where('unactive','=',null)->get();
@@ -1791,11 +1853,19 @@ class LunchController extends Controller
         }
 
         //取老師訂餐
-        $get_tea_data = LunchTeaDate::where('lunch_order_id','=',$order_id)
-        ->where('enable','=','eat')
-            ->orderBy('place','ASC')
-            ->orderBy('user_id')
-            ->get();
+        if($order_id == "前2月") {
+            $get_tea_data = LunchTeaDate::whereIn('lunch_order_id', $mon2)
+                ->where('enable', '=', 'eat')
+                ->orderBy('place', 'ASC')
+                ->orderBy('user_id')
+                ->get();
+        }else {
+            $get_tea_data = LunchTeaDate::where('lunch_order_id', '=', $order_id)
+                ->where('enable', '=', 'eat')
+                ->orderBy('place', 'ASC')
+                ->orderBy('user_id')
+                ->get();
+        }
 
         $tea_order = [];
 
@@ -1827,19 +1897,53 @@ class LunchController extends Controller
         $lunch_orders = array_flip($order_id_array);
         $lunch_order_id = (empty($request->input('select_order_id'))) ? $order_id_array[substr(date('Y-m'), 0, 7)] : $request->input('select_order_id');
 
+        if(substr($semester,3,1)=="1"){
+            $lunch_orders['前2月']='8~9月';
+            ksort($lunch_orders);
+        }else{
+            $lunch_orders['前2月']='2~3月';
+            ksort($lunch_orders);
+        }
 
-        $order_dates = $this->get_order_dates($semester);
-        $i = 0;
-        foreach ($order_dates as $k => $v) {
-            if ($v == 1 and substr($k, 0, 7) == $lunch_orders[$lunch_order_id]) {
-                $this_order_dates[$i] = $k;
+        if($lunch_order_id == "前2月"){
+            $k1 = key($lunch_orders);
+            next($lunch_orders);
+            $k2 = key($lunch_orders);
+            next($lunch_orders);
+            $k3 = key($lunch_orders);
+            $mon2 = [$k2,$k3];
+
+
+            $dates = LunchOrderDate::whereIn('lunch_order_id',$mon2)
+                ->where('enable','=','1')
+                ->orderBy('order_date')
+                ->get();
+            $i = 0;
+            foreach($dates as $date){
+                $this_order_dates[$i] = $date->order_date;
                 $i++;
             }
+
+            $order_data=array();
+            $stu_order_datas = LunchStuDate::whereIn('lunch_order_id',$mon2)
+                ->where('enable','=','eat')
+                ->orderBy('class_id')->orderBy('order_date')->get();
+
+
+        }else{
+            $order_dates = $this->get_order_dates($semester);
+            $i = 0;
+            foreach ($order_dates as $k => $v) {
+                if ($v == 1 and substr($k, 0, 7) == $lunch_orders[$lunch_order_id]) {
+                    $this_order_dates[$i] = $k;
+                    $i++;
+                }
+            }
+            $order_data=array();
+            $stu_order_datas = LunchStuDate::where('lunch_order_id', '=', $lunch_order_id)
+                ->where('enable','=','eat')
+                ->orderBy('class_id')->orderBy('order_date')->get();
         }
-        $order_data=array();
-        $stu_order_datas = LunchStuDate::where('lunch_order_id', '=', $lunch_order_id)
-            ->where('enable','=','eat')
-            ->orderBy('class_id')->orderBy('order_date')->get();
 
         foreach ($stu_order_datas as $stu_order_data) {
             if ($stu_order_data->p_id > 200 and $stu_order_data->p_id < 300 and $stu_order_data->eat_style != 3 and $stu_order_data->enable == "eat") {

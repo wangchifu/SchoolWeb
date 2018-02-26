@@ -56,7 +56,7 @@
                         <tbody>
                         @foreach($order_data_tea as $k1=>$v1)
                             <tr bgcolor='#FFFFFF' onmouseover="this.style.backgroundColor='#FFCDE5';" onMouseOut="this.style.backgroundColor='#FFFFFF';">
-                                <td>{{ $k1 }}</td>
+                                <td nowrap>{{ $k1 }}</td>
                                 @foreach($this_order_dates as $k2=>$v2)
                                     <?php
                                     if(empty($v1[$v2]['m'])) $v1[$v2]['m'] = 0;

@@ -73,7 +73,7 @@
                             ?>
                         <tr bgcolor='#FFFFFF' onmouseover="this.style.backgroundColor='#FFCDE5';" onMouseOut="this.style.backgroundColor='#FFFFFF';" {!! $style !!}>
                             <td>
-                                {{ substr($mon,5,2) }}
+                                {{ $mon }}
                             </td>
                             <td>
                                 {{ $k }}

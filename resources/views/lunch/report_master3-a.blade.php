@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="well">
-                    {{ Form::open(['route' => 'lunch.report_stu2', 'method' => 'POST']) }}
+                    {{ Form::open(['route' => 'lunch.report_master3', 'method' => 'POST']) }}
                     請選擇餐期：{{ Form::select('select_order_id', $lunch_orders, $lunch_order_id, ['id' => 'select_order_id', 'class' => 'form-control', 'placeholder' => '請選擇餐期','onchange'=>'if(this.value != 0) { this.form.submit(); }']) }}
                     <input type="hidden" name="semester" value="{{ $semester }}">
                     {{ Form::close() }}
@@ -40,14 +40,14 @@
                                 <th rowspan="3">班級</th>
                                 <th rowspan="3">預訂<br>人數</th>
                                 @foreach($this_order_dates as $k=>$v)
-                                    <th>{{ substr($v,5,5) }}</th>
+                                    <th nowrap>{{ substr($v,5,5) }}</th>
                                 @endforeach
                                 <th rowspan="2">當月用餐合計</th>
                                 <th rowspan="2">應付金額合計</th>
                             </tr>
                             <tr>
                                 @foreach($this_order_dates as $k=>$v)
-                                    <th>
+                                    <th nowrap>
                                         {{ get_w($v) }}
                                     </th>
                                 @endforeach

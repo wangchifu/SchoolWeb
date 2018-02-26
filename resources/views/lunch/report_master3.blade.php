@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="well">
-                    {{ Form::open(['route' => 'lunch.report_stu2', 'method' => 'POST']) }}
+                    {{ Form::open(['route' => 'lunch.report_master3', 'method' => 'POST']) }}
                     請選擇餐期：{{ Form::select('select_order_id', $lunch_orders, $lunch_order_id, ['id' => 'select_order_id', 'class' => 'form-control', 'placeholder' => '請選擇餐期','onchange'=>'if(this.value != 0) { this.form.submit(); }']) }}
                     <input type="hidden" name="semester" value="{{ $semester }}">
                     {{ Form::close() }}
