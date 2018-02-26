@@ -1686,13 +1686,19 @@ class LunchController extends Controller
         if(!empty($class_data)) ksort($class_data);
 
         //算各月收入多少錢
+        if($order_id == "前2月") {
+            $mon_eat_days[$mon] = LunchOrderDate::whereIn('lunch_order_id',$mon2)
+                ->where('enable','=','1')->count();
+        }
+
         $order_dates = $this->get_order_dates($semester);
-        foreach($order_dates as $k=>$v){
-            if($v =="1"){
-                if(!isset($mon_eat_days[substr($k,0,7)])) $mon_eat_days[substr($k,0,7)]=null;
-                $mon_eat_days[substr($k,0,7)]++;
+        foreach ($order_dates as $k => $v) {
+            if ($v == "1") {
+                if (!isset($mon_eat_days[substr($k, 0, 7)])) $mon_eat_days[substr($k, 0, 7)] = null;
+                $mon_eat_days[substr($k, 0, 7)]++;
             }
         }
+
 
         //本學期第一天的日期，自費的人數
         $first_day = current(array_keys($order_dates));
@@ -1701,33 +1707,56 @@ class LunchController extends Controller
             ->where('p_id','<','200')
             ->count();
 
-
         //請假的一般生人數
         foreach($orders as $k =>$v) {
-            $abs_num[$v] = LunchStuDate::where('semester', '=', $semester)
-                ->where('order_date', 'like', $v . '%')
-                ->where('enable', '=', 'abs')
-                ->where('p_id', '<', '200')
-                ->count();
+            if($v == "前2月"){
+                $abs_num[$mon] = LunchStuDate::whereIn('lunch_order_id', '=', $mon2)
+                    ->where('enable', '=', 'abs')
+                    ->where('p_id', '<', '200')
+                    ->count();
 
-            $eat_num[$v] = LunchStuDate::where('semester', '=', $semester)
-                ->where('order_date', 'like', $v . '%')
-                ->where('enable', '=', 'eat')
-                ->where('p_id', '<', '200')
-                ->count();
+                $eat_num[$mon] = LunchStuDate::whereIn('lunch_order_id', '=', $mon2)
+                    ->where('enable', '=', 'eat')
+                    ->where('p_id', '<', '200')
+                    ->count();
 
-            $out_num[$v] = LunchStuDate::where('semester', '=', $semester)
-                ->where('order_date', 'like', $v . '%')
-                ->where('enable', '=', 'out')
-                ->where('p_id', '<', '200')
-                ->count();
+                $out_num[$mon] = LunchStuDate::whereIn('lunch_order_id', '=', $mon2)
+                    ->where('enable', '=', 'out')
+                    ->where('p_id', '<', '200')
+                    ->count();
 
-            //算出納當初就沒算錢的人次
-            $not_in_num[$v] = LunchStuDate::where('semester', '=', $semester)
-                ->where('order_date', 'like', $v . '%')
-                ->where('enable', '=', 'not_in')
-                ->where('p_id', '<', '200')
-                ->count();
+                //算出納當初就沒算錢的人次
+                $not_in_num[$mon] = LunchStuDate::whereIn('lunch_order_id', '=', $mon2)
+                    ->where('enable', '=', 'not_in')
+                    ->where('p_id', '<', '200')
+                    ->count();
+            }else{
+                $abs_num[$v] = LunchStuDate::where('semester', '=', $semester)
+                    ->where('order_date', 'like', $v . '%')
+                    ->where('enable', '=', 'abs')
+                    ->where('p_id', '<', '200')
+                    ->count();
+
+                $eat_num[$v] = LunchStuDate::where('semester', '=', $semester)
+                    ->where('order_date', 'like', $v . '%')
+                    ->where('enable', '=', 'eat')
+                    ->where('p_id', '<', '200')
+                    ->count();
+
+                $out_num[$v] = LunchStuDate::where('semester', '=', $semester)
+                    ->where('order_date', 'like', $v . '%')
+                    ->where('enable', '=', 'out')
+                    ->where('p_id', '<', '200')
+                    ->count();
+
+                //算出納當初就沒算錢的人次
+                $not_in_num[$v] = LunchStuDate::where('semester', '=', $semester)
+                    ->where('order_date', 'like', $v . '%')
+                    ->where('enable', '=', 'not_in')
+                    ->where('p_id', '<', '200')
+                    ->count();
+            }
+
         }
 
         //轉入生或臨時又要訂餐的補交錢
@@ -1736,10 +1765,12 @@ class LunchController extends Controller
             ->where('p_id', '<', '200')
             ->get();
 
+
+
+
         foreach($orders as $k=>$v){
             $in_num[$v] = 0;
         }
-
 
         foreach($in_eat_data as $a){
             if($a->out_in =="in" or $a->out_in =="eat"){
@@ -1755,7 +1786,13 @@ class LunchController extends Controller
 
             }
         }
-
+        //前二月的總計
+        if($order_id == "前2月") {
+            foreach ($mon2 as $k => $v) {
+                if(!isset($in_num[$mon])) $in_num[$mon]=null;
+                $in_num[$mon] += $in_num[$orders[$v]];
+            }
+        }
 
         if($setup[$semester]['stud_money'] == '0'){
             $data = [

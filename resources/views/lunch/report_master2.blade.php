@@ -511,6 +511,8 @@
                         </tr>
                         <?php $tt=0;$tt2=0;$tt3=0;$tt4=0; ?>
                         @foreach($mon_eat_days as $k=>$v)
+                            @if($k <> "2~3月")
+                            @if($k <> "8~9月")
                             <tr bgcolor='#FFFFFF' onmouseover="this.style.backgroundColor='#FFCDE5';" onMouseOut="this.style.backgroundColor='#FFFFFF';">
                                 <th>
                                     {{ $k }}
@@ -548,6 +550,8 @@
                                     {{ ($v * $total_stu_order_num-$not_in_num[$k]) * $stud_money + $in_num[$k] * $stud_money - $eat_num[$k] * $stud_money - $abs_num[$k] * $stud_back_money -$out_num[$k] * $stud_back_money }}
                                 </th>
                             </tr>
+                            @endif
+                            @endif
                         @endforeach
                         <tr bgcolor='#FFFFFF' onmouseover="this.style.backgroundColor='#FFCDE5';" onMouseOut="this.style.backgroundColor='#FFFFFF';">
                             <th>
