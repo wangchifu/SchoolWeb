@@ -6,6 +6,7 @@ use App\Fun;
 use App\LunchOrder;
 use App\LunchOrderDate;
 use App\LunchStuDate;
+use App\LunchStuOrder;
 use App\LunchTeaDate;
 use Illuminate\Http\Request;
 
@@ -92,6 +93,19 @@ class FacController extends Controller
             }
         }
 
+        $stu_orders_array = LunchStuOrder::where('eat_style','<>','3')
+            ->orderBy('student_num')->get();
+        foreach($stu_orders_array as $stu_order){
+            if(!isset($stu_default[substr($stu_order->student_num, 0, 3)]['m'])) $stu_default[substr($stu_order->student_num, 0, 3)]['m']=0;
+            if(!isset($stu_default[substr($stu_order->student_num, 0, 3)]['g'])) $stu_default[substr($stu_order->student_num, 0, 3)]['g']=0;
+            if($stu_order->eat_style=="1") {
+                $stu_default[substr($stu_order->student_num, 0, 3)]['m']++;
+            }
+            if($stu_order->eat_style=="2") {
+                $stu_default[substr($stu_order->student_num, 0, 3)]['g']++;
+            }
+        }
+
 
         $data = [
             'semester' => $semester,
@@ -100,6 +114,7 @@ class FacController extends Controller
             'this_order_dates' => $this_order_dates,
             'order_data' => $order_data,
             'order_data_tea' => $order_data_tea,
+            'stu_default' => $stu_default,
         ];
         return view('lunch.report_fac', $data);
     }

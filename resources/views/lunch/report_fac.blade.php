@@ -99,19 +99,27 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr class="bg-primary">
-                            <th rowspan="2">班級</th>
+                            <th rowspan="2" nowrap>班級</th>
                             @foreach($this_order_dates as $k=>$v)
                                 <th colspan="2">{{ substr($v,5,5) }}</th>
                             @endforeach
                         </tr>
                         <tr>
                         @foreach($this_order_dates as $k=>$v)
-                            <th class="bg-danger">葷</th><th class="bg-success">素</th>
+                            <th class="bg-danger" width="100">葷</th><th class="bg-success">素</th>
                         @endforeach
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($order_data as $k1=>$v1)
+                            @if($k1 == "201" or $k1 == "301" or $k1 == "401" or $k1 == "501" or $k1 == "601")
+                            <tr class="bg-primary">
+                                <th>班級</th>
+                                @foreach($this_order_dates as $k=>$v)
+                                    <th colspan="2">{{ substr($v,5,5) }}</th>
+                                @endforeach
+                            </tr>
+                            @endif
                             <tr bgcolor='#FFFFFF' onmouseover="this.style.backgroundColor='#FFCDE5';" onMouseOut="this.style.backgroundColor='#FFFFFF';">
                                 <td>{{ $k1 }}</td>
                                 @foreach($this_order_dates as $k2=>$v2)
@@ -132,8 +140,24 @@
                                         $tea_img_g = "<img src='" .asset('img/no_color.png') ."' width='16'>";
                                     }
 
+                                    if($stu_default[$k1]['m'] != $v1[$v2]['m']){
+                                        $bg_m = "red";
+                                        $text_m ="white";
+                                    }else{
+                                        $bg_m = "";
+                                        $text_m ="";
+                                    }
+
+                                    if($stu_default[$k1]['g'] != $v1[$v2]['g']){
+                                        $bg_g = "green";
+                                        $text_g ="white";
+                                    }else{
+                                        $bg_g = "";
+                                        $text_g ="";
+                                    }
+
                                     ?>
-                                <td>{{ $v1[$v2]['m'] }}{!! $tea_img_m !!}</td><td>{{ $v1[$v2]['g'] }}{!! $tea_img_g !!}</td>
+                                <td bgcolor="{{ $bg_m }}" style="color:{{ $text_m }}" nowrap>{{ $v1[$v2]['m'] }}{!! $tea_img_m !!}</td><td bgcolor="{{ $bg_g }}" style="color:{{ $text_g }}">{{ $v1[$v2]['g'] }}{!! $tea_img_g !!}</td>
                                     <?php
                                         $m[$v2] += $v1[$v2]['m'];
                                         $g[$v2] += $v1[$v2]['g'];
