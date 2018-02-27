@@ -94,16 +94,17 @@ class FacController extends Controller
         }
 
         $stu_orders_array = LunchStuOrder::where('eat_style','<>','3')
-            ->where('out_in','<>','in')
             ->orderBy('student_num')->get();
         foreach($stu_orders_array as $stu_order){
-            if(!isset($stu_default[substr($stu_order->student_num, 0, 3)]['m'])) $stu_default[substr($stu_order->student_num, 0, 3)]['m']=0;
-            if(!isset($stu_default[substr($stu_order->student_num, 0, 3)]['g'])) $stu_default[substr($stu_order->student_num, 0, 3)]['g']=0;
-            if($stu_order->eat_style=="1") {
-                $stu_default[substr($stu_order->student_num, 0, 3)]['m']++;
-            }
-            if($stu_order->eat_style=="2") {
-                $stu_default[substr($stu_order->student_num, 0, 3)]['g']++;
+            if($stu_order->out_in != "in") {
+                if (!isset($stu_default[substr($stu_order->student_num, 0, 3)]['m'])) $stu_default[substr($stu_order->student_num, 0, 3)]['m'] = 0;
+                if (!isset($stu_default[substr($stu_order->student_num, 0, 3)]['g'])) $stu_default[substr($stu_order->student_num, 0, 3)]['g'] = 0;
+                if ($stu_order->eat_style == "1") {
+                    $stu_default[substr($stu_order->student_num, 0, 3)]['m']++;
+                }
+                if ($stu_order->eat_style == "2") {
+                    $stu_default[substr($stu_order->student_num, 0, 3)]['g']++;
+                }
             }
         }
 
