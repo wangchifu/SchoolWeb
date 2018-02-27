@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\LunchStuDate;
+use App\LunchStuOrder;
 use App\SemesterStudent;
 use App\Student;
 use App\User;
@@ -407,6 +409,16 @@ class StudentsController extends Controller
         $att2['name'] = $request->input('name');
         $att2['sex'] = $request->input('sex');
         Student::where('id','=',$semester_student->student_id)->update($att2);
+
+        $att3['student_num'] = $year_class.$request->input('num');
+        LunchStuOrder::where('semester','=',$semester)
+            ->where('student_id','=',$semester_student->student_id)
+            ->update($att3);
+
+        $att4['num'] = $request->input('num');
+        LunchStuDate::where('semester','=',$semester)
+            ->where('student_id','=',$semester_student->student_id)
+            ->update($att4);
 
 
         return redirect()->route('admin.showStud',$att1['year_class_id']);

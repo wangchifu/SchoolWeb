@@ -809,6 +809,16 @@ class LunchController extends Controller
                         $words = "查無此班級：" . $request->input('student_num');
                         return view('errors.errors', compact('words'));
                     }
+
+                    //查座號有人用了嗎？
+                    $semester_student = SemesterStudent::where('year_class_id', '=', $year_class_data->id)
+                        ->where('num', '=', substr($request->input('student_num'),3,2))
+                        ->first();
+                    if(!empty($semester_student)){
+                        $words = "這個班級座號有人使用了！！：" . $request->input('student_num');
+                        return view('errors.errors', compact('words'));
+                    }
+
                     //查有學生資料嗎
                     $student = Student::where('sn', '=', $request->input('sn'))
                         ->first();
@@ -868,6 +878,8 @@ class LunchController extends Controller
                     $att5['change_date'] = $request->input('in_stud_order_date');
                     LunchStuOrder::create($att5);
 
+                    $create_stu_date=[];
+
                     //日期訂餐
                     foreach ($order_dates as $k => $v) {
                         $att4['order_date'] = $k;
@@ -889,8 +901,21 @@ class LunchController extends Controller
                             if ($att4['eat_style'] == "3" and $v == "1") $att4['enable'] = "no_eat";
                         }
 
-                        LunchStuDate::create($att4);
+                        $new_one = [
+                            "order_date"=>$att4['order_date'],
+                            "enable"=>$att4['enable'],
+                            "semester"=>$att4['semester'],
+                            "lunch_order_id"=>$att4['lunch_order_id'],
+                            "student_id"=>$att4['student_id'],
+                            "class_id"=>$att4['class_id'],
+                            "num"=>$att4['num'],
+                            "p_id"=>$att4['p_id'],
+                            "eat_style"=>$att4['eat_style'],
+                        ];
+                        array_push($create_stu_date, $new_one);
+
                     }
+                    LunchStuDate::insert($create_stu_date);
 
 
                 } elseif ($request->input('type') == "eat") {
