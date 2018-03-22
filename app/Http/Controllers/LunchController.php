@@ -2291,6 +2291,23 @@ class LunchController extends Controller
         return redirect()->route('lunch.stu');
     }
 
+    public function stu_update(Request $request)
+    {
+        foreach($request->input('p_id') as $k=>$v){
+            $att['p_id'] = $v;
+            LunchStuOrder::where('semester','=',$request->input('semester'))
+            ->where('student_id','=',$k)
+            ->update($att);
+
+            LunchStuDate::where('semester','=',$request->input('semester'))
+            ->where('student_id','=',$k)
+            ->update($att);
+        }
+
+        return redirect()->route('lunch.stu');
+
+    }
+
     public function stu_cancel(Request $request)
     {
         //查目前學期

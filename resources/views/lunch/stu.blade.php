@@ -120,6 +120,10 @@
                             {{ Form::select('select_date', $select_date_menu, $select_date, ['id' => 'select_date', 'class' => 'form-control', 'placeholder' => '請選擇日期','onchange'=>'if(this.value != 0) { this.form.submit(); }']) }}
                             <input type="hidden" name="select_class" value="{{ $class_id }}">
                             {{ Form::close() }}
+                            @if($is_admin==1)
+                            {{ Form::open(['route'=>'lunch.stu_update','method'=>'POST','id'=>'stu_update','onsubmit'=>'return false;']) }}
+                            <a hef="#" class="btn btn-success" onclick="bbconfirm('stu_update','這個功能威力大，不要亂改！！')">更改全班學生學期身份別？！</a>
+                            @endif
                             <table class="table table-striped">
                             <thead>
                             <tr>
@@ -189,7 +193,29 @@
                                     <td>
                                         {{ $enable }}
                                     </td>
-                                    <td>{{ $p }}</td>
+                                    <td>
+                                        @if($is_admin==1)
+                                            <?php
+                                            $selects = [
+                                                '101'=>"101-----一般生",
+                                                '201'=>"201-----弱勢生-----低收入戶",
+                                                '202'=>"202-----弱勢生-----中低收入戶",
+                                                '203'=>"203-----弱勢生-----家庭突發因素",
+                                                '204'=>"204-----弱勢生-----父母一方失業",
+                                                '205'=>"205-----弱勢生-----單親家庭",
+                                                '206'=>"206-----弱勢生-----隔代教養",
+                                                '207'=>"207-----弱勢生-----特殊境遇",
+                                                '208'=>"208-----弱勢生-----身心障礙學生",
+                                                '209'=>"209-----弱勢生-----新住民子女",
+                                                '210'=>"210-----弱勢生-----原住民子女",
+                                                '301'=>"301---全校都補助時---全額補助",
+                                            ];
+                                            ?>
+                                            {{ Form::select('p_id['.$v['id'].']', $selects, $order_data[$select_date][$v['id']]['p_id'], ['id' => 'p_id', 'class' => 'form-control']) }}
+                                        @else
+                                            {{ $p }}
+                                        @endif
+                                    </td>
                                     <td>{{ $k }}</td>
                                     <td><span class="{{ $color }}">{{ $v['name'] }}</span></td>
                                     <td>{!! $mess2 !!}{!! $mess3 !!}</td>
@@ -198,6 +224,11 @@
                         @endif
                         </tbody>
                     </table>
+                    @if($is_admin==1)
+                    <a hef="#" class="btn btn-success" onclick="bbconfirm('stu_update','這個功能威力大，不要亂改！！')">更改全班學生學期身份別？！</a>
+                    <input type="hidden" name="semester" value="{{ $semester }}">
+                    {{ Form::close() }}
+                    @endif
                 </div>
             </div>
         </div>
