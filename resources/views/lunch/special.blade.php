@@ -248,7 +248,7 @@
                     <h4>五、單一學生某日起更改葷素</h4>
                 </div>
                 <div class="panel-content">
-                    {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST','id'=>'change_stu1']) }}
+                    {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST']) }}
                     <input type="hidden" name="op" value="change_stu00">
                     <table class="table">
                         <thead>
@@ -289,7 +289,7 @@
                     <h4>六、單一學生更改某日訂餐</h4>
                 </div>
                 <div class="panel-content">
-                    {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST','id'=>'change_stu1']) }}
+                    {{ Form::open(['route' => ['lunch.do_special'], 'method' => 'POST']) }}
                     <input type="hidden" name="op" value="change_stu0">
                     <table class="table">
                         <thead>
