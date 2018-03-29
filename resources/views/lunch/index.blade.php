@@ -23,13 +23,13 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>學期</th><th>單餐費用</th><th>訂餐日數</th><th>收費</th>
+                        <th>學期</th><th>你已訂餐日數</th><th>單餐費用</th><th>你須繳費</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($tea_count_semesters as $k=>$v)
                         {{ Form::open(['route' => 'lunch.index', 'method' => 'POST']) }}
-                        <tr><td>{{ $k }} <button class="btn btn-success btn-xs">訂餐處理</button></td><td>{{ $setups[$k]['tea_money'] }}</td><td>{{ $v }}</td><td>{{ $setups[$k]['tea_money']*$v }}</td></tr>
+                        <tr><td>{{ $k }} <button class="btn btn-success btn-xs">訂餐處理</button></td><td>{{ $v }}</td><td>{{ $setups[$k]['tea_money'] }}</td><td>{{ $setups[$k]['tea_money']*$v }}</td></tr>
                         <input type="hidden" name="semester" value="{{ $k }}">
                         {{ Form::close() }}
                     @endforeach
@@ -50,7 +50,8 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     @if($user_has_order=="0")
-                        <h3>請依序選擇你 {{ $semester }} 學期訂餐資訊後，在最下方「送出」</h3>
+                        <h3 class="text-danger">你還沒有訂餐成功！！</h3>
+                        <h3>請依序選擇你 {{ $semester }} 學期訂餐資訊後，在最下方按<button class="btn btn-success">送出訂餐</button></h3>
                     @else
                     <h3>你 {{ $semester }} 學期訂餐日期如下，共 {{ $total_order_dates }} 天</h3>
                     @endif
@@ -262,7 +263,7 @@
                 @endforeach
                     <input type="hidden" name="semester" value="{{ $semester }}">
                     @if($user_has_order=="0")
-                    <button class="btn btn-success" id="b_submit" onclick="bbconfirm3('store','確定嗎？按確定後，請等待一下！！');">送出</button>
+                    <button class="btn btn-success" id="b_submit" onclick="bbconfirm3('store','確定嗎？按確定後，請等待一下！！');">送出訂餐</button>
                     @endif
                     {{ Form::close() }}
                     <br>
