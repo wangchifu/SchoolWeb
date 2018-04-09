@@ -27,9 +27,36 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($tea_count_semesters as $k=>$v)
+                    @foreach($tea_data as $k=>$v)
                         {{ Form::open(['route' => 'lunch.index', 'method' => 'POST']) }}
-                        <tr><td>{{ $k }} <button class="btn btn-success btn-xs">訂餐處理</button></td><td>{{ $v }}</td><td>{{ $setups[$k]['tea_money'] }}</td><td>{{ $setups[$k]['tea_money']*$v }}</td></tr>
+                        <tr>
+                            <td>
+                                {{ $k }} <button class="btn btn-success btn-xs">訂餐處理</button>
+                            </td>
+                            <td>
+                                <table class="table">
+                                    <?php $total[$k] = 0; ?>
+                                @foreach($v as $k1=>$v1)
+                                    <tr><td>{{ $k1 }} 月</td><td>{{ $v1 }} 天</td></tr>
+                                    <?php $total[$k]+= $v1 ?>
+                                @endforeach
+                                    <tr><td>合計</td><td>{{ $total[$k] }} 天</td></tr>
+                                </table>
+                            </td>
+                            <td>
+                                {{ $setups[$k]['tea_money'] }}
+                            </td>
+                            <td>
+                                <table class="table">
+                                    <?php $total[$k] = 0; ?>
+                                    @foreach($v as $k1=>$v1)
+                                        <tr><td>{{ $setups[$k]['tea_money']*$v1 }} 元</td></tr>
+                                        <?php $total[$k]+= $v1 ?>
+                                    @endforeach
+                                    <tr><td>{{ $setups[$k]['tea_money']*$total[$k] }} 元</td></tr>
+                                </table>
+                            </td>
+                        </tr>
                         <input type="hidden" name="semester" value="{{ $k }}">
                         {{ Form::close() }}
                     @endforeach

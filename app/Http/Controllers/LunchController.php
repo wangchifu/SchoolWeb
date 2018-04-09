@@ -51,8 +51,8 @@ class LunchController extends Controller
         $tea_semesters = LunchSetup::orderBy('id')->get();
         $setups = $this->get_setup();
         foreach ($tea_semesters as $tea_semester) {
-            $count_tea_orders = $this->get_tea_orders(auth()->user()->id, $tea_semester->semester);
-            $tea_count_semesters[$tea_semester->semester] = $count_tea_orders;
+            $tea_data[$tea_semester->semester] = $this->get_tea_orders(auth()->user()->id, $tea_semester->semester);
+            //$tea_count_semesters[$tea_semester->semester] = $count_tea_orders;
         }
 
 
@@ -104,7 +104,7 @@ class LunchController extends Controller
             "tea_dates" => $tea_dates,
             "tea_eat_styles" => $tea_eat_styles,
             "user_has_order" => $user_has_order,
-            "tea_count_semesters" => $tea_count_semesters,
+            "tea_data" => $tea_data,
             "setups" => $setups,
             "user_place" => $user_place,
             "user_eat_style" => $user_eat_style,
@@ -3197,11 +3197,18 @@ class LunchController extends Controller
     //查老師某一學期訂餐數
     public function get_tea_orders($user_id,$semester)
     {
-        $count_tea_orders = LunchTeaDate::where('semester','=',$semester)
+        $tea_orders = LunchTeaDate::where('semester','=',$semester)
             ->where('user_id','=',$user_id)
             ->where('enable','=','eat')
-            ->count();
-        return $count_tea_orders;
+            ->get();
+        $tea_data = [];
+        foreach($tea_orders as $tea_order){
+            if(empty($tea_data[substr($tea_order->order_date,0,7)])){
+                $tea_data[substr($tea_order->order_date,0,7)] = 0;
+            }
+            $tea_data[substr($tea_order->order_date,0,7)]++;
+        }
+        return $tea_data;
     }
     //是不是導師
     public function has_class_tea($semester)
