@@ -79,22 +79,22 @@
                             {{ Form::open(['route'=>['lunch.update_setup',$lunch_setup->id],'method'=>'PATCH','id'=>'updateSetup'.$k,'onsubmit'=>'return false;']) }}
                             <tr>
                                 <td>
-                                    {{ Form::text('semester',$lunch_setup->semester,['id'=>'semester','class' => 'form-control', 'placeholder' => '學年學期：1061','required'=>'required','maxlength'=>'4','readonly'=>'readonly']) }}
+                                    {{ Form::text('semester',$lunch_setup->semester,['id'=>'semester','class' => 'form-control', 'placeholder' => '學年學期：1061','required'=>'required','maxlength'=>'5','readonly'=>'readonly']) }}
                                 </td>
                                 <td>
-                                    {{ Form::text('tea_money',$lunch_setup->tea_money,['id'=>'tea_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'4']) }}
+                                    {{ Form::text('tea_money',$lunch_setup->tea_money,['id'=>'tea_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'5']) }}
                                 </td>
                                 <td>
-                                    {{ Form::text('stud_money',$lunch_setup->stud_money,['id'=>'stud_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'4']) }}
+                                    {{ Form::text('stud_money',$lunch_setup->stud_money,['id'=>'stud_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'5']) }}
                                 </td>
                                 <td>
-                                    {{ Form::text('stud_back_money',$lunch_setup->stud_back_money,['id'=>'stud_back_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'4']) }}
+                                    {{ Form::text('stud_back_money',$lunch_setup->stud_back_money,['id'=>'stud_back_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'5']) }}
                                 </td>
                                 <td>
-                                    {{ Form::text('support_part_money',$lunch_setup->support_part_money,['id'=>'support_part_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'4']) }}
+                                    {{ Form::text('support_part_money',$lunch_setup->support_part_money,['id'=>'support_part_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'5']) }}
                                 </td>
                                 <td>
-                                    {{ Form::text('support_all_money',$lunch_setup->support_all_money,['id'=>'support_all_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'4']) }}
+                                    {{ Form::text('support_all_money',$lunch_setup->support_all_money,['id'=>'support_all_money','class' => 'form-control', 'placeholder' => '數字','required'=>'required','maxlength'=>'5']) }}
                                 </td>
                                 <td>
                                     {{ Form::text('die_line',$lunch_setup->die_line,['id'=>'die_line','class' => 'form-control', 'placeholder' => '例：2 (天前)','required'=>'required','maxlength'=>'1']) }}
