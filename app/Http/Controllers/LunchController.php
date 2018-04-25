@@ -2187,7 +2187,7 @@ class LunchController extends Controller
             foreach($order_dates as $k=>$v){
                 if($v == 1) $select_date_menu[$k] = $k;
             }
-            $select_date = (empty($request->input('select_date')))?current($select_date_menu):$request->input('select_date');
+            $select_date = (empty($request->input('select_date')))?date('Y-m-d'):$request->input('select_date');
 
         }
 
