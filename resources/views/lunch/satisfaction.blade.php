@@ -154,6 +154,6 @@
 
 
         </div>
-
+    </div>
 @endsection
 @include('layouts.partials.bootbox')
